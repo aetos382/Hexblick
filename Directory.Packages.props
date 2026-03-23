@@ -6,4 +6,8 @@
   <ItemGroup>
     <GlobalPackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="5.3.0" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.7705" />
+    <PackageVersion Include="Microsoft.WindowsAppSDK" Version="1.8.260317003" />
+  </ItemGroup>
 </Project>
