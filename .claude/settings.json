@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "deny": [
+      "Edit(**/packages.lock.json)",
+      "Write(**/packages.lock.json)",
+      "Edit(artifacts/**)",
+      "Write(artifacts/**)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit(**/*.cs)|Write(**/*.cs)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "dotnet format whitespace --include \"${CLAUDE_TOOL_INPUT_FILE_PATH}\""
+          },
+          {
+            "type": "command",
+            "command": "dotnet format style --include \"${CLAUDE_TOOL_INPUT_FILE_PATH}\""
+          }
+        ]
+      },
+      {
+        "matcher": "Bash(dotnet package remove *)",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "プロジェクトからパッケージ参照を削除しても Directory.Packages.props からは削除されないので、他のプロジェクトでも使っていないパッケージだったら、Directory.Packages.props から消す。"
+          }
+        ]
+      }
+    ]
+  }
+}

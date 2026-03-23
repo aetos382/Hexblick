@@ -1,0 +1,15 @@
+/.vs/
+/artifacts/
+bin/
+obj/
+
+*.log
+*.binlog
+
+*.user
+launchSettings.json
+
+*.local.*
+
+# Windows SDK packages and generated files
+.winapp

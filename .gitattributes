@@ -1,0 +1,4 @@
+* text=auto eol=crlf
+
+*.md text diff=markdown
+*.cs text diff=csharp

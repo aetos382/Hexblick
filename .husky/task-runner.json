@@ -1,0 +1,21 @@
+{
+  "$schema": "https://alirezanet.github.io/Husky.Net/schema.json",
+  "tasks": [
+    {
+      "name": "format code (whitespace)",
+      "group": "pre-commit",
+      "include": ["**/*.cs"],
+      "command": "dotnet",
+      "args": [ "dotnet", "format", "whitespace", "--include", "${staged}" ],
+      "staged": true
+    },
+    {
+      "name": "format code (style)",
+      "group": "pre-commit",
+      "include": ["**/*.cs"],
+      "command": "dotnet",
+      "args": [ "dotnet", "format", "style", "--include", "${staged}" ],
+      "staged": true
+    }
+  ]
+}
