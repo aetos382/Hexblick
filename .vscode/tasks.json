@@ -25,7 +25,8 @@
         "dotnet tool restore"
       ],
       "presentation": {
-        "reveal": "silent"
+        "reveal": "silent",
+        "close": true
       },
       "runOptions": {
         "runOn": "folderOpen"
