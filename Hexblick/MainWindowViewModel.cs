@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿using ObservableCollections;
 
 using R3;
 
@@ -11,7 +11,9 @@ internal sealed partial class MainWindowViewModel :
 
     public ReactiveCommand<TabItemViewModel> CloseTabCommand { get; }
 
-    public ObservableCollection<TabItemViewModel> TabItems { get; }
+    private readonly ObservableList<TabItemViewModel> _tabItems = new();
+
+    public NotifyCollectionChangedSynchronizedViewList<TabItemViewModel> TabItems { get; }
 
     private readonly CompositeDisposable _disposable = new();
 
@@ -31,13 +33,16 @@ internal sealed partial class MainWindowViewModel :
             .Subscribe(this.OnCloseTab)
             .AddTo(this._disposable);
 
-        this.TabItems = new ObservableCollection<TabItemViewModel>()
+        this.TabItems = this._tabItems
+            .ToNotifyCollectionChangedSlim()
             .AddTo(this._disposable);
+
+        this._tabItems.Add(new());
     }
 
     private void OnAddTab()
     {
-        this.TabItems.Add(new());
+        this._tabItems.Add(new());
     }
 
     private void OnCloseTab(TabItemViewModel item)

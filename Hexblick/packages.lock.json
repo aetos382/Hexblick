@@ -31,6 +31,22 @@
           "Microsoft.WindowsAppSDK.WinUI": "[1.8.260224000]"
         }
       },
+      "ObservableCollections": {
+        "type": "Direct",
+        "requested": "[3.3.4, )",
+        "resolved": "3.3.4",
+        "contentHash": "QiEOwr5ejfP4z1oFx9Vs7tsejC0gkL0C5YKaTIvYYEJHM9wp7W0ZRsFW+MQJqJrKBUl3YEX//GXrvBp+3m2eOg=="
+      },
+      "ObservableCollections.R3": {
+        "type": "Direct",
+        "requested": "[3.3.4, )",
+        "resolved": "3.3.4",
+        "contentHash": "uT1fSAO4wmok+Fbh5JkJF9i5zbXRAO9aBvjaQoc6O78hCmg5d9PcTTQECK1GmLiBT/LW0KxIF8Ro1Jc1puprpQ==",
+        "dependencies": {
+          "ObservableCollections": "3.3.4",
+          "R3": "1.0.0"
+        }
+      },
       "R3": {
         "type": "Direct",
         "requested": "[1.3.0, )",

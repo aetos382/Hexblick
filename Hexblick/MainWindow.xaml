@@ -20,8 +20,13 @@
       TabItemsSource="{x:Bind ViewModel.TabItems}">
 
       <TabView.TabItemTemplate>
-        <DataTemplate x:DataType="local:TabItemViewModel">
+        <DataTemplate>
           <TabViewItem IsClosable="true">
+            <TabViewItem.HeaderTemplate>
+              <DataTemplate x:DataType="local:TabItemViewModel">
+                <TextBlock Text="{x:Bind Title.Value}"/>
+              </DataTemplate>
+            </TabViewItem.HeaderTemplate>
             <TabViewItem.Content>
             </TabViewItem.Content>
           </TabViewItem>

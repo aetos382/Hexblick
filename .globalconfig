@@ -55,6 +55,8 @@ dotnet_diagnostic.IDE0305.severity = silent
 dotnet_diagnostic.CA1056.severity = silent
 dotnet_diagnostic.CA1852.severity = suggestion
 
+dotnet_code_quality.CA2000.dispose_ownership_transfer_at_method_call = true
+
 dotnet_naming_symbols.types_and_namespaces.applicable_kinds = class, struct, enum, delegate, namespace
 
 dotnet_naming_symbols.interfaces.applicable_kinds = interfaces
