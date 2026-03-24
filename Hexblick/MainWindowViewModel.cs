@@ -20,7 +20,7 @@ internal sealed partial class MainWindowViewModel :
         this.AddTabButtonCommand = new ReactiveCommand()
             .AddTo(this._disposable);
 
-        this.AddTabButtonCommand.Subscribe(this.OnAddTab).AddTo(this._disposable);
+        this.AddTabButtonCommand.Subscribe(_ => this.OnAddTab()).AddTo(this._disposable);
 
         this.CloseTabCommand = new ReactiveCommand<TabItemViewModel>()
             .AddTo(this._disposable);
@@ -30,7 +30,7 @@ internal sealed partial class MainWindowViewModel :
         this.TabItems = new ObservableCollection<TabItemViewModel>().AddTo(this._disposable);
     }
 
-    private void OnAddTab(Unit _)
+    private void OnAddTab()
     {
         this.TabItems.Add(new());
     }
