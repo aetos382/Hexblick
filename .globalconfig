@@ -9,17 +9,13 @@ dotnet_style_qualification_for_property = true
 dotnet_style_qualification_for_method = true
 dotnet_style_qualification_for_event = true
 
-csharp_style_expression_bodied_methods = when_on_single_line
+csharp_style_expression_bodied_methods = false
 csharp_style_expression_bodied_operators = when_on_single_line
 csharp_style_expression_bodied_properties = when_on_single_line
 csharp_style_expression_bodied_indexers = when_on_single_line
 csharp_style_expression_bodied_accessors = when_on_single_line
 
 dotnet_style_prefer_conditional_expression_over_assignment = false
-
-csharp_style_expression_bodied_properties = false
-csharp_style_expression_bodied_indexers = false
-csharp_style_expression_bodied_accessors = false
 
 csharp_style_namespace_declarations = file_scoped
 dotnet_separate_import_directive_groups = true
