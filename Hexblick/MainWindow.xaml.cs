@@ -26,4 +26,12 @@ public sealed partial class MainWindow : Window
     {
         this.ViewModel.Dispose();
     }
+
+    private void TabView_OnTabCloseRequested(TabView sender, TabViewTabCloseRequestedEventArgs args)
+    {
+        if (args.Item is TabItemViewModel item)
+        {
+            this.ViewModel.CloseTabCommand.Execute(item);
+        }
+    }
 }

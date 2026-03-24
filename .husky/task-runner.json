@@ -6,7 +6,7 @@
       "group": "pre-commit",
       "include": ["**/*.cs"],
       "command": "dotnet",
-      "args": [ "dotnet", "format", "whitespace", "--include", "${staged}" ],
+      "args": [ "format", "whitespace", "--include", "${staged}" ],
       "staged": true
     },
     {
@@ -14,7 +14,7 @@
       "group": "pre-commit",
       "include": ["**/*.cs"],
       "command": "dotnet",
-      "args": [ "dotnet", "format", "style", "--include", "${staged}" ],
+      "args": [ "format", "style", "--include", "${staged}" ],
       "staged": true
     }
   ]
