@@ -12,26 +12,44 @@
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
-    <TabView
-      HorizontalAlignment="Stretch"
-      VerticalAlignment="Stretch"
-      AddTabButtonCommand="{x:Bind ViewModel.AddTabButtonCommand}"
-      TabCloseRequested="TabView_OnTabCloseRequested"
-      TabItemsSource="{x:Bind ViewModel.TabItems}">
+    <StackPanel>
 
-      <TabView.TabItemTemplate>
-        <DataTemplate>
-          <TabViewItem IsClosable="true">
-            <TabViewItem.HeaderTemplate>
-              <DataTemplate x:DataType="local:TabItemViewModel">
-                <TextBlock Text="{x:Bind Title.Value}"/>
-              </DataTemplate>
-            </TabViewItem.HeaderTemplate>
-            <TabViewItem.Content>
-            </TabViewItem.Content>
-          </TabViewItem>
-        </DataTemplate>
-      </TabView.TabItemTemplate>
+      <MenuBar>
+        <MenuBarItem Title="File">
+          <MenuFlyoutItem Text="New" Command="{x:Bind ViewModel.NewDocumentCommand}"/>
+          <MenuFlyoutItem Text="Close" Command="{x:Bind ViewModel.ExitCommand}"/>
+        </MenuBarItem>
+      </MenuBar>
 
-    </TabView>
+      <TabView
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        IsAddTabButtonVisible="False"
+        TabCloseRequested="TabView_OnTabCloseRequested"
+        TabItemsSource="{x:Bind ViewModel.TabItems}">
+
+        <TabView.TabItemTemplate>
+          <DataTemplate x:DataType="local:TabItemViewModel">
+            <TabViewItem IsClosable="true">
+              <TabViewItem.HeaderTemplate>
+                <DataTemplate x:DataType="local:TabItemViewModel">
+                  <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{x:Bind Title.Value, Mode=OneWay}"/>
+                    <TextBlock Text="*" Visibility="{x:Bind IsDirty.Value, Mode=OneWay}"/>
+                  </StackPanel>
+                </DataTemplate>
+              </TabViewItem.HeaderTemplate>
+              <TabViewItem.Content>
+                <StackPanel>
+                  <TextBox Text="{x:Bind Title.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                  <CheckBox Content="IsDirty" IsChecked="{x:Bind IsDirty.Value, Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </StackPanel>
+              </TabViewItem.Content>
+            </TabViewItem>
+          </DataTemplate>
+        </TabView.TabItemTemplate>
+
+      </TabView>
+
+    </StackPanel>
 </Window>

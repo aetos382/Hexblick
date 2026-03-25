@@ -7,7 +7,9 @@ namespace Hexblick;
 internal sealed partial class MainWindowViewModel :
     IDisposable
 {
-    public ReactiveCommand AddTabButtonCommand { get; }
+    public ReactiveCommand NewDocumentCommand { get; }
+
+    public ReactiveCommand ExitCommand { get; }
 
     public ReactiveCommand<TabItemViewModel> CloseTabCommand { get; }
 
@@ -19,11 +21,14 @@ internal sealed partial class MainWindowViewModel :
 
     public MainWindowViewModel()
     {
-        this.AddTabButtonCommand = new ReactiveCommand()
+        this.NewDocumentCommand = new ReactiveCommand()
             .AddTo(this._disposable);
 
-        this.AddTabButtonCommand
-            .Subscribe(_ => this.OnAddTab())
+        this.NewDocumentCommand
+            .Subscribe(_ => this.OnNewDocument())
+            .AddTo(this._disposable);
+
+        this.ExitCommand = new ReactiveCommand()
             .AddTo(this._disposable);
 
         this.CloseTabCommand = new ReactiveCommand<TabItemViewModel>()
@@ -40,7 +45,7 @@ internal sealed partial class MainWindowViewModel :
         this._tabItems.Add(new());
     }
 
-    private void OnAddTab()
+    private void OnNewDocument()
     {
         this._tabItems.Add(new());
     }
