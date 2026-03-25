@@ -61,6 +61,11 @@ internal sealed partial class MainWindowViewModel :
     /// <inheritdoc />
     public void Dispose()
     {
+        foreach (var tabItem in this._tabItems)
+        {
+            tabItem.Dispose();
+        }
+
         this._disposable.Dispose();
     }
 }

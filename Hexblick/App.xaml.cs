@@ -8,7 +8,7 @@ namespace Hexblick;
 /// <summary>
 /// Provides application-specific behavior to supplement the default Application class.
 /// </summary>
-public partial class App : Application
+internal partial class App : Application
 {
     private Window? _window;
 
