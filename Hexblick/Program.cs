@@ -1,8 +1,8 @@
 ﻿using System.Runtime.InteropServices;
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using Microsoft.UI.Dispatching;
-using Microsoft.UI.Xaml;
 
 using WinRT;
 
@@ -17,19 +17,22 @@ internal static partial class Program
         ComWrappersSupport.InitializeComWrappers();
 
         var appBuilder = Host.CreateApplicationBuilder(args);
-        using var app = appBuilder.Build();
 
-        await app.StartAsync().ConfigureAwait(false);
+        var services = appBuilder.Services;
 
-        Application.Start(p =>
-        {
-            var context = new DispatcherQueueSynchronizationContext(DispatcherQueue.GetForCurrentThread());
-            SynchronizationContext.SetSynchronizationContext(context);
+        services.AddSingleton<IWindowManager, WindowManager>();
+        services.AddSingleton<App>();
+        services.AddHostedService<ApplicationService>();
+        services.Replace(ServiceDescriptor.Singleton<IHostLifetime, WinUIApplicationLifetime>());
 
-            _ = new App();
-        });
+        using var host = appBuilder.Build();
 
-        await app.StopAsync().ConfigureAwait(false);
+        await host.StartAsync().ConfigureAwait(false);
+
+        var appThread = host.Services.GetRequiredService<IApplicationThread>();
+        _ = appThread.RunAsync();
+
+        await host.WaitForShutdownAsync().ConfigureAwait(false);
     }
 
     [LibraryImport("Microsoft.ui.xaml.dll")]

@@ -1,55 +1,58 @@
 <Window
-    x:Class="Hexblick.MainWindow"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:local="using:Hexblick"
-    mc:Ignorable="d"
-    Title="Hexblick">
+  x:Class="Hexblick.MainWindow"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:local="using:Hexblick"
+  mc:Ignorable="d"
+  Title="Hexblick">
 
-    <Window.SystemBackdrop>
-        <MicaBackdrop />
-    </Window.SystemBackdrop>
+  <Window.SystemBackdrop>
+    <MicaBackdrop />
+  </Window.SystemBackdrop>
 
-    <StackPanel>
+  <StackPanel>
 
-      <MenuBar>
-        <MenuBarItem Title="File">
-          <MenuFlyoutItem Text="New" Command="{x:Bind ViewModel.NewDocumentCommand}"/>
-          <MenuFlyoutItem Text="Close" Command="{x:Bind ViewModel.ExitCommand}"/>
-        </MenuBarItem>
-      </MenuBar>
+    <MenuBar>
+      <MenuBarItem Title="File">
+        <MenuFlyoutItem Text="New" Command="{x:Bind ViewModel.NewDocumentCommand}"/>
+        <MenuFlyoutItem Text="Close" Command="{x:Bind ViewModel.ExitCommand}"/>
+      </MenuBarItem>
+      <MenuBarItem Title="Window">
+        <MenuFlyoutItem Text="New Window"/>
+      </MenuBarItem>
+    </MenuBar>
 
-      <TabView
-        HorizontalAlignment="Stretch"
-        VerticalAlignment="Stretch"
-        IsAddTabButtonVisible="False"
-        TabCloseRequested="TabView_OnTabCloseRequested"
-        TabItemsSource="{x:Bind ViewModel.TabItems}">
+    <TabView
+      HorizontalAlignment="Stretch"
+      VerticalAlignment="Stretch"
+      IsAddTabButtonVisible="False"
+      TabCloseRequested="TabView_OnTabCloseRequested"
+      TabItemsSource="{x:Bind ViewModel.TabItems}">
 
-        <TabView.TabItemTemplate>
-          <DataTemplate x:DataType="local:TabItemViewModel">
-            <TabViewItem IsClosable="true">
-              <TabViewItem.HeaderTemplate>
-                <DataTemplate x:DataType="local:TabItemViewModel">
-                  <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{x:Bind Title.Value, Mode=OneWay}"/>
-                    <TextBlock Text="*" Visibility="{x:Bind IsDirty.Value, Mode=OneWay}"/>
-                  </StackPanel>
-                </DataTemplate>
-              </TabViewItem.HeaderTemplate>
-              <TabViewItem.Content>
-                <StackPanel>
-                  <TextBox Text="{x:Bind Title.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                  <CheckBox Content="IsDirty" IsChecked="{x:Bind IsDirty.Value, Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+      <TabView.TabItemTemplate>
+        <DataTemplate x:DataType="local:TabItemViewModel">
+          <TabViewItem IsClosable="true">
+            <TabViewItem.HeaderTemplate>
+              <DataTemplate x:DataType="local:TabItemViewModel">
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="{x:Bind Title.Value, Mode=OneWay}"/>
+                  <TextBlock Text="*" Visibility="{x:Bind IsDirty.Value, Mode=OneWay}"/>
                 </StackPanel>
-              </TabViewItem.Content>
-            </TabViewItem>
-          </DataTemplate>
-        </TabView.TabItemTemplate>
+              </DataTemplate>
+            </TabViewItem.HeaderTemplate>
+            <TabViewItem.Content>
+              <StackPanel>
+                <TextBox Text="{x:Bind Title.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <CheckBox Content="IsDirty" IsChecked="{x:Bind IsDirty.Value, Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </StackPanel>
+            </TabViewItem.Content>
+          </TabViewItem>
+        </DataTemplate>
+      </TabView.TabItemTemplate>
 
-      </TabView>
+    </TabView>
 
-    </StackPanel>
+  </StackPanel>
 </Window>
