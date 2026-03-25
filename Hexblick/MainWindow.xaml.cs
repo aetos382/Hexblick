@@ -5,7 +5,7 @@ using R3;
 
 namespace Hexblick;
 
-internal sealed partial class MainWindow : Window
+internal sealed partial class MainWindow : Window, IDisposable
 {
     private MainWindowViewModel ViewModel { get; }
 
@@ -36,5 +36,10 @@ internal sealed partial class MainWindow : Window
         {
             this.ViewModel.CloseTabCommand.Execute(item);
         }
+    }
+
+    public void Dispose()
+    {
+        this._disposable.Dispose();
     }
 }

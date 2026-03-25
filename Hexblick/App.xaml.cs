@@ -5,10 +5,13 @@
 
 namespace Hexblick;
 
+// https://github.com/microsoft/microsoft-ui-xaml/issues/10099
+#pragma warning disable CA1515
+
 /// <summary>
 /// Provides application-specific behavior to supplement the default Application class.
 /// </summary>
-internal partial class App : Application
+public partial class App : Application
 {
     private Window? _window;
 
