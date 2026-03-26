@@ -1,28 +1,46 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Hexblick.Hosting;
+
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 using R3;
 
 namespace Hexblick;
 
-internal sealed partial class MainWindow : Window, IDisposable
+internal sealed partial class MainWindow :
+    Window,
+    IDisposable
 {
     private MainWindowViewModel ViewModel { get; }
+    private readonly IWindowManager _windowManager;
 
     private readonly CompositeDisposable _disposable = [];
 
-    public MainWindow()
+    public MainWindow(
+        MainWindowViewModel viewModel,
+        IWindowManager windowManager)
     {
+        ArgumentNullException.ThrowIfNull(viewModel);
+        ArgumentNullException.ThrowIfNull(windowManager);
+
         this.InitializeComponent();
 
-        this.ViewModel = new MainWindowViewModel()
-            .AddTo(this._disposable);
-
-        this.ViewModel.ExitCommand
-            .Subscribe(_ => this.Close())
-            .AddTo(this._disposable);
+        this._windowManager = windowManager;
+        this.ViewModel = viewModel;
 
         this.Closed += this.OnClosed;
+        this.TabView.TabCloseRequested += this.TabView_OnTabCloseRequested;
+        this.ExitMenuItem.Click += this.ExitMenuItem_OnClick;
+        this.NewWindowMenuItem.Click += this.NewWindowMenuItem_Click;
+    private void NewWindowMenuItem_Click(object sender, RoutedEventArgs e)
+    {
+        var newWindow = this._windowManager.Create<MainWindow>();
+        newWindow.Activate();
+    }
+
+    private void ExitMenuItem_OnClick(object sender, RoutedEventArgs e)
+    {
+        this.Close();
     }
 
     private void OnClosed(object sender, WindowEventArgs args)

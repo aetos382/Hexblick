@@ -7,9 +7,9 @@ namespace Hexblick;
 internal sealed partial class MainWindowViewModel :
     IDisposable
 {
-    public ReactiveCommand NewDocumentCommand { get; }
+    private readonly ITabItemViewModelFactory _tabItemViewModelFactory;
 
-    public ReactiveCommand ExitCommand { get; }
+    public ReactiveCommand NewDocumentCommand { get; }
 
     public ReactiveCommand<TabItemViewModel> CloseTabCommand { get; }
 
@@ -19,16 +19,18 @@ internal sealed partial class MainWindowViewModel :
 
     private readonly CompositeDisposable _disposable = new();
 
-    public MainWindowViewModel()
+    public MainWindowViewModel(
+        ITabItemViewModelFactory tabItemViewModelFactory)
     {
+        ArgumentNullException.ThrowIfNull(tabItemViewModelFactory);
+
+        this._tabItemViewModelFactory = tabItemViewModelFactory;
+
         this.NewDocumentCommand = new ReactiveCommand()
             .AddTo(this._disposable);
 
         this.NewDocumentCommand
             .Subscribe(_ => this.OnNewDocument())
-            .AddTo(this._disposable);
-
-        this.ExitCommand = new ReactiveCommand()
             .AddTo(this._disposable);
 
         this.CloseTabCommand = new ReactiveCommand<TabItemViewModel>()
@@ -41,13 +43,11 @@ internal sealed partial class MainWindowViewModel :
         this.TabItems = this._tabItems
             .ToNotifyCollectionChangedSlim()
             .AddTo(this._disposable);
-
-        this._tabItems.Add(new());
     }
 
     private void OnNewDocument()
     {
-        this._tabItems.Add(new());
+        this._tabItems.Add(this._tabItemViewModelFactory.Create());
     }
 
     private void OnCloseTab(TabItemViewModel item)

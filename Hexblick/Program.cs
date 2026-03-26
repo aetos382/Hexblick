@@ -11,9 +11,13 @@ ComWrappersSupport.InitializeComWrappers();
 var appBuilder = Host.CreateApplicationBuilder(args);
 
 var services = appBuilder.Services;
+
 services.UseWinApp<App>();
 services.AddSingleton<IWindowManager, WindowManager>();
+
 services.AddScoped<MainWindow>();
+services.AddScoped<MainWindowViewModel>();
+services.AddScoped<ITabItemViewModelFactory, TabItemViewModelFactory>();
 
 using var host = appBuilder.Build();
 

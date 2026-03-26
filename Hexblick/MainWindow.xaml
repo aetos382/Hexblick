@@ -17,18 +17,18 @@
     <MenuBar>
       <MenuBarItem Title="File">
         <MenuFlyoutItem Text="New" Command="{x:Bind ViewModel.NewDocumentCommand}"/>
-        <MenuFlyoutItem Text="Close" Command="{x:Bind ViewModel.ExitCommand}"/>
+        <MenuFlyoutItem Text="Close" x:Name="ExitMenuItem"/>
       </MenuBarItem>
       <MenuBarItem Title="Window">
-        <MenuFlyoutItem Text="New Window"/>
+        <MenuFlyoutItem Text="New Window" x:Name="NewWindowMenuItem"/>
       </MenuBarItem>
     </MenuBar>
 
     <TabView
+      x:Name="TabView"
       HorizontalAlignment="Stretch"
       VerticalAlignment="Stretch"
       IsAddTabButtonVisible="False"
-      TabCloseRequested="TabView_OnTabCloseRequested"
       TabItemsSource="{x:Bind ViewModel.TabItems}">
 
       <TabView.TabItemTemplate>
