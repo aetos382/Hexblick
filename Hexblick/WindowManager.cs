@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -15,12 +16,10 @@ public interface IWindowManager
 }
 
 internal sealed class WindowManager :
-    IWindowManager,
-    IDisposable
+    IWindowManager
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly ConcurrentDictionary<AppWindow, Window> _windows = new();
-    private readonly ConditionalWeakTable<AppWindow, IServiceScope> _windowScopedServiceProviders = new();
 
     public WindowManager(
         IServiceProvider serviceProvider)
@@ -33,29 +32,25 @@ internal sealed class WindowManager :
     /// <inheritdoc />
     public TWindow Create<TWindow>() where TWindow : Window
     {
-        var serviceProvider = this._serviceProvider;
-        var window = serviceProvider.GetRequiredService<TWindow>();
+        var scope = this._serviceProvider.CreateScope();
+
+        var window = scope.ServiceProvider.GetRequiredService<TWindow>();
 
         var appWindow = window.AppWindow;
 
         this._windows.GetOrAdd(appWindow, window);
 
-        window.AppWindow.Closing += OnWindowClosing;
+        window.AppWindow.Destroying += OnWindowDestroying;
 
-        this._windowScopedServiceProviders.Add(appWindow, serviceProvider.CreateScope());
+        WindowScopeStore.Instance.SetWindowScope(window, scope);
 
         return window;
 
-        void OnWindowClosing(AppWindow sender, object args)
+        void OnWindowDestroying(AppWindow sender, object args)
         {
-            sender.Closing -= OnWindowClosing;
+            sender.Destroying -= OnWindowDestroying;
 
             this._windows.Remove(sender, out _);
-
-            if (this._windowScopedServiceProviders.Remove(sender, out var scope))
-            {
-                scope.Dispose();
-            }
         }
     }
 
@@ -64,25 +59,66 @@ internal sealed class WindowManager :
     {
         return this._windows.Values;
     }
+}
 
-    /// <inheritdoc />
-    public void Dispose()
+file class WindowScopeStore
+{
+    private readonly ConditionalWeakTable<AppWindow, IServiceScope> _scopes = new();
+
+    public void SetWindowScope(Window window, IServiceScope scope)
     {
-        foreach (var (_, value) in this._windowScopedServiceProviders)
+        ArgumentNullException.ThrowIfNull(window);
+        ArgumentNullException.ThrowIfNull(scope);
+
+        var appWindow = window.AppWindow;
+
+        this._scopes.GetOrAdd(appWindow, scope);
+
+        appWindow.Destroying += OnWindowDestroying;
+
+        void OnWindowDestroying(AppWindow sender, object args)
         {
-            value.Dispose();
+            sender.Destroying -= OnWindowDestroying;
+
+            if (this._scopes.Remove(sender, out var scope))
+            {
+                scope.Dispose();
+            }
         }
     }
+
+    public bool TryGetWindowScope(
+        Window window,
+        [MaybeNullWhen(false)] out IServiceScope scope)
+    {
+        ArgumentNullException.ThrowIfNull(window);
+
+        return this._scopes.TryGetValue(window.AppWindow, out scope);
+    }
+
+    private WindowScopeStore()
+    {
+    }
+
+    public static readonly WindowScopeStore Instance = new();
 }
 
 internal static class WindowExtensions
 {
     extension(Window window)
     {
-        IServiceProvider Services
+        public IServiceProvider Services
         {
             get
             {
+                ArgumentNullException.ThrowIfNull(window);
+
+                if (!WindowScopeStore.Instance.TryGetWindowScope(window, out var scope))
+                {
+                    throw new InvalidOperationException();
+                }
+
+                return scope.ServiceProvider;
             }
         }
     }
