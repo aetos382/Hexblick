@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml;
 
 namespace Hexblick;
 
-internal sealed partial class WinUIApplicationLifetime<TApplication> :
+internal sealed partial class WinAppLifetime<TApplication> :
     IHostLifetime,
     IDisposable
     where TApplication : Application
@@ -21,7 +21,7 @@ internal sealed partial class WinUIApplicationLifetime<TApplication> :
 
     private bool _dispatcherQueueShuttingDown;
 
-    public WinUIApplicationLifetime(
+    public WinAppLifetime(
         IHostApplicationLifetime appLifetime,
         IServiceProvider serviceProvider)
     {
