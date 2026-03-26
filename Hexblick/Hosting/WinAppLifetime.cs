@@ -140,7 +140,7 @@ internal sealed partial class WinAppLifetime<TApplication> :
         }
 
         var task = Task.Factory.StartNew(
-            state => ((Thread)state!).Join(),
+            static state => ((Thread)state!).Join(),
             thread,
             cancellationToken,
             TaskCreationOptions.None,
