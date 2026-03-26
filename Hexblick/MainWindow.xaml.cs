@@ -9,7 +9,7 @@ internal sealed partial class MainWindow : Window, IDisposable
 {
     private MainWindowViewModel ViewModel { get; }
 
-    private readonly CompositeDisposable _disposable = new();
+    private readonly CompositeDisposable _disposable = [];
 
     public MainWindow()
     {

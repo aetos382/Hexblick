@@ -3,7 +3,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 
-namespace Hexblick;
+namespace Hexblick.Hosting;
+
+#pragma warning disable CA1812
 
 internal sealed partial class WinAppLifetime<TApplication> :
     IHostLifetime,

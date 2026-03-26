@@ -1,4 +1,4 @@
-﻿using Hexblick;
+﻿using Hexblick.Hosting;
 
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;

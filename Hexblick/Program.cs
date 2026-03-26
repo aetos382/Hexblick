@@ -1,4 +1,5 @@
 ﻿using Hexblick;
+using Hexblick.Hosting;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,7 +13,7 @@ var appBuilder = Host.CreateApplicationBuilder(args);
 var services = appBuilder.Services;
 services.UseWinApp<App>();
 services.AddSingleton<IWindowManager, WindowManager>();
-services.AddTransient<MainWindow>();
+services.AddScoped<MainWindow>();
 
 using var host = appBuilder.Build();
 

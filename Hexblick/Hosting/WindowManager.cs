@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 
-namespace Hexblick;
+namespace Hexblick.Hosting;
 
 // public な App が依存しているので internal にできない
 #pragma warning disable CA1515
@@ -17,6 +17,10 @@ public interface IWindowManager
 
     IEnumerable<Window> GetWindows();
 }
+
+#pragma warning restore
+
+#pragma warning disable CA1812
 
 internal sealed class WindowManager :
     IWindowManager
@@ -64,9 +68,11 @@ internal sealed class WindowManager :
     }
 }
 
+#pragma warning restore
+
 file class WindowScopeStore
 {
-    private readonly ConditionalWeakTable<AppWindow, IServiceScope> _scopes = new();
+    private readonly ConditionalWeakTable<AppWindow, IServiceScope> _scopes = [];
 
     public void SetWindowScope(Window window, IServiceScope scope)
     {
