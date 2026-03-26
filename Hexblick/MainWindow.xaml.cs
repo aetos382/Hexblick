@@ -1,51 +1,41 @@
-﻿using Hexblick.Hosting;
+﻿using Windows.Foundation.Collections;
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
-using R3;
-
 namespace Hexblick;
 
-internal sealed partial class MainWindow :
-    Window,
-    IDisposable
+internal sealed partial class MainWindow
 {
     private MainWindowViewModel ViewModel { get; }
-    private readonly IWindowManager _windowManager;
-
-    private readonly CompositeDisposable _disposable = [];
 
     public MainWindow(
-        MainWindowViewModel viewModel,
-        IWindowManager windowManager)
+        MainWindowViewModel viewModel)
     {
         ArgumentNullException.ThrowIfNull(viewModel);
-        ArgumentNullException.ThrowIfNull(windowManager);
 
         this.InitializeComponent();
 
-        this._windowManager = windowManager;
         this.ViewModel = viewModel;
 
-        this.Closed += this.OnClosed;
+        this.TabView.TabItemsChanged += this.TabView_OnTabItemsChanged;
         this.TabView.TabCloseRequested += this.TabView_OnTabCloseRequested;
         this.ExitMenuItem.Click += this.ExitMenuItem_OnClick;
-        this.NewWindowMenuItem.Click += this.NewWindowMenuItem_Click;
-    private void NewWindowMenuItem_Click(object sender, RoutedEventArgs e)
+    }
+
+    private void TabView_OnTabItemsChanged(TabView sender, IVectorChangedEventArgs args)
     {
-        var newWindow = this._windowManager.Create<MainWindow>();
-        newWindow.Activate();
+        switch (args.CollectionChange)
+        {
+            case CollectionChange.ItemInserted:
+                sender.SelectedIndex = (int)args.Index;
+                break;
+        }
     }
 
     private void ExitMenuItem_OnClick(object sender, RoutedEventArgs e)
     {
         this.Close();
-    }
-
-    private void OnClosed(object sender, WindowEventArgs args)
-    {
-        this._disposable.Dispose();
     }
 
     private void TabView_OnTabCloseRequested(TabView sender, TabViewTabCloseRequestedEventArgs args)
@@ -54,10 +44,5 @@ internal sealed partial class MainWindow :
         {
             this.ViewModel.CloseTabCommand.Execute(item);
         }
-    }
-
-    public void Dispose()
-    {
-        this._disposable.Dispose();
     }
 }

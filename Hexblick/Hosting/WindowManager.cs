@@ -109,6 +109,14 @@ file class WindowScopeStore
     {
     }
 
+    ~WindowScopeStore()
+    {
+        foreach (var (_, scope) in this._scopes)
+        {
+            scope.Dispose();
+        }
+    }
+
     public static readonly WindowScopeStore Instance = new();
 }
 

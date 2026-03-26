@@ -14,10 +14,11 @@ var services = appBuilder.Services;
 
 services.UseWinApp<App>();
 services.AddSingleton<IWindowManager, WindowManager>();
+services.AddSingleton<ITabItemViewModelFactory, TabItemViewModelFactory>();
 
-services.AddScoped<MainWindow>();
-services.AddScoped<MainWindowViewModel>();
-services.AddScoped<ITabItemViewModelFactory, TabItemViewModelFactory>();
+services.AddTransient<MainWindow>();
+services.AddTransient<MainWindowViewModel>();
+services.AddTransient<TabItemViewModel>();
 
 using var host = appBuilder.Build();
 
