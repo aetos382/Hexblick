@@ -8,6 +8,9 @@ using Microsoft.UI.Xaml;
 
 namespace Hexblick;
 
+// public な App が依存しているので internal にできない
+#pragma warning disable CA1515
+
 public interface IWindowManager
 {
     TWindow Create<TWindow>() where TWindow : Window;
