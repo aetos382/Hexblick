@@ -29,6 +29,8 @@ public partial class App : Application
         this._windowManager = windowManager;
 
         this.InitializeComponent();
+
+        this.DispatcherShutdownMode = DispatcherShutdownMode.OnLastWindowClose;
     }
 
     /// <summary>
