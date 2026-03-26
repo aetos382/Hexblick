@@ -21,8 +21,6 @@ public partial class App : Application
     /// </summary>
     public App()
     {
-        // this.DispatcherShutdownMode = DispatcherShutdownMode.OnExplicitShutdown;
-
         this.InitializeComponent();
     }
 
