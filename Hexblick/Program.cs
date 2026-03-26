@@ -11,6 +11,8 @@ var appBuilder = Host.CreateApplicationBuilder(args);
 
 var services = appBuilder.Services;
 services.UseWinApp<App>();
+services.AddSingleton<IWindowManager, WindowManager>();
+services.AddTransient<MainWindow>();
 
 using var host = appBuilder.Build();
 

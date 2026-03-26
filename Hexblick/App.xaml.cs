@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI.Xaml;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -13,14 +14,20 @@ namespace Hexblick;
 /// </summary>
 public partial class App : Application
 {
+    private readonly IWindowManager _windowManager;
     private Window? _window;
 
     /// <summary>
     /// Initializes the singleton application object.  This is the first line of authored code
     /// executed, and as such is the logical equivalent of main() or WinMain().
     /// </summary>
-    public App()
+    public App(
+        IWindowManager windowManager)
     {
+        ArgumentNullException.ThrowIfNull(windowManager);
+
+        this._windowManager = windowManager;
+
         this.InitializeComponent();
     }
 
@@ -30,7 +37,7 @@ public partial class App : Application
     /// <param name="args">Details about the launch request and process.</param>
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
-        this._window = new MainWindow();
-        this._window.Activate();
+        var window = this._window = this._windowManager.Create<MainWindow>();
+        window.Activate();
     }
 }
