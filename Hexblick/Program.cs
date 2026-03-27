@@ -1,10 +1,14 @@
 ﻿using Hexblick;
 using Hexblick.Hosting;
+using Hexblick.ViewModels;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using WinRT;
+
+using MainWindowViewModel = Hexblick.ViewModels.MainWindowViewModel;
+using TabItemViewModel = Hexblick.ViewModels.TabItemViewModel;
 
 ComWrappersSupport.InitializeComWrappers();
 

@@ -5,6 +5,7 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:local="using:Hexblick"
+  xmlns:viewModels="using:Hexblick.ViewModels"
   mc:Ignorable="d"
   Title="Hexblick">
 
@@ -17,6 +18,7 @@
     <MenuBar>
       <MenuBarItem Title="File">
         <MenuFlyoutItem Text="New" Command="{x:Bind ViewModel.NewDocumentCommand}"/>
+        <MenuFlyoutItem Text="Open" Command="{x:Bind OpenFileCommand}"/>
         <MenuFlyoutItem Text="Close" x:Name="ExitMenuItem"/>
       </MenuBarItem>
     </MenuBar>
@@ -29,10 +31,10 @@
       TabItemsSource="{x:Bind ViewModel.TabItems}">
 
       <TabView.TabItemTemplate>
-        <DataTemplate x:DataType="local:TabItemViewModel">
+        <DataTemplate x:DataType="viewModels:TabItemViewModel">
           <TabViewItem IsClosable="true">
             <TabViewItem.HeaderTemplate>
-              <DataTemplate x:DataType="local:TabItemViewModel">
+              <DataTemplate x:DataType="viewModels:TabItemViewModel">
                 <StackPanel Orientation="Horizontal">
                   <TextBlock Text="{x:Bind Title.Value, Mode=OneWay}"/>
                   <TextBlock Text="*" Visibility="{x:Bind IsDirty.Value, Mode=OneWay}"/>

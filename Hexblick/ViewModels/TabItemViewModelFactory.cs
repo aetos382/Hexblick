@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Hexblick;
+namespace Hexblick.ViewModels;
 
 internal interface ITabItemViewModelFactory
 {

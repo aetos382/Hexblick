@@ -1,6 +1,6 @@
 ﻿using R3;
 
-namespace Hexblick;
+namespace Hexblick.ViewModels;
 
 internal sealed partial class TabItemViewModel :
     IDisposable
@@ -9,7 +9,7 @@ internal sealed partial class TabItemViewModel :
 
     public BindableReactiveProperty<bool> IsDirty { get; }
 
-    private readonly CompositeDisposable _disposable = new();
+    private readonly CompositeDisposable _disposable = [];
 
     public TabItemViewModel()
     {

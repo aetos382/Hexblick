@@ -1,8 +1,10 @@
-﻿using ObservableCollections;
+﻿using Hexblick.Models;
+
+using ObservableCollections;
 
 using R3;
 
-namespace Hexblick;
+namespace Hexblick.ViewModels;
 
 internal sealed partial class MainWindowViewModel :
     IDisposable
@@ -10,6 +12,8 @@ internal sealed partial class MainWindowViewModel :
     private readonly ITabItemViewModelFactory _tabItemViewModelFactory;
 
     public ReactiveCommand NewDocumentCommand { get; }
+
+    public ReactiveCommand<IReadOnlyList<FileInfo>> OpenFilesCommand { get; }
 
     public ReactiveCommand<TabItemViewModel> CloseTabCommand { get; }
 
@@ -26,18 +30,13 @@ internal sealed partial class MainWindowViewModel :
 
         this._tabItemViewModelFactory = tabItemViewModelFactory;
 
-        this.NewDocumentCommand = new ReactiveCommand()
+        this.NewDocumentCommand = new ReactiveCommand(_ => this.OnNewDocument())
             .AddTo(this._disposable);
 
-        this.NewDocumentCommand
-            .Subscribe(_ => this.OnNewDocument())
+        this.OpenFilesCommand = new ReactiveCommand<IReadOnlyList<FileInfo>>(this.OpenFilesAsync)
             .AddTo(this._disposable);
 
-        this.CloseTabCommand = new ReactiveCommand<TabItemViewModel>()
-            .AddTo(this._disposable);
-
-        this.CloseTabCommand
-            .Subscribe(this.OnCloseTab)
+        this.CloseTabCommand = new ReactiveCommand<TabItemViewModel>(this.OnCloseTab)
             .AddTo(this._disposable);
 
         this.TabItems = this._tabItems
@@ -48,6 +47,22 @@ internal sealed partial class MainWindowViewModel :
     private void OnNewDocument()
     {
         this._tabItems.Add(this._tabItemViewModelFactory.Create());
+    }
+
+    public async ValueTask OpenFilesAsync(
+        IReadOnlyList<FileInfo> files,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(files);
+
+        var modelFactory = new ModelFactory();
+
+        foreach (var file in files)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var model = await modelFactory.OpenFileAsync(file, cancellationToken);
+        }
     }
 
     private void OnCloseTab(TabItemViewModel item)
