@@ -13,11 +13,11 @@ internal sealed partial class MainWindowViewModel :
 
     public ReactiveCommand<TabItemViewModel> CloseTabCommand { get; }
 
-    private readonly ObservableList<TabItemViewModel> _tabItems = new();
+    private readonly ObservableList<TabItemViewModel> _tabItems = [];
 
     public NotifyCollectionChangedSynchronizedViewList<TabItemViewModel> TabItems { get; }
 
-    private readonly CompositeDisposable _disposable = new();
+    private readonly CompositeDisposable _disposable = [];
 
     public MainWindowViewModel(
         ITabItemViewModelFactory tabItemViewModelFactory)
