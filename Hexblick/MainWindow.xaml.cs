@@ -72,7 +72,7 @@ internal sealed partial class MainWindow :
 
     private void TabView_OnTabCloseRequested(TabView sender, TabViewTabCloseRequestedEventArgs args)
     {
-        if (args.Item is ViewModels.TabItemViewModel item)
+        if (args.Item is TabItemViewModel item)
         {
             this.ViewModel.CloseTabCommand.Execute(item);
         }
