@@ -18,9 +18,13 @@
     <MenuBar>
       <MenuBarItem x:Uid="MenuFile" AccessKey="F">
         <MenuFlyoutItem x:Uid="MenuFileNew" AccessKey="N" Command="{x:Bind ViewModel.NewDocumentCommand}"/>
-        <MenuFlyoutItem Text="Open" Command="{x:Bind OpenFileCommand}"/>
+        <MenuFlyoutItem x:Uid="MenuFileOpen" Command="{x:Bind OpenFileCommand}"/>
         <MenuFlyoutSeparator/>
-        <MenuFlyoutItem Text="Save"/>
+        <MenuFlyoutItem x:Uid="MenuFileSave" AccessKey="S" Command="{x:Bind ViewModel.SaveFileCommand}" CommandParameter="{x:Bind ViewModel.ActiveDocument.Value, Mode=OneWay}">
+          <MenuFlyoutItem.KeyboardAccelerators>
+            <KeyboardAccelerator Key="S" Modifiers="Control"/>
+          </MenuFlyoutItem.KeyboardAccelerators>
+        </MenuFlyoutItem>
         <MenuFlyoutItem Text="Save As"/>
         <MenuFlyoutItem Text="Save All"/>
         <MenuFlyoutSeparator/>

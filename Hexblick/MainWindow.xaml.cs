@@ -28,12 +28,18 @@ internal sealed partial class MainWindow :
 
         this.ViewModel = viewModel;
 
+        this.TabView.SelectionChanged += this.TabView_OnSelectionChanged;
         this.TabView.TabItemsChanged += this.TabView_OnTabItemsChanged;
         this.TabView.TabCloseRequested += this.TabView_OnTabCloseRequested;
         this.ExitMenuItem.Click += this.ExitMenuItem_OnClick;
 
         this.OpenFileCommand = new ReactiveCommand((_, cancellationToken) => this.OnFileOpenAsync(cancellationToken))
             .AddTo(this._disposables);
+    }
+
+    private void TabView_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        this.ViewModel.ActiveDocument.Value = this.TabView.SelectedItem as TabItemViewModel;
     }
 
     private void TabView_OnTabItemsChanged(TabView sender, IVectorChangedEventArgs args)

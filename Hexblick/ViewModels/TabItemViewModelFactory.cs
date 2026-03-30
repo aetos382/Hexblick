@@ -4,7 +4,7 @@ namespace Hexblick.ViewModels;
 
 internal interface ITabItemViewModelFactory
 {
-    TabItemViewModel Create();
+    TabItemViewModel Create(bool isNewDocument = true);
 }
 
 internal sealed class TabItemViewModelFactory :
@@ -21,8 +21,8 @@ internal sealed class TabItemViewModelFactory :
     }
 
     /// <inheritdoc />
-    public TabItemViewModel Create()
+    public TabItemViewModel Create(bool isNewDocument = true)
     {
-        return this._serviceProvider.GetRequiredService<TabItemViewModel>();
+        return ActivatorUtilities.CreateInstance<TabItemViewModel>(this._serviceProvider, isNewDocument);
     }
 }

@@ -15,11 +15,17 @@ internal sealed partial class MainWindowViewModel :
 
     public ReactiveCommand<IReadOnlyList<FileInfo>> OpenFilesCommand { get; }
 
+    public ReactiveCommand<TabItemViewModel> SaveFileCommand { get; }
+
+    public ReactiveProperty<TabItemViewModel?> ActiveDocument { get; }
+
     public ReactiveCommand<TabItemViewModel> CloseTabCommand { get; }
 
     private readonly ObservableList<TabItemViewModel> _tabItems = [];
 
     public NotifyCollectionChangedSynchronizedViewList<TabItemViewModel> TabItems { get; }
+
+    private readonly SerialDisposable _activeDocumentIsDirtySubscription = new();
 
     private readonly CompositeDisposable _disposable = [];
 
@@ -29,11 +35,23 @@ internal sealed partial class MainWindowViewModel :
         ArgumentNullException.ThrowIfNull(tabItemViewModelFactory);
 
         this._tabItemViewModelFactory = tabItemViewModelFactory;
+        this._activeDocumentIsDirtySubscription.AddTo(this._disposable);
 
         this.NewDocumentCommand = new ReactiveCommand(_ => this.OnNewDocument())
             .AddTo(this._disposable);
 
         this.OpenFilesCommand = new ReactiveCommand<IReadOnlyList<FileInfo>>(this.OpenFilesAsync)
+            .AddTo(this._disposable);
+
+        this.SaveFileCommand = new ReactiveCommand<TabItemViewModel>(this.OnSaveFileAsync)
+            .AddTo(this._disposable);
+
+        this.SaveFileCommand.ChangeCanExecute(false);
+
+        this.ActiveDocument = new ReactiveProperty<TabItemViewModel?>()
+            .AddTo(this._disposable);
+
+        this.ActiveDocument.Subscribe(this.OnActiveDocumentChanged)
             .AddTo(this._disposable);
 
         this.CloseTabCommand = new ReactiveCommand<TabItemViewModel>(this.OnCloseTab)
@@ -46,7 +64,7 @@ internal sealed partial class MainWindowViewModel :
 
     private void OnNewDocument()
     {
-        this._tabItems.Add(this._tabItemViewModelFactory.Create());
+        this._tabItems.Add(this._tabItemViewModelFactory.Create(isNewDocument: true));
     }
 
     public async ValueTask OpenFilesAsync(
@@ -62,7 +80,31 @@ internal sealed partial class MainWindowViewModel :
             cancellationToken.ThrowIfCancellationRequested();
 
             var model = await modelFactory.OpenFileAsync(file, cancellationToken);
+
+            var tabItem = this._tabItemViewModelFactory.Create(isNewDocument: model is not ExisingFileModel);
+
+            tabItem.Title.Value = file.Name;
+            this._tabItems.Add(tabItem);
         }
+    }
+
+    private async ValueTask OnSaveFileAsync(
+        TabItemViewModel viewModel,
+        CancellationToken cancellationToken)
+    {
+    }
+
+    private void OnActiveDocumentChanged(
+        TabItemViewModel? viewModel)
+    {
+        if (viewModel is null)
+        {
+            this.SaveFileCommand.ChangeCanExecute(false);
+            return;
+        }
+
+        this._activeDocumentIsDirtySubscription.Disposable = viewModel.IsDirty
+            .Subscribe(isDirty => this.SaveFileCommand.ChangeCanExecute(!viewModel.IsNewDocument && isDirty));
     }
 
     private void OnCloseTab(TabItemViewModel item)
