@@ -1,10 +1,12 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Hexblick.Models;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Hexblick.ViewModels;
 
 internal interface ITabItemViewModelFactory
 {
-    TabItemViewModel Create(bool isNewDocument = true);
+    TabItemViewModel Create(Model model);
 }
 
 internal sealed class TabItemViewModelFactory :
@@ -21,8 +23,10 @@ internal sealed class TabItemViewModelFactory :
     }
 
     /// <inheritdoc />
-    public TabItemViewModel Create(bool isNewDocument = true)
+    public TabItemViewModel Create(Model model)
     {
-        return ActivatorUtilities.CreateInstance<TabItemViewModel>(this._serviceProvider, isNewDocument);
+        ArgumentNullException.ThrowIfNull(model);
+
+        return ActivatorUtilities.CreateInstance<TabItemViewModel>(this._serviceProvider, model);
     }
 }

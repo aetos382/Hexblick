@@ -1,4 +1,5 @@
-﻿using Hexblick.Models;
+﻿using Hexblick.Localization;
+using Hexblick.Models;
 
 using ObservableCollections;
 
@@ -10,6 +11,7 @@ internal sealed partial class MainWindowViewModel :
     IDisposable
 {
     private readonly ITabItemViewModelFactory _tabItemViewModelFactory;
+    private readonly IStringLoader _stringLoader;
 
     public ReactiveCommand NewDocumentCommand { get; }
 
@@ -30,11 +32,14 @@ internal sealed partial class MainWindowViewModel :
     private readonly CompositeDisposable _disposable = [];
 
     public MainWindowViewModel(
-        ITabItemViewModelFactory tabItemViewModelFactory)
+        ITabItemViewModelFactory tabItemViewModelFactory,
+        IStringLoader stringLoader)
     {
         ArgumentNullException.ThrowIfNull(tabItemViewModelFactory);
 
         this._tabItemViewModelFactory = tabItemViewModelFactory;
+        this._stringLoader = stringLoader;
+
         this._activeDocumentIsDirtySubscription.AddTo(this._disposable);
 
         this.NewDocumentCommand = new ReactiveCommand(_ => this.OnNewDocument())
@@ -45,8 +50,6 @@ internal sealed partial class MainWindowViewModel :
 
         this.SaveFileCommand = new ReactiveCommand<TabItemViewModel>(this.OnSaveFileAsync)
             .AddTo(this._disposable);
-
-        this.SaveFileCommand.ChangeCanExecute(false);
 
         this.ActiveDocument = new ReactiveProperty<TabItemViewModel?>()
             .AddTo(this._disposable);
@@ -64,7 +67,10 @@ internal sealed partial class MainWindowViewModel :
 
     private void OnNewDocument()
     {
-        this._tabItems.Add(this._tabItemViewModelFactory.Create(isNewDocument: true));
+        this._tabItems.Add(
+            this._tabItemViewModelFactory.Create(
+                new NewFileModel(
+                    this._stringLoader.GetString("NewFileTitle"))));
     }
 
     public async ValueTask OpenFilesAsync(
@@ -81,7 +87,7 @@ internal sealed partial class MainWindowViewModel :
 
             var model = await modelFactory.OpenFileAsync(file, cancellationToken);
 
-            var tabItem = this._tabItemViewModelFactory.Create(isNewDocument: model is not ExisingFileModel);
+            var tabItem = this._tabItemViewModelFactory.Create(model);
 
             tabItem.Title.Value = file.Name;
             this._tabItems.Add(tabItem);

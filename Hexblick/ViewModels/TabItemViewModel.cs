@@ -1,10 +1,13 @@
-﻿using R3;
+﻿using Hexblick.Models;
+
+using R3;
 
 namespace Hexblick.ViewModels;
 
 internal sealed partial class TabItemViewModel :
     IDisposable
 {
+    private readonly Model _model;
     public BindableReactiveProperty<string> Title { get; }
 
     public BindableReactiveProperty<bool> IsDirty { get; }
@@ -14,10 +17,11 @@ internal sealed partial class TabItemViewModel :
     private readonly CompositeDisposable _disposable = [];
 
     public TabItemViewModel(
-        bool isNewDocument = true)
+        Model model)
     {
-        this.IsNewDocument = isNewDocument;
-        this.Title = new BindableReactiveProperty<string>("無題").AddTo(this._disposable);
+        this._model = model;
+        this.IsNewDocument = !model.IsPersisted;
+        this.Title = new BindableReactiveProperty<string>(model.Title).AddTo(this._disposable);
         this.IsDirty = new BindableReactiveProperty<bool>().AddTo(this._disposable);
     }
 

@@ -129,4 +129,7 @@
   <data name="MenuFileSave.Text" xml:space="preserve">
     <value>Save</value>
   </data>
+  <data name="NewFileTitle" xml:space="preserve">
+    <value>New File</value>
+  </data>
 </root>

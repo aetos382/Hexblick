@@ -129,4 +129,7 @@
   <data name="MenuFileSave.Text" xml:space="preserve">
     <value>上書き保存</value>
   </data>
+  <data name="NewFileTitle" xml:space="preserve">
+    <value>無題</value>
+  </data>
 </root>

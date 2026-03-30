@@ -1,5 +1,6 @@
 ﻿using Hexblick;
 using Hexblick.Hosting;
+using Hexblick.Localization;
 using Hexblick.ViewModels;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +24,8 @@ services.AddSingleton<ITabItemViewModelFactory, TabItemViewModelFactory>();
 services.AddTransient<MainWindow>();
 services.AddTransient<MainWindowViewModel>();
 services.AddTransient<TabItemViewModel>();
+
+services.AddSingleton<IStringLoader, ResourceLoaderStringLoader>();
 
 using var host = appBuilder.Build();
 

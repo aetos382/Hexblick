@@ -1,4 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="../ResourceGenerator/build/ResourceGenerator.props" />
+
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
@@ -49,6 +52,13 @@
     <PackageReference Include="R3Extensions.WinUI3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ResourceGenerator\ResourceGenerator.csproj">
+      <OutputItemType>analyzer</OutputItemType>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+
   <!--
     Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution
     Explorer "Package and Publish" context menu entry to be enabled for this project even if
@@ -65,4 +75,7 @@
     <PublishTrimmed Condition="'$(Configuration)' == 'Debug'">false</PublishTrimmed>
     <PublishTrimmed Condition="'$(Configuration)' != 'Debug'">true</PublishTrimmed>
   </PropertyGroup>
+
+  <Import Project="../ResourceGenerator/build/ResourceGenerator.targets" />
+  
 </Project>
