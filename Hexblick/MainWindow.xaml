@@ -16,8 +16,8 @@
   <StackPanel>
 
     <MenuBar>
-      <MenuBarItem x:Uid="MenuFile">
-        <MenuFlyoutItem x:Uid="MenuFileNew" Command="{x:Bind ViewModel.NewDocumentCommand}"/>
+      <MenuBarItem x:Uid="MenuFile" AccessKey="F">
+        <MenuFlyoutItem x:Uid="MenuFileNew" AccessKey="N" Command="{x:Bind ViewModel.NewDocumentCommand}"/>
         <MenuFlyoutItem Text="Open" Command="{x:Bind OpenFileCommand}"/>
         <MenuFlyoutSeparator/>
         <MenuFlyoutItem Text="Save"/>
