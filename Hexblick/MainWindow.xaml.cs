@@ -15,6 +15,8 @@ internal sealed partial class MainWindow :
 {
     private MainWindowViewModel ViewModel { get; }
 
+    private ReactiveCommand<TabViewTabCloseRequestedEventArgs> TabCloseCommand { get; }
+
     private ReactiveCommand OpenFileCommand { get; }
 
     private readonly CompositeDisposable _disposables = [];
@@ -34,6 +36,9 @@ internal sealed partial class MainWindow :
         this.ExitMenuItem.Click += this.ExitMenuItem_OnClick;
 
         this.OpenFileCommand = new ReactiveCommand((_, cancellationToken) => this.OnFileOpenAsync(cancellationToken))
+            .AddTo(this._disposables);
+
+        this.TabCloseCommand = new ReactiveCommand<TabViewTabCloseRequestedEventArgs>(this.OnTabCloseRequested)
             .AddTo(this._disposables);
     }
 
@@ -82,6 +87,10 @@ internal sealed partial class MainWindow :
         {
             this.ViewModel.CloseTabCommand.Execute(item);
         }
+    }
+
+    private void OnTabCloseRequested(TabViewTabCloseRequestedEventArgs args)
+    {
     }
 
     /// <inheritdoc />

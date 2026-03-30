@@ -4,6 +4,7 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:i="using:Microsoft.Xaml.Interactivity"
   xmlns:local="using:Hexblick"
   xmlns:viewModels="using:Hexblick.ViewModels"
   mc:Ignorable="d"
@@ -48,6 +49,12 @@
       VerticalAlignment="Stretch"
       IsAddTabButtonVisible="False"
       TabItemsSource="{x:Bind ViewModel.TabItems}">
+
+      <i:Interaction.Behaviors>
+        <i:EventTriggerBehavior EventName="TabCloseRequested">
+          <i:InvokeCommandAction Command="{x:Bind TabCloseCommand}"/>
+        </i:EventTriggerBehavior>
+      </i:Interaction.Behaviors>
 
       <TabView.TabItemTemplate>
         <DataTemplate x:DataType="viewModels:TabItemViewModel">
