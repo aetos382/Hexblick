@@ -6,19 +6,21 @@ using Microsoft.Windows.Storage.Pickers;
 
 using R3;
 
+using Hexblick.ViewModels;
+
 namespace Hexblick;
 
 internal sealed partial class MainWindow :
     IDisposable
 {
-    private ViewModels.MainWindowViewModel ViewModel { get; }
+    private MainWindowViewModel ViewModel { get; }
 
     private ReactiveCommand OpenFileCommand { get; }
 
     private readonly CompositeDisposable _disposables = [];
 
     public MainWindow(
-        ViewModels.MainWindowViewModel viewModel)
+        MainWindowViewModel viewModel)
     {
         ArgumentNullException.ThrowIfNull(viewModel);
 
@@ -70,7 +72,7 @@ internal sealed partial class MainWindow :
 
     private void TabView_OnTabCloseRequested(TabView sender, TabViewTabCloseRequestedEventArgs args)
     {
-        if (args.Item is ViewModels.TabItemViewModel item)
+        if (args.Item is TabItemViewModel item)
         {
             this.ViewModel.CloseTabCommand.Execute(item);
         }
