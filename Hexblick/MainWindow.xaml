@@ -16,10 +16,25 @@
   <StackPanel>
 
     <MenuBar>
-      <MenuBarItem Title="File">
-        <MenuFlyoutItem Text="New" Command="{x:Bind ViewModel.NewDocumentCommand}"/>
+      <MenuBarItem x:Uid="MenuFile">
+        <MenuFlyoutItem x:Uid="MenuFileNew" Command="{x:Bind ViewModel.NewDocumentCommand}"/>
         <MenuFlyoutItem Text="Open" Command="{x:Bind OpenFileCommand}"/>
-        <MenuFlyoutItem Text="Close" x:Name="ExitMenuItem"/>
+        <MenuFlyoutSeparator/>
+        <MenuFlyoutItem Text="Save"/>
+        <MenuFlyoutItem Text="Save As"/>
+        <MenuFlyoutItem Text="Save All"/>
+        <MenuFlyoutSeparator/>
+        <MenuFlyoutItem Text="Recently used files"/>
+        <MenuFlyoutSeparator/>
+        <MenuFlyoutItem Text="Close"/>
+        <MenuFlyoutItem Text="Close All"/>
+        <MenuFlyoutItem Text="Close Unmodified"/>
+        <MenuFlyoutSeparator/>
+        <MenuFlyoutItem Text="Exit" x:Name="ExitMenuItem">
+          <MenuFlyoutItem.KeyboardAccelerators>
+            <KeyboardAccelerator Key="F4" Modifiers="Menu"/>
+          </MenuFlyoutItem.KeyboardAccelerators>
+        </MenuFlyoutItem>
       </MenuBarItem>
     </MenuBar>
 
