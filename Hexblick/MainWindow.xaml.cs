@@ -1,8 +1,7 @@
-﻿using Windows.Foundation.Collections;
-
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.Storage.Pickers;
+
+using Windows.Foundation.Collections;
 
 using R3;
 
@@ -15,9 +14,17 @@ internal sealed partial class MainWindow :
 {
     private MainWindowViewModel ViewModel { get; }
 
-    private ReactiveCommand<TabViewTabCloseRequestedEventArgs> TabCloseCommand { get; }
+    private ReactiveCommand<TabViewTabCloseRequestedEventArgs> TabViewTabCloseCommand { get; }
+
+    private ReactiveCommand<IVectorChangedEventArgs> TabViewTabItemsChangedCommand { get; }
+
+    private ReactiveCommand<SelectionChangedEventArgs> TabViewSelectionChangedCommand { get; }
 
     private ReactiveCommand OpenFileCommand { get; }
+
+    private ReactiveCommand ExitCommand { get; }
+
+    private readonly SerialDisposable _activeDocumentSubscription = new();
 
     private readonly CompositeDisposable _disposables = [];
 
@@ -30,31 +37,25 @@ internal sealed partial class MainWindow :
 
         this.ViewModel = viewModel;
 
-        this.TabView.SelectionChanged += this.TabView_OnSelectionChanged;
-        this.TabView.TabItemsChanged += this.TabView_OnTabItemsChanged;
-        this.TabView.TabCloseRequested += this.TabView_OnTabCloseRequested;
-        this.ExitMenuItem.Click += this.ExitMenuItem_OnClick;
+        this._activeDocumentSubscription.AddTo(this._disposables);
 
         this.OpenFileCommand = new ReactiveCommand((_, cancellationToken) => this.OnFileOpenAsync(cancellationToken))
             .AddTo(this._disposables);
 
-        this.TabCloseCommand = new ReactiveCommand<TabViewTabCloseRequestedEventArgs>(this.OnTabCloseRequested)
+        this.TabViewTabItemsChangedCommand = new ReactiveCommand<IVectorChangedEventArgs>(this.OnTabViewTabItemsChanged)
             .AddTo(this._disposables);
-    }
 
-    private void TabView_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        this.ViewModel.ActiveDocument.Value = this.TabView.SelectedItem as TabItemViewModel;
-    }
+        this.TabViewSelectionChangedCommand = new ReactiveCommand<SelectionChangedEventArgs>(this.OnTabViewSelectionChanged)
+            .AddTo(this._disposables);
 
-    private void TabView_OnTabItemsChanged(TabView sender, IVectorChangedEventArgs args)
-    {
-        switch (args.CollectionChange)
-        {
-            case CollectionChange.ItemInserted:
-                sender.SelectedIndex = (int)args.Index;
-                break;
-        }
+        this.TabViewTabCloseCommand = new ReactiveCommand<TabViewTabCloseRequestedEventArgs>(this.OnTabViewTabCloseRequested)
+            .AddTo(this._disposables);
+
+        this.ExitCommand = new ReactiveCommand(_ => this.OnExit())
+            .AddTo(this._disposables);
+
+        this.ViewModel.ActiveDocument.Subscribe(this.OnActiveDocumentChanged)
+            .AddTo(this._disposables);
     }
 
     private async ValueTask OnFileOpenAsync(CancellationToken cancellationToken)
@@ -76,12 +77,39 @@ internal sealed partial class MainWindow :
         await this.ViewModel.OpenFilesAsync(files, cancellationToken);
     }
 
-    private void ExitMenuItem_OnClick(object sender, RoutedEventArgs e)
+    private void OnActiveDocumentChanged(TabItemViewModel? viewModel)
     {
-        this.Close();
+        if (viewModel is null)
+        {
+            this.SetTitle(null, false);
+            return;
+        }
+
+        this._activeDocumentSubscription.Disposable = Observable
+            .CombineLatest(
+                viewModel.Title,
+                viewModel.IsDirty,
+                static (title, isDirty) => (Title: title, IsDirty: isDirty))
+            .Subscribe(args => this.SetTitle(args.Title, args.IsDirty));
     }
 
-    private void TabView_OnTabCloseRequested(TabView sender, TabViewTabCloseRequestedEventArgs args)
+    private void OnTabViewSelectionChanged(SelectionChangedEventArgs e)
+    {
+        var tabViewModel = this.TabView.SelectedItem as TabItemViewModel;
+        this.ViewModel.ActiveDocument.Value = tabViewModel;
+    }
+
+    private void OnTabViewTabItemsChanged(IVectorChangedEventArgs args)
+    {
+        switch (args.CollectionChange)
+        {
+            case CollectionChange.ItemInserted:
+                this.TabView.SelectedIndex = (int)args.Index;
+                break;
+        }
+    }
+
+    private void OnTabViewTabCloseRequested(TabViewTabCloseRequestedEventArgs args)
     {
         if (args.Item is TabItemViewModel item)
         {
@@ -89,8 +117,25 @@ internal sealed partial class MainWindow :
         }
     }
 
-    private void OnTabCloseRequested(TabViewTabCloseRequestedEventArgs args)
+    private void SetTitle(string? activeDocumentTitle, bool isDirty)
     {
+        if (string.IsNullOrEmpty(activeDocumentTitle))
+        {
+            this.Title = "Hexblick";
+        }
+        else if (!isDirty)
+        {
+            this.Title = $"Hexblick - {activeDocumentTitle}";
+        }
+        else
+        {
+            this.Title = $"Hexblick - {activeDocumentTitle} *";
+        }
+    }
+
+    private void OnExit()
+    {
+        this.Close();
     }
 
     /// <inheritdoc />

@@ -35,7 +35,7 @@
         <MenuFlyoutItem Text="Close All"/>
         <MenuFlyoutItem Text="Close Unmodified"/>
         <MenuFlyoutSeparator/>
-        <MenuFlyoutItem Text="Exit" x:Name="ExitMenuItem">
+        <MenuFlyoutItem Text="Exit" Command="{x:Bind ExitCommand}">
           <MenuFlyoutItem.KeyboardAccelerators>
             <KeyboardAccelerator Key="F4" Modifiers="Menu"/>
           </MenuFlyoutItem.KeyboardAccelerators>
@@ -51,8 +51,14 @@
       TabItemsSource="{x:Bind ViewModel.TabItems}">
 
       <i:Interaction.Behaviors>
+        <i:EventTriggerBehavior EventName="TabItemsChanged">
+          <i:InvokeCommandAction Command="{x:Bind TabViewTabItemsChangedCommand}"/>
+        </i:EventTriggerBehavior>
+        <i:EventTriggerBehavior EventName="SelectionChanged">
+          <i:InvokeCommandAction Command="{x:Bind TabViewSelectionChangedCommand}"/>
+        </i:EventTriggerBehavior>
         <i:EventTriggerBehavior EventName="TabCloseRequested">
-          <i:InvokeCommandAction Command="{x:Bind TabCloseCommand}"/>
+          <i:InvokeCommandAction Command="{x:Bind TabViewTabCloseCommand}"/>
         </i:EventTriggerBehavior>
       </i:Interaction.Behaviors>
 
@@ -63,7 +69,7 @@
               <DataTemplate x:DataType="viewModels:TabItemViewModel">
                 <StackPanel Orientation="Horizontal">
                   <TextBlock Text="{x:Bind Title.Value, Mode=OneWay}"/>
-                  <TextBlock Text="*" Visibility="{x:Bind IsDirty.Value, Mode=OneWay}"/>
+                  <TextBlock Text=" *" Visibility="{x:Bind IsDirty.Value, Mode=OneWay}"/>
                 </StackPanel>
               </DataTemplate>
             </TabViewItem.HeaderTemplate>
