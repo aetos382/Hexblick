@@ -17,15 +17,15 @@ internal sealed partial class MainWindowViewModel :
 
     public ReactiveCommand<IReadOnlyList<FileInfo>> OpenFilesCommand { get; }
 
-    public ReactiveCommand<TabItemViewModel> SaveFileCommand { get; }
+    public ReactiveCommand<EditorControlViewModel> SaveFileCommand { get; }
 
-    public ReactiveProperty<TabItemViewModel?> ActiveDocument { get; }
+    public ReactiveProperty<EditorControlViewModel?> ActiveDocument { get; }
 
-    public ReactiveCommand<TabItemViewModel> CloseTabCommand { get; }
+    public ReactiveCommand<EditorControlViewModel> CloseTabCommand { get; }
 
-    private readonly ObservableList<TabItemViewModel> _tabItems = [];
+    private readonly ObservableList<EditorControlViewModel> _tabItems = [];
 
-    public NotifyCollectionChangedSynchronizedViewList<TabItemViewModel> TabItems { get; }
+    public NotifyCollectionChangedSynchronizedViewList<EditorControlViewModel> TabItems { get; }
 
     private readonly SerialDisposable _activeDocumentIsDirtySubscription = new();
 
@@ -48,16 +48,16 @@ internal sealed partial class MainWindowViewModel :
         this.OpenFilesCommand = new ReactiveCommand<IReadOnlyList<FileInfo>>(this.OpenFilesAsync)
             .AddTo(this._disposable);
 
-        this.SaveFileCommand = new ReactiveCommand<TabItemViewModel>(this.OnSaveFileAsync)
+        this.SaveFileCommand = new ReactiveCommand<EditorControlViewModel>(this.OnSaveFileAsync)
             .AddTo(this._disposable);
 
-        this.ActiveDocument = new ReactiveProperty<TabItemViewModel?>()
+        this.ActiveDocument = new ReactiveProperty<EditorControlViewModel?>()
             .AddTo(this._disposable);
 
         this.ActiveDocument.Subscribe(this.OnActiveDocumentChanged)
             .AddTo(this._disposable);
 
-        this.CloseTabCommand = new ReactiveCommand<TabItemViewModel>(this.OnCloseTab)
+        this.CloseTabCommand = new ReactiveCommand<EditorControlViewModel>(this.OnCloseTab)
             .AddTo(this._disposable);
 
         this.TabItems = this._tabItems
@@ -95,13 +95,13 @@ internal sealed partial class MainWindowViewModel :
     }
 
     private async ValueTask OnSaveFileAsync(
-        TabItemViewModel viewModel,
+        EditorControlViewModel viewModel,
         CancellationToken cancellationToken)
     {
     }
 
     private void OnActiveDocumentChanged(
-        TabItemViewModel? viewModel)
+        EditorControlViewModel? viewModel)
     {
         if (viewModel is null)
         {
@@ -113,7 +113,7 @@ internal sealed partial class MainWindowViewModel :
             .Subscribe(isDirty => this.SaveFileCommand.ChangeCanExecute(!viewModel.IsNewDocument && isDirty));
     }
 
-    private void OnCloseTab(TabItemViewModel item)
+    private void OnCloseTab(EditorControlViewModel item)
     {
         if (this.TabItems.Remove(item))
         {

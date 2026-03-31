@@ -77,7 +77,7 @@ internal sealed partial class MainWindow :
         await this.ViewModel.OpenFilesAsync(files, cancellationToken);
     }
 
-    private void OnActiveDocumentChanged(TabItemViewModel? viewModel)
+    private void OnActiveDocumentChanged(EditorControlViewModel? viewModel)
     {
         if (viewModel is null)
         {
@@ -95,7 +95,7 @@ internal sealed partial class MainWindow :
 
     private void OnTabViewSelectionChanged(SelectionChangedEventArgs e)
     {
-        var tabViewModel = this.TabView.SelectedItem as TabItemViewModel;
+        var tabViewModel = this.TabView.SelectedItem as EditorControlViewModel;
         this.ViewModel.ActiveDocument.Value = tabViewModel;
     }
 
@@ -111,7 +111,7 @@ internal sealed partial class MainWindow :
 
     private void OnTabViewTabCloseRequested(TabViewTabCloseRequestedEventArgs args)
     {
-        if (args.Item is TabItemViewModel item)
+        if (args.Item is EditorControlViewModel item)
         {
             this.ViewModel.CloseTabCommand.Execute(item);
         }

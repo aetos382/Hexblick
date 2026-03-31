@@ -7,7 +7,15 @@
     <GlobalPackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="5.3.0" />
   </ItemGroup>
   <ItemGroup>
+    <PackageVersion Include="CommunityToolkit.HighPerformance" Version="8.4.2" />
+    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Animations" Version="8.2.251219" />
     <PackageVersion Include="CommunityToolkit.WinUI.Behaviors" Version="8.2.251219" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.251219" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.251219" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Converters" Version="8.2.251219" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Helpers" Version="8.2.251219" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Triggers" Version="8.2.251219" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.3.0" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.5" />
     <PackageVersion Include="Microsoft.Graphics.Win2D" Version="1.4.0" />

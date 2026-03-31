@@ -63,10 +63,10 @@
       </i:Interaction.Behaviors>
 
       <TabView.TabItemTemplate>
-        <DataTemplate x:DataType="viewModels:TabItemViewModel">
+        <DataTemplate x:DataType="viewModels:EditorControlViewModel">
           <TabViewItem IsClosable="true">
             <TabViewItem.HeaderTemplate>
-              <DataTemplate x:DataType="viewModels:TabItemViewModel">
+              <DataTemplate x:DataType="viewModels:EditorControlViewModel">
                 <StackPanel Orientation="Horizontal">
                   <TextBlock Text="{x:Bind Title.Value, Mode=OneWay}"/>
                   <TextBlock Text=" *" Visibility="{x:Bind IsDirty.Value, Mode=OneWay}"/>
@@ -74,10 +74,7 @@
               </DataTemplate>
             </TabViewItem.HeaderTemplate>
             <TabViewItem.Content>
-              <StackPanel>
-                <TextBox Text="{x:Bind Title.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <CheckBox Content="IsDirty" IsChecked="{x:Bind IsDirty.Value, Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-              </StackPanel>
+              <local:EditorControl ViewModel="{x:Bind}"/>
             </TabViewItem.Content>
           </TabViewItem>
         </DataTemplate>

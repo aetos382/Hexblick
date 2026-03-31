@@ -6,7 +6,7 @@ namespace Hexblick.ViewModels;
 
 internal interface ITabItemViewModelFactory
 {
-    TabItemViewModel Create(Model model);
+    EditorControlViewModel Create(Model model);
 }
 
 internal sealed class TabItemViewModelFactory :
@@ -23,10 +23,10 @@ internal sealed class TabItemViewModelFactory :
     }
 
     /// <inheritdoc />
-    public TabItemViewModel Create(Model model)
+    public EditorControlViewModel Create(Model model)
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        return ActivatorUtilities.CreateInstance<TabItemViewModel>(this._serviceProvider, model);
+        return ActivatorUtilities.CreateInstance<EditorControlViewModel>(this._serviceProvider, model);
     }
 }

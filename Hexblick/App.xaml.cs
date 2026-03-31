@@ -15,6 +15,8 @@ namespace Hexblick;
 /// </summary>
 public partial class App
 {
+    public IServiceProvider Services { get; }
+
     private readonly IWindowManager _windowManager;
 
     /// <summary>
@@ -22,10 +24,13 @@ public partial class App
     /// executed, and as such is the logical equivalent of main() or WinMain().
     /// </summary>
     public App(
+        IServiceProvider serviceProvider,
         IWindowManager windowManager)
     {
+        ArgumentNullException.ThrowIfNull(serviceProvider);
         ArgumentNullException.ThrowIfNull(windowManager);
 
+        this.Services = serviceProvider;
         this._windowManager = windowManager;
 
         this.InitializeComponent();

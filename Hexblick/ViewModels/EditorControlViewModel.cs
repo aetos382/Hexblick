@@ -4,7 +4,7 @@ using R3;
 
 namespace Hexblick.ViewModels;
 
-internal sealed partial class TabItemViewModel :
+internal sealed partial class EditorControlViewModel :
     IDisposable
 {
     private readonly Model _model;
@@ -16,7 +16,7 @@ internal sealed partial class TabItemViewModel :
 
     private readonly CompositeDisposable _disposable = [];
 
-    public TabItemViewModel(
+    public EditorControlViewModel(
         Model model)
     {
         this._model = model;

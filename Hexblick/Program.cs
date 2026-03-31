@@ -9,7 +9,7 @@ using Microsoft.Extensions.Hosting;
 using WinRT;
 
 using MainWindowViewModel = Hexblick.ViewModels.MainWindowViewModel;
-using TabItemViewModel = Hexblick.ViewModels.TabItemViewModel;
+using EditorControlViewModel = Hexblick.ViewModels.EditorControlViewModel;
 
 ComWrappersSupport.InitializeComWrappers();
 
@@ -23,7 +23,7 @@ services.AddSingleton<ITabItemViewModelFactory, TabItemViewModelFactory>();
 
 services.AddTransient<MainWindow>();
 services.AddTransient<MainWindowViewModel>();
-services.AddTransient<TabItemViewModel>();
+services.AddTransient<EditorControlViewModel>();
 
 services.AddSingleton<IStringLoader, ResourceLoaderStringLoader>();
 
