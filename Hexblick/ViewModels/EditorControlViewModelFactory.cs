@@ -4,17 +4,17 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Hexblick.ViewModels;
 
-internal interface ITabItemViewModelFactory
+internal interface IEditorControlViewModelFactory
 {
     EditorControlViewModel Create(Model model);
 }
 
-internal sealed class TabItemViewModelFactory :
-    ITabItemViewModelFactory
+internal sealed class EditorControlViewModelFactory :
+    IEditorControlViewModelFactory
 {
     private readonly IServiceProvider _serviceProvider;
 
-    public TabItemViewModelFactory(
+    public EditorControlViewModelFactory(
         IServiceProvider serviceProvider)
     {
         ArgumentNullException.ThrowIfNull(serviceProvider);

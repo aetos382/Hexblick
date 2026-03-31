@@ -113,7 +113,7 @@ internal sealed partial class MainWindow :
     {
         if (args.Item is EditorControlViewModel item)
         {
-            this.ViewModel.CloseTabCommand.Execute(item);
+            this.ViewModel.CloseEditorCommand.Execute(item);
         }
     }
 

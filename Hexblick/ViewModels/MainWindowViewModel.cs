@@ -10,7 +10,7 @@ namespace Hexblick.ViewModels;
 internal sealed partial class MainWindowViewModel :
     IDisposable
 {
-    private readonly ITabItemViewModelFactory _tabItemViewModelFactory;
+    private readonly IEditorControlViewModelFactory _editorControlViewModelFactory;
     private readonly IStringLoader _stringLoader;
 
     public ReactiveCommand NewDocumentCommand { get; }
@@ -21,23 +21,23 @@ internal sealed partial class MainWindowViewModel :
 
     public ReactiveProperty<EditorControlViewModel?> ActiveDocument { get; }
 
-    public ReactiveCommand<EditorControlViewModel> CloseTabCommand { get; }
+    public ReactiveCommand<EditorControlViewModel> CloseEditorCommand { get; }
 
-    private readonly ObservableList<EditorControlViewModel> _tabItems = [];
+    private readonly ObservableList<EditorControlViewModel> _editorViewModels = [];
 
-    public NotifyCollectionChangedSynchronizedViewList<EditorControlViewModel> TabItems { get; }
+    public NotifyCollectionChangedSynchronizedViewList<EditorControlViewModel> EditorViewModels { get; }
 
     private readonly SerialDisposable _activeDocumentIsDirtySubscription = new();
 
     private readonly CompositeDisposable _disposable = [];
 
     public MainWindowViewModel(
-        ITabItemViewModelFactory tabItemViewModelFactory,
+        IEditorControlViewModelFactory tabItemViewModelFactory,
         IStringLoader stringLoader)
     {
         ArgumentNullException.ThrowIfNull(tabItemViewModelFactory);
 
-        this._tabItemViewModelFactory = tabItemViewModelFactory;
+        this._editorControlViewModelFactory = tabItemViewModelFactory;
         this._stringLoader = stringLoader;
 
         this._activeDocumentIsDirtySubscription.AddTo(this._disposable);
@@ -57,18 +57,18 @@ internal sealed partial class MainWindowViewModel :
         this.ActiveDocument.Subscribe(this.OnActiveDocumentChanged)
             .AddTo(this._disposable);
 
-        this.CloseTabCommand = new ReactiveCommand<EditorControlViewModel>(this.OnCloseTab)
+        this.CloseEditorCommand = new ReactiveCommand<EditorControlViewModel>(this.OnCloseDocument)
             .AddTo(this._disposable);
 
-        this.TabItems = this._tabItems
+        this.EditorViewModels = this._editorViewModels
             .ToNotifyCollectionChangedSlim()
             .AddTo(this._disposable);
     }
 
     private void OnNewDocument()
     {
-        this._tabItems.Add(
-            this._tabItemViewModelFactory.Create(
+        this._editorViewModels.Add(
+            this._editorControlViewModelFactory.Create(
                 new NewFileModel(
                     this._stringLoader.GetString("NewFileTitle"))));
     }
@@ -87,10 +87,10 @@ internal sealed partial class MainWindowViewModel :
 
             var model = await modelFactory.OpenFileAsync(file, cancellationToken);
 
-            var tabItem = this._tabItemViewModelFactory.Create(model);
+            var editorViewModel = this._editorControlViewModelFactory.Create(model);
 
-            tabItem.Title.Value = file.Name;
-            this._tabItems.Add(tabItem);
+            editorViewModel.Title.Value = file.Name;
+            this._editorViewModels.Add(editorViewModel);
         }
     }
 
@@ -113,9 +113,9 @@ internal sealed partial class MainWindowViewModel :
             .Subscribe(isDirty => this.SaveFileCommand.ChangeCanExecute(!viewModel.IsNewDocument && isDirty));
     }
 
-    private void OnCloseTab(EditorControlViewModel item)
+    private void OnCloseDocument(EditorControlViewModel item)
     {
-        if (this.TabItems.Remove(item))
+        if (this.EditorViewModels.Remove(item))
         {
             item.Dispose();
         }
@@ -124,9 +124,9 @@ internal sealed partial class MainWindowViewModel :
     /// <inheritdoc />
     public void Dispose()
     {
-        foreach (var tabItem in this._tabItems)
+        foreach (var editorViewModel in this._editorViewModels)
         {
-            tabItem.Dispose();
+            editorViewModel.Dispose();
         }
 
         this._disposable.Dispose();
