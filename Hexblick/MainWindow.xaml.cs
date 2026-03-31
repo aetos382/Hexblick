@@ -85,12 +85,12 @@ internal sealed partial class MainWindow :
             return;
         }
 
-        this._activeDocumentSubscription.Disposable = Observable
+        this._activeDocumentSubscription.Disposable = viewModel.Title
             .CombineLatest(
-                viewModel.Title,
                 viewModel.IsDirty,
                 static (title, isDirty) => (Title: title, IsDirty: isDirty))
-            .Subscribe(args => this.SetTitle(args.Title, args.IsDirty));
+            .Subscribe(
+                args => this.SetTitle(args.Title, args.IsDirty));
     }
 
     private void OnTabViewSelectionChanged(SelectionChangedEventArgs e)
