@@ -13,10 +13,10 @@ namespace Hexblick;
 /// <summary>
 /// Provides application-specific behavior to supplement the default Application class.
 /// </summary>
-public partial class App
+public sealed partial class App :
+    IServiceProvider
 {
-    public IServiceProvider Services { get; }
-
+    private readonly IServiceProvider _serviceProvider;
     private readonly IWindowManager _windowManager;
 
     /// <summary>
@@ -30,7 +30,7 @@ public partial class App
         ArgumentNullException.ThrowIfNull(serviceProvider);
         ArgumentNullException.ThrowIfNull(windowManager);
 
-        this.Services = serviceProvider;
+        this._serviceProvider = serviceProvider;
         this._windowManager = windowManager;
 
         this.InitializeComponent();
@@ -46,5 +46,11 @@ public partial class App
     {
         var window = this._windowManager.Create<MainWindow>();
         window.Activate();
+    }
+
+    /// <inheritdoc />
+    object? IServiceProvider.GetService(Type serviceType)
+    {
+        return this._serviceProvider.GetService(serviceType);
     }
 }

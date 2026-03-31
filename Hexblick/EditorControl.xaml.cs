@@ -14,8 +14,17 @@ internal sealed partial class EditorControl :
 
     public EditorControlViewModel ViewModel
     {
-        get => (EditorControlViewModel)this.GetValue(ViewModelProperty);
-        set => this.SetValue(ViewModelProperty, value);
+        get
+        {
+            return (EditorControlViewModel)this.GetValue(ViewModelProperty);
+        }
+
+        set
+        {
+            ArgumentNullException.ThrowIfNull(value);
+
+            this.SetValue(ViewModelProperty, value);
+        }
     }
 
     public static readonly DependencyProperty ViewModelProperty =
@@ -23,14 +32,10 @@ internal sealed partial class EditorControl :
             nameof(ViewModel),
             typeof(EditorControlViewModel),
             typeof(EditorControl),
-            new PropertyMetadata(null, static (d, p) =>
-            {
-                ArgumentNullException.ThrowIfNull(p.NewValue, nameof(ViewModel));
-            }));
+            PropertyMetadata.Create(null));
 
     /// <inheritdoc />
     public void Dispose()
     {
-        this.ViewModel.Dispose();
     }
 }

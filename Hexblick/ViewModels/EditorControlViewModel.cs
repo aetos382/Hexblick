@@ -8,6 +8,7 @@ internal sealed partial class EditorControlViewModel :
     IDisposable
 {
     private readonly Model _model;
+
     public BindableReactiveProperty<string> Title { get; }
 
     public BindableReactiveProperty<bool> IsDirty { get; }
