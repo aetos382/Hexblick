@@ -32,7 +32,9 @@ internal sealed partial class EditorControl :
             nameof(ViewModel),
             typeof(EditorControlViewModel),
             typeof(EditorControl),
-            PropertyMetadata.Create(null));
+            PropertyMetadata.Create(
+                static () => null,
+                static (d, p) => { }));
 
     /// <inheritdoc />
     public void Dispose()
