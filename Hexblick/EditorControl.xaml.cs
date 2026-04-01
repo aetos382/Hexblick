@@ -1,6 +1,8 @@
-﻿using Hexblick.ViewModels;
+﻿using System;
 
 using Microsoft.UI.Xaml;
+
+using Hexblick.ViewModels;
 
 namespace Hexblick;
 

@@ -1,4 +1,6 @@
-﻿using Microsoft.UI.Xaml;
+﻿using System;
+
+using Microsoft.UI.Xaml;
 
 namespace Hexblick.Extensions;
 

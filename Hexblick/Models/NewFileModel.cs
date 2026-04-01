@@ -1,4 +1,6 @@
-﻿namespace Hexblick.Models;
+﻿using System;
+
+namespace Hexblick.Models;
 
 internal sealed partial class NewFileModel :
     Model

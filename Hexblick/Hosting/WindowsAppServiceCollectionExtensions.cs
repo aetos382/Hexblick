@@ -1,8 +1,10 @@
-﻿using Hexblick.Hosting;
+﻿using System;
 
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
+
+using Hexblick.Hosting;
 
 #pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection;
@@ -10,7 +12,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 internal static class WindowsAppServiceCollectionExtensions
 {
-    extension (IServiceCollection services)
+    extension(IServiceCollection services)
     {
         public IServiceCollection UseWinApp<TApp>()
             where TApp : Application

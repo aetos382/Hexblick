@@ -25,7 +25,7 @@ services.AddTransient<MainWindow>();
 services.AddTransient<MainWindowViewModel>();
 services.AddTransient<EditorControlViewModel>();
 
-services.AddSingleton<IStringLoader, ResourceLoaderStringLoader>();
+services.AddSingleton<IStringLoader, ResourceStringLoader>();
 
 using var host = appBuilder.Build();
 

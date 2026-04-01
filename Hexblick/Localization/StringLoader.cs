@@ -7,15 +7,13 @@ internal interface IStringLoader
     string GetString(string resourceId);
 }
 
-internal sealed class ResourceLoaderStringLoader : IStringLoader
+internal sealed class ResourceStringLoader : IStringLoader
 {
-    private ResourceLoader? _loader;
+    private readonly ResourceLoader _loader = new();
 
     /// <inheritdoc />
     public string GetString(string resourceId)
     {
-        Interlocked.CompareExchange(ref this._loader, new(), null);
-
-        return this._loader.GetString(resourceId);
+        return this._loader.GetString(resourceId.Replace('.', '/'));
     }
 }

@@ -1,6 +1,8 @@
-﻿using Hexblick.Models;
+﻿using System;
 
 using Microsoft.Extensions.DependencyInjection;
+
+using Hexblick.Models;
 
 namespace Hexblick.ViewModels;
 

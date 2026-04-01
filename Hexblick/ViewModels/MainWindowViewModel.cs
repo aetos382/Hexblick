@@ -1,4 +1,10 @@
-﻿using Hexblick.Localization;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+
+using Hexblick.Localization;
 using Hexblick.Models;
 
 using ObservableCollections;
@@ -20,8 +26,6 @@ internal sealed partial class MainWindowViewModel :
     public ReactiveCommand<EditorControlViewModel> SaveFileCommand { get; }
 
     public ReactiveProperty<EditorControlViewModel?> ActiveDocument { get; }
-
-    public ReactiveCommand<EditorControlViewModel, bool> CanCloseDocumentCommand { get; }
 
     public ReactiveCommand<EditorControlViewModel> CloseEditorCommand { get; }
 

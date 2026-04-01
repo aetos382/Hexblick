@@ -1,4 +1,7 @@
-﻿namespace Hexblick.Models;
+﻿using System;
+using System.IO;
+
+namespace Hexblick.Models;
 
 internal sealed partial class ExisingFileModel :
     Model

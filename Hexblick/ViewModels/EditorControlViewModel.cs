@@ -1,6 +1,8 @@
-﻿using Hexblick.Models;
+﻿using System;
 
 using R3;
+
+using Hexblick.Models;
 
 namespace Hexblick.ViewModels;
 

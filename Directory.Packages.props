@@ -25,5 +25,6 @@
     <PackageVersion Include="ObservableCollections.R3" Version="3.3.4" />
     <PackageVersion Include="R3" Version="1.3.0" />
     <PackageVersion Include="R3Extensions.WinUI3" Version="1.3.0" />
+    <PackageVersion Include="ZLinq" Version="1.5.5" />
   </ItemGroup>
 </Project>

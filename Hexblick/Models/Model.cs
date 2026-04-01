@@ -1,4 +1,6 @@
-﻿namespace Hexblick.Models;
+﻿using System;
+
+namespace Hexblick.Models;
 
 internal abstract class Model : IDisposable
 {
@@ -8,6 +10,12 @@ internal abstract class Model : IDisposable
 
     /// <inheritdoc />
     public void Dispose()
+    {
+        this.Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
     {
     }
 }
