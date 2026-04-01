@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Microsoft.UI.Xaml;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.Storage.Pickers;
 
@@ -11,10 +11,10 @@ using Windows.Foundation.Collections;
 
 using R3;
 
+using ZLinq;
+
 using Hexblick.Localization;
 using Hexblick.ViewModels;
-
-using ZLinq;
 
 namespace Hexblick;
 
@@ -70,7 +70,7 @@ internal sealed partial class MainWindow :
         this.ViewModel.ActiveDocument.Subscribe(this.OnActiveDocumentChanged)
             .AddTo(this._disposables);
 
-        this.Closed += this.OnClosed;
+        this.AppWindow.Closing += this.OnAppWindowClosing;
     }
 
     private async ValueTask OnFileOpenAsync(CancellationToken cancellationToken)
@@ -187,59 +187,62 @@ internal sealed partial class MainWindow :
         }
     }
 
-    private async void OnClosed(object sender, WindowEventArgs args)
+    private void OnAppWindowClosing(AppWindow sender, AppWindowClosingEventArgs args)
     {
-        try
+        var dirtyDocuments = this.ViewModel.EditorViewModels
+            .AsValueEnumerable()
+            .Where(static x => x.IsDirty.Value)
+            .Select(static x => x.Title.Value)
+            .ToArray();
+
+        if (dirtyDocuments.Length == 0)
         {
-            var dirtyDocuments = this.ViewModel.EditorViewModels
-                .AsValueEnumerable()
-                .Where(static x => x.IsDirty.Value)
-                .Select(static x => x.Title.Value)
-                .ToArray();
-
-            if (dirtyDocuments.Length == 0)
-            {
-                return;
-            }
-
-            var stringLoader = this._stringLoader;
-
-            var contentDialog = new ContentDialog
-            {
-                IsPrimaryButtonEnabled = true,
-                IsSecondaryButtonEnabled = true,
-                PrimaryButtonText = stringLoader.GetString("SaveConfirmationDialog.SaveButton.Text"),
-                SecondaryButtonText = stringLoader.GetString("SaveConfirmationDialog.DiscardButton.Text"),
-                CloseButtonText = stringLoader.GetString("SaveConfirmationDialog.CancelButton.Text"),
-                DefaultButton = ContentDialogButton.Close,
-                Title = "Hexblick",
-                Content = new SaveConfirmationDialog
-                {
-                    Items = dirtyDocuments
-                },
-                XamlRoot = this.Content.XamlRoot
-            };
-
-            var result = await contentDialog.ShowAsync();
-
-            if (result is ContentDialogResult.Primary)
-            {
-                // TODO: save
-            }
-            else if (result is ContentDialogResult.None)
-            {
-                args.Handled = true;
-            }
+            return;
         }
-        catch (Exception e)
+
+        args.Cancel = true;
+
+        _ = this.ShowWindowClosingConfirmationAsync(dirtyDocuments);
+    }
+
+    private async Task ShowWindowClosingConfirmationAsync(string[] dirtyDocuments)
+    {
+        var stringLoader = this._stringLoader;
+
+        var contentDialog = new ContentDialog
         {
-            Console.WriteLine(e);
-            throw;
+            IsPrimaryButtonEnabled = true,
+            IsSecondaryButtonEnabled = true,
+            PrimaryButtonText = stringLoader.GetString("SaveConfirmationDialog.SaveButton.Text"),
+            SecondaryButtonText = stringLoader.GetString("SaveConfirmationDialog.DiscardButton.Text"),
+            CloseButtonText = stringLoader.GetString("SaveConfirmationDialog.CancelButton.Text"),
+            DefaultButton = ContentDialogButton.Close,
+            Title = "Hexblick",
+            Content = new SaveConfirmationDialog
+            {
+                Items = dirtyDocuments
+            },
+            XamlRoot = this.Content.XamlRoot
+        };
+
+        var result = await contentDialog.ShowAsync();
+
+        if (result is ContentDialogResult.None)
+        {
+            return;
         }
+
+        if (result is ContentDialogResult.Primary)
+        {
+            // TODO: save
+        }
+
+        this.Close();
     }
 
     private void OnExit()
     {
+        // TODO: ここでもダイアログを出す処理が必要（AppWindow.Closing には来ない）
         this.Close();
     }
 
