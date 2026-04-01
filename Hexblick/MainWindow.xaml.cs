@@ -7,6 +7,8 @@ using R3;
 
 using Hexblick.ViewModels;
 
+using WinRT.Interop;
+
 namespace Hexblick;
 
 internal sealed partial class MainWindow :
@@ -48,7 +50,7 @@ internal sealed partial class MainWindow :
         this.TabViewSelectionChangedCommand = new ReactiveCommand<SelectionChangedEventArgs>(this.OnTabViewSelectionChanged)
             .AddTo(this._disposables);
 
-        this.TabViewTabCloseCommand = new ReactiveCommand<TabViewTabCloseRequestedEventArgs>(this.OnTabViewTabCloseRequested)
+        this.TabViewTabCloseCommand = new ReactiveCommand<TabViewTabCloseRequestedEventArgs>(this.OnTabViewTabCloseRequestedAsync)
             .AddTo(this._disposables);
 
         this.ExitCommand = new ReactiveCommand(_ => this.OnExit())
@@ -109,12 +111,34 @@ internal sealed partial class MainWindow :
         }
     }
 
-    private void OnTabViewTabCloseRequested(TabViewTabCloseRequestedEventArgs args)
+    private async ValueTask OnTabViewTabCloseRequestedAsync(
+        TabViewTabCloseRequestedEventArgs args,
+        CancellationToken cancellationToken)
     {
-        if (args.Item is EditorControlViewModel item)
+        if (args.Item is not EditorControlViewModel item)
         {
-            this.ViewModel.CloseEditorCommand.Execute(item);
+            return;
         }
+
+        if (item.IsDirty.Value)
+        {
+            var contentDialog = new ContentDialog
+            {
+                IsPrimaryButtonEnabled = true,
+                IsSecondaryButtonEnabled = true,
+                PrimaryButtonText = "保存する",
+                SecondaryButtonText = "保存しない",
+                CloseButtonText = "キャンセル",
+                DefaultButton = ContentDialogButton.Close,
+                Title = "Hexblick",
+                Content = new SingleFileQuerySaveDialog(),
+                XamlRoot = this.Content.XamlRoot
+            };
+
+            var result = await contentDialog.ShowAsync();
+        }
+
+        this.ViewModel.CloseEditorCommand.Execute(item);
     }
 
     private void SetTitle(string? activeDocumentTitle, bool isDirty)

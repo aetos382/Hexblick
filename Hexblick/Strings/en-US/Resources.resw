@@ -132,4 +132,16 @@
   <data name="NewFileTitle" xml:space="preserve">
     <value>New File</value>
   </data>
+  <data name="SaveConfirmationDialog.CancelButton.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="SaveConfirmationDialog.DiscardButton.Text" xml:space="preserve">
+    <value>Don't Save</value>
+  </data>
+  <data name="SaveConfirmationDialog.SaveButton.Text" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="SaveConfirmationDialog.Title" xml:space="preserve">
+    <value>Save changes to the following items?</value>
+  </data>
 </root>

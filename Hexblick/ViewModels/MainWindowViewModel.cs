@@ -21,6 +21,8 @@ internal sealed partial class MainWindowViewModel :
 
     public ReactiveProperty<EditorControlViewModel?> ActiveDocument { get; }
 
+    public ReactiveCommand<EditorControlViewModel, bool> CanCloseDocumentCommand { get; }
+
     public ReactiveCommand<EditorControlViewModel> CloseEditorCommand { get; }
 
     private readonly ObservableList<EditorControlViewModel> _editorViewModels = [];
@@ -113,7 +115,8 @@ internal sealed partial class MainWindowViewModel :
             .Subscribe(isDirty => this.SaveFileCommand.ChangeCanExecute(!viewModel.IsNewDocument && isDirty));
     }
 
-    private void OnCloseDocument(EditorControlViewModel item)
+    private void OnCloseDocument(
+        EditorControlViewModel item)
     {
         if (this.EditorViewModels.Remove(item))
         {

@@ -132,4 +132,16 @@
   <data name="NewFileTitle" xml:space="preserve">
     <value>無題</value>
   </data>
+  <data name="SaveConfirmationDialog.CancelButton.Text" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
+  <data name="SaveConfirmationDialog.DiscardButton.Text" xml:space="preserve">
+    <value>保存しない</value>
+  </data>
+  <data name="SaveConfirmationDialog.SaveButton.Text" xml:space="preserve">
+    <value>保存する</value>
+  </data>
+  <data name="SaveConfirmationDialog.Title" xml:space="preserve">
+    <value>以下の項目への変更を保存しますか？</value>
+  </data>
 </root>
