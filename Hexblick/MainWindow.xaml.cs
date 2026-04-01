@@ -21,8 +21,11 @@ using Microsoft.UI.Xaml;
 namespace Hexblick;
 
 internal sealed partial class MainWindow :
+    IXamlRootProvider,
     IDisposable
 {
+    XamlRoot? IXamlRootProvider.XamlRoot => this.Content.XamlRoot;
+
     private MainWindowViewModel ViewModel { get; }
 
     private readonly IDialogService _dialogService;
@@ -51,7 +54,7 @@ internal sealed partial class MainWindow :
         this.InitializeComponent();
 
         this.ViewModel = viewModel;
-        this._dialogService = new DialogService(stringLoader, new WindowXamlRootProvider(this));
+        this._dialogService = new DialogService(stringLoader, this);
 
         this._activeDocumentSubscription.AddTo(this._disposables);
 

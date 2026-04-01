@@ -14,73 +14,76 @@
     <MicaBackdrop />
   </Window.SystemBackdrop>
 
-  <StackPanel>
+  <Page>
+    <StackPanel>
 
-    <MenuBar>
-      <MenuBarItem x:Uid="MenuFile" AccessKey="F">
-        <MenuFlyoutItem x:Uid="MenuFileNew" AccessKey="N" Command="{x:Bind ViewModel.NewDocumentCommand}"/>
-        <MenuFlyoutItem x:Uid="MenuFileOpen" Command="{x:Bind OpenFileCommand}"/>
-        <MenuFlyoutSeparator/>
-        <MenuFlyoutItem x:Uid="MenuFileSave" AccessKey="S" Command="{x:Bind ViewModel.SaveFileCommand}" CommandParameter="{x:Bind ViewModel.ActiveDocument.Value, Mode=OneWay}">
-          <MenuFlyoutItem.KeyboardAccelerators>
-            <KeyboardAccelerator Key="S" Modifiers="Control"/>
-          </MenuFlyoutItem.KeyboardAccelerators>
-        </MenuFlyoutItem>
-        <MenuFlyoutItem Text="Save As"/>
-        <MenuFlyoutItem Text="Save All"/>
-        <MenuFlyoutSeparator/>
-        <MenuFlyoutItem Text="Recently used files"/>
-        <MenuFlyoutSeparator/>
-        <MenuFlyoutItem Text="Close"/>
-        <MenuFlyoutItem Text="Close All"/>
-        <MenuFlyoutItem Text="Close Unmodified"/>
-        <MenuFlyoutSeparator/>
-        <MenuFlyoutItem Text="Exit" Command="{x:Bind ExitCommand}">
-          <MenuFlyoutItem.KeyboardAccelerators>
-            <KeyboardAccelerator Key="F4" Modifiers="Menu"/>
-          </MenuFlyoutItem.KeyboardAccelerators>
-        </MenuFlyoutItem>
-      </MenuBarItem>
-    </MenuBar>
+      <MenuBar>
+        <MenuBarItem x:Uid="MenuFile" AccessKey="F">
+          <MenuFlyoutItem x:Uid="MenuFileNew" AccessKey="N" Command="{x:Bind ViewModel.NewDocumentCommand}"/>
+          <MenuFlyoutItem x:Uid="MenuFileOpen" Command="{x:Bind OpenFileCommand}"/>
+          <MenuFlyoutSeparator/>
+          <MenuFlyoutItem x:Uid="MenuFileSave" AccessKey="S" Command="{x:Bind ViewModel.SaveFileCommand}" CommandParameter="{x:Bind ViewModel.ActiveDocument.Value, Mode=OneWay}">
+            <MenuFlyoutItem.KeyboardAccelerators>
+              <KeyboardAccelerator Key="S" Modifiers="Control"/>
+            </MenuFlyoutItem.KeyboardAccelerators>
+          </MenuFlyoutItem>
+          <MenuFlyoutItem Text="Save As"/>
+          <MenuFlyoutItem Text="Save All"/>
+          <MenuFlyoutSeparator/>
+          <MenuFlyoutItem Text="Recently used files"/>
+          <MenuFlyoutSeparator/>
+          <MenuFlyoutItem Text="Close"/>
+          <MenuFlyoutItem Text="Close All"/>
+          <MenuFlyoutItem Text="Close Unmodified"/>
+          <MenuFlyoutSeparator/>
+          <MenuFlyoutItem Text="Exit" Command="{x:Bind ExitCommand}">
+            <MenuFlyoutItem.KeyboardAccelerators>
+              <KeyboardAccelerator Key="F4" Modifiers="Menu"/>
+            </MenuFlyoutItem.KeyboardAccelerators>
+          </MenuFlyoutItem>
+        </MenuBarItem>
+      </MenuBar>
 
-    <TabView
-      x:Name="TabView"
-      HorizontalAlignment="Stretch"
-      VerticalAlignment="Stretch"
-      IsAddTabButtonVisible="False"
-      TabItemsSource="{x:Bind ViewModel.EditorViewModels}">
+      <TabView
+        x:Name="TabView"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        IsAddTabButtonVisible="False"
+        TabItemsSource="{x:Bind ViewModel.EditorViewModels}">
 
-      <i:Interaction.Behaviors>
-        <i:EventTriggerBehavior EventName="TabItemsChanged">
-          <i:InvokeCommandAction Command="{x:Bind TabViewTabItemsChangedCommand}"/>
-        </i:EventTriggerBehavior>
-        <i:EventTriggerBehavior EventName="SelectionChanged">
-          <i:InvokeCommandAction Command="{x:Bind TabViewSelectionChangedCommand}"/>
-        </i:EventTriggerBehavior>
-        <i:EventTriggerBehavior EventName="TabCloseRequested">
-          <i:InvokeCommandAction Command="{x:Bind TabViewTabCloseCommand}"/>
-        </i:EventTriggerBehavior>
-      </i:Interaction.Behaviors>
+        <i:Interaction.Behaviors>
+          <i:EventTriggerBehavior EventName="TabItemsChanged">
+            <i:InvokeCommandAction Command="{x:Bind TabViewTabItemsChangedCommand}"/>
+          </i:EventTriggerBehavior>
+          <i:EventTriggerBehavior EventName="SelectionChanged">
+            <i:InvokeCommandAction Command="{x:Bind TabViewSelectionChangedCommand}"/>
+          </i:EventTriggerBehavior>
+          <i:EventTriggerBehavior EventName="TabCloseRequested">
+            <i:InvokeCommandAction Command="{x:Bind TabViewTabCloseCommand}"/>
+          </i:EventTriggerBehavior>
+        </i:Interaction.Behaviors>
 
-      <TabView.TabItemTemplate>
-        <DataTemplate x:DataType="viewModels:EditorControlViewModel">
-          <TabViewItem IsClosable="true">
-            <TabViewItem.HeaderTemplate>
-              <DataTemplate x:DataType="viewModels:EditorControlViewModel">
-                <StackPanel Orientation="Horizontal">
-                  <TextBlock Text="{x:Bind Title.Value, Mode=OneWay}"/>
-                  <TextBlock Text=" *" Visibility="{x:Bind IsDirty.Value, Mode=OneWay}"/>
-                </StackPanel>
-              </DataTemplate>
-            </TabViewItem.HeaderTemplate>
-            <TabViewItem.Content>
-              <local:EditorControl ViewModel="{x:Bind}"/>
-            </TabViewItem.Content>
-          </TabViewItem>
-        </DataTemplate>
-      </TabView.TabItemTemplate>
+        <TabView.TabItemTemplate>
+          <DataTemplate x:DataType="viewModels:EditorControlViewModel">
+            <TabViewItem IsClosable="true">
+              <TabViewItem.HeaderTemplate>
+                <DataTemplate x:DataType="viewModels:EditorControlViewModel">
+                  <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{x:Bind Title.Value, Mode=OneWay}"/>
+                    <TextBlock Text=" *" Visibility="{x:Bind IsDirty.Value, Mode=OneWay}"/>
+                  </StackPanel>
+                </DataTemplate>
+              </TabViewItem.HeaderTemplate>
+              <TabViewItem.Content>
+                <local:EditorControl ViewModel="{x:Bind}"/>
+              </TabViewItem.Content>
+            </TabViewItem>
+          </DataTemplate>
+        </TabView.TabItemTemplate>
 
-    </TabView>
+      </TabView>
 
-  </StackPanel>
+    </StackPanel>
+  </Page>
+
 </Window>
