@@ -19,7 +19,7 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.3.0" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.5" />
     <PackageVersion Include="Microsoft.Graphics.Win2D" Version="1.4.0" />
-    <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.7705" />
+    <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.1721" />
     <PackageVersion Include="Microsoft.WindowsAppSDK" Version="1.8.260317003" />
     <PackageVersion Include="ObservableCollections" Version="3.3.4" />
     <PackageVersion Include="ObservableCollections.R3" Version="3.3.4" />
