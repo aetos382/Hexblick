@@ -2,9 +2,7 @@
 
 using Microsoft.UI.Xaml;
 
-using Hexblick.ViewModels;
-
-namespace Hexblick;
+namespace Hexblick.UI;
 
 internal sealed partial class EditorControl :
     IDisposable

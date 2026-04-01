@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Hexblick.Models;
 
-namespace Hexblick.ViewModels;
+namespace Hexblick.UI;
 
 internal interface IEditorControlViewModelFactory
 {

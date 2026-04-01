@@ -4,10 +4,11 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 
 using Hexblick.Localization;
+using Hexblick.UI;
 
 namespace Hexblick;
 
-internal enum SaveConfirmationesult
+internal enum SaveConfirmationResult
 {
     Save,
     Discard,
@@ -16,10 +17,10 @@ internal enum SaveConfirmationesult
 
 internal interface IDialogService
 {
-    Task<SaveConfirmationesult> ShowSaveConfirmationDialogAsync(string[] titles);
+    Task<SaveConfirmationResult> ShowSaveConfirmationDialogAsync(string[] titles);
 }
 
-internal class DialogService :
+internal sealed class DialogService :
     IDialogService
 {
     private readonly IStringLoader _stringLoader;
@@ -37,7 +38,7 @@ internal class DialogService :
     }
 
     /// <inheritdoc />
-    public async Task<SaveConfirmationesult> ShowSaveConfirmationDialogAsync(string[] titles)
+    public async Task<SaveConfirmationResult> ShowSaveConfirmationDialogAsync(string[] titles)
     {
         var stringLoader = this._stringLoader;
 
@@ -61,9 +62,9 @@ internal class DialogService :
 
         return result switch
         {
-            ContentDialogResult.None => SaveConfirmationesult.Cancel,
-            ContentDialogResult.Primary => SaveConfirmationesult.Save,
-            ContentDialogResult.Secondary => SaveConfirmationesult.Discard
+            ContentDialogResult.None => SaveConfirmationResult.Cancel,
+            ContentDialogResult.Primary => SaveConfirmationResult.Save,
+            ContentDialogResult.Secondary => SaveConfirmationResult.Discard
         };
     }
 }

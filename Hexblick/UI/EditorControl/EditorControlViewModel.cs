@@ -4,7 +4,7 @@ using R3;
 
 using Hexblick.Models;
 
-namespace Hexblick.ViewModels;
+namespace Hexblick.UI;
 
 internal sealed partial class EditorControlViewModel :
     IDisposable

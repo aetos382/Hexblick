@@ -1,8 +1,6 @@
-﻿using System;
+﻿using Microsoft.UI.Xaml;
 
-using Microsoft.UI.Xaml;
-
-namespace Hexblick;
+namespace Hexblick.UI;
 
 internal interface IXamlRootProvider
 {

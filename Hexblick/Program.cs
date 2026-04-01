@@ -1,15 +1,11 @@
 ﻿using Hexblick;
-using Hexblick.Hosting;
 using Hexblick.Localization;
-using Hexblick.ViewModels;
+using Hexblick.UI;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using WinRT;
-
-using MainWindowViewModel = Hexblick.ViewModels.MainWindowViewModel;
-using EditorControlViewModel = Hexblick.ViewModels.EditorControlViewModel;
 
 ComWrappersSupport.InitializeComWrappers();
 

@@ -14,9 +14,8 @@ using R3;
 using ZLinq;
 
 using Hexblick.Localization;
-using Hexblick.ViewModels;
 
-namespace Hexblick;
+namespace Hexblick.UI;
 
 internal sealed partial class MainWindow :
     IXamlRootProvider,
@@ -26,7 +25,7 @@ internal sealed partial class MainWindow :
 
     private MainWindowViewModel ViewModel { get; }
 
-    private readonly IDialogService _dialogService;
+    private readonly DialogService _dialogService;
 
     private ReactiveCommand<TabViewTabCloseRequestedEventArgs> TabViewTabCloseCommand { get; }
 
@@ -143,11 +142,11 @@ internal sealed partial class MainWindow :
         if (item.IsDirty.Value)
         {
             var result = await this._dialogService.ShowSaveConfirmationDialogAsync([item.Title.Value]);
-            if (result is SaveConfirmationesult.Save)
+            if (result is SaveConfirmationResult.Save)
             {
                 // TODO: save
             }
-            else if (result is SaveConfirmationesult.Cancel)
+            else if (result is SaveConfirmationResult.Cancel)
             {
                 return;
             }
@@ -172,7 +171,7 @@ internal sealed partial class MainWindow :
         }
     }
 
-    private bool _closing = false;
+    private bool _closing;
 
     private async void OnClosed(object sender, WindowEventArgs args)
     {
@@ -195,12 +194,12 @@ internal sealed partial class MainWindow :
         args.Handled = true;
 
         var result = await this._dialogService.ShowSaveConfirmationDialogAsync(dirtyDocuments);
-        if (result is SaveConfirmationesult.Save)
+        if (result is SaveConfirmationResult.Save)
         {
             // TODO: save
         }
 
-        if (result is SaveConfirmationesult.Cancel)
+        if (result is SaveConfirmationResult.Cancel)
         {
             return;
         }

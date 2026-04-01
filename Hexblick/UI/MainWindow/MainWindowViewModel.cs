@@ -11,7 +11,7 @@ using ObservableCollections;
 
 using R3;
 
-namespace Hexblick.ViewModels;
+namespace Hexblick.UI;
 
 internal sealed partial class MainWindowViewModel :
     IDisposable
@@ -25,7 +25,7 @@ internal sealed partial class MainWindowViewModel :
 
     public ReactiveCommand<EditorControlViewModel> SaveFileCommand { get; }
 
-    public ReactiveProperty<EditorControlViewModel?> ActiveDocument { get; }
+    public BindableReactiveProperty<EditorControlViewModel?> ActiveDocument { get; }
 
     public ReactiveCommand<EditorControlViewModel> CloseEditorCommand { get; }
 
@@ -57,7 +57,7 @@ internal sealed partial class MainWindowViewModel :
         this.SaveFileCommand = new ReactiveCommand<EditorControlViewModel>(this.OnSaveFileAsync)
             .AddTo(this._disposable);
 
-        this.ActiveDocument = new ReactiveProperty<EditorControlViewModel?>()
+        this.ActiveDocument = new BindableReactiveProperty<EditorControlViewModel?>()
             .AddTo(this._disposable);
 
         this.ActiveDocument.Subscribe(this.OnActiveDocumentChanged)
