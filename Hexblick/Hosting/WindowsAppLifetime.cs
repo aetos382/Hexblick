@@ -32,7 +32,7 @@ internal sealed partial class WindowsAppLifetime<TApplication> :
         this._serviceProvider = serviceProvider;
     }
 
-    private readonly record struct ThreadParam(
+    private readonly record struct ThreadParams(
         TaskCompletionSource<DispatcherQueue> Tcs,
         CancellationToken Ct);
 
@@ -43,7 +43,7 @@ internal sealed partial class WindowsAppLifetime<TApplication> :
         var thread = new Thread(this.Run);
 
         thread.SetApartmentState(ApartmentState.STA);
-        thread.UnsafeStart(new ThreadParam(appStartedTcs, cancellationToken));
+        thread.UnsafeStart(new ThreadParams(appStartedTcs, cancellationToken));
 
         this._appThread = thread;
 
@@ -52,7 +52,7 @@ internal sealed partial class WindowsAppLifetime<TApplication> :
 
     private void Run(object? state)
     {
-        var (tcs, cancellationToken) = (ThreadParam)state!;
+        var (tcs, cancellationToken) = (ThreadParams)state!;
         if (cancellationToken.IsCancellationRequested)
         {
             tcs.TrySetCanceled(cancellationToken);
