@@ -32,7 +32,7 @@ internal sealed partial class WindowsAppLifetime<TApplication> :
         this._serviceProvider = serviceProvider;
     }
 
-    private readonly record struct ThreadParams(
+    private record ThreadParams(
         TaskCompletionSource<DispatcherQueue> Tcs,
         CancellationToken Ct);
 
