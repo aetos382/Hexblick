@@ -14,6 +14,7 @@ using R3;
 using ZLinq;
 
 using Hexblick.Localization;
+using Hexblick.Services;
 
 namespace Hexblick.UI;
 

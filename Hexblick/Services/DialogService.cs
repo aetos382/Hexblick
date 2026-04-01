@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 using Hexblick.Localization;
 using Hexblick.UI;
 
-namespace Hexblick;
+namespace Hexblick.Services;
 
 internal enum SaveConfirmationResult
 {

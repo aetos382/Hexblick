@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 using Microsoft.UI.Xaml;
 
-namespace Hexblick;
+namespace Hexblick.UI;
 
 public sealed partial class SaveConfirmationDialog
 {
