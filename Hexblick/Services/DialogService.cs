@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Microsoft.UI.Xaml.Controls;
@@ -17,7 +18,7 @@ internal enum SaveConfirmationResult
 
 internal interface IDialogService
 {
-    Task<SaveConfirmationResult> ShowSaveConfirmationDialogAsync(string[] titles);
+    Task<SaveConfirmationResult> ShowSaveConfirmationDialogAsync(IReadOnlyList<string> titles);
 }
 
 internal sealed class DialogService :
@@ -38,7 +39,7 @@ internal sealed class DialogService :
     }
 
     /// <inheritdoc />
-    public async Task<SaveConfirmationResult> ShowSaveConfirmationDialogAsync(string[] titles)
+    public async Task<SaveConfirmationResult> ShowSaveConfirmationDialogAsync(IReadOnlyList<string> titles)
     {
         var stringLoader = this._stringLoader;
 
