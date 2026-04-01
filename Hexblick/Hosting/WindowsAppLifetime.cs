@@ -7,7 +7,7 @@ namespace Hexblick.Hosting;
 
 #pragma warning disable CA1812
 
-internal sealed partial class WinAppLifetime<TApplication> :
+internal sealed partial class WindowsAppLifetime<TApplication> :
     IHostLifetime,
     IDisposable
     where TApplication : Application
@@ -21,7 +21,7 @@ internal sealed partial class WinAppLifetime<TApplication> :
 
     private bool _dispatcherQueueShuttingDown;
 
-    public WinAppLifetime(
+    public WindowsAppLifetime(
         IHostApplicationLifetime appLifetime,
         IServiceProvider serviceProvider)
     {

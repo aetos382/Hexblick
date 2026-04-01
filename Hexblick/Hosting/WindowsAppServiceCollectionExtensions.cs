@@ -8,9 +8,9 @@ using Microsoft.UI.Xaml;
 namespace Microsoft.Extensions.DependencyInjection;
 #pragma warning restore IDE0130
 
-internal static class ServiceCollectionWinAppExtensions
+internal static class WindowsAppServiceCollectionExtensions
 {
-    extension(IServiceCollection services)
+    extension (IServiceCollection services)
     {
         public IServiceCollection UseWinApp<TApp>()
             where TApp : Application
@@ -18,7 +18,7 @@ internal static class ServiceCollectionWinAppExtensions
             ArgumentNullException.ThrowIfNull(services);
 
             services.AddSingleton<TApp>();
-            services.Replace(ServiceDescriptor.Singleton<IHostLifetime, WinAppLifetime<TApp>>());
+            services.Replace(ServiceDescriptor.Singleton<IHostLifetime, WindowsAppLifetime<TApp>>());
 
             return services;
         }
