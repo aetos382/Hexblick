@@ -26,6 +26,7 @@ services.AddTransient<MainWindowViewModel>();
 services.AddTransient<EditorControlViewModel>();
 
 services.AddSingleton<IStringLoader, ResourceStringLoader>();
+services.AddSingleton<IDialogService, DialogService>();
 
 using var host = appBuilder.Build();
 
