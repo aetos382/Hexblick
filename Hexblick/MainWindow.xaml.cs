@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.Storage.Pickers;
 
@@ -15,8 +15,6 @@ using ZLinq;
 
 using Hexblick.Localization;
 using Hexblick.ViewModels;
-
-using Microsoft.UI.Xaml;
 
 namespace Hexblick;
 

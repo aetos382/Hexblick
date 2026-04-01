@@ -18,7 +18,6 @@ var appBuilder = Host.CreateApplicationBuilder(args);
 var services = appBuilder.Services;
 
 services.UseWinApp<App>();
-services.AddSingleton<IWindowManager, WindowManager>();
 services.AddSingleton<IEditorControlViewModelFactory, EditorControlViewModelFactory>();
 
 services.AddTransient<MainWindow>();

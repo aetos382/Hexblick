@@ -141,7 +141,7 @@
   <data name="SaveConfirmationDialog.SaveButton.Text" xml:space="preserve">
     <value>Save</value>
   </data>
-  <data name="SaveConfirmationDialog.Title" xml:space="preserve">
+  <data name="SaveConfirmationDialog.Caption.Text" xml:space="preserve">
     <value>Save changes to the following items?</value>
   </data>
 </root>
