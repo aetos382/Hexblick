@@ -3,16 +3,20 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.Storage.Pickers;
 
 using Windows.Foundation.Collections;
 
+using MessagePipe;
+
 using R3;
 
 using ZLinq;
 
+using Hexblick.Interactions;
 using Hexblick.Localization;
 using Hexblick.Services;
 
@@ -79,6 +83,9 @@ internal sealed partial class MainWindow :
 
     private async ValueTask OnFileOpenAsync(CancellationToken cancellationToken)
     {
+        var handler = Application.Current.Services.GetRequiredService<IAsyncRequestHandler<FileOpenPickerRequestMessage, int>>();
+        var x = await handler.InvokeAsync(new(), cancellationToken);
+
         var filePicker = new FileOpenPicker(this.AppWindow.Id)
         {
             SuggestedStartLocation = PickerLocationId.DocumentsLibrary,

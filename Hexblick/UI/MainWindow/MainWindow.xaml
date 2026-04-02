@@ -6,6 +6,7 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:i="using:Microsoft.Xaml.Interactivity"
   xmlns:ui="using:Hexblick.UI"
+  xmlns:b="using:Hexblick.Behaviors"
   mc:Ignorable="d"
   Title="Hexblick">
 
@@ -14,6 +15,11 @@
   </Window.SystemBackdrop>
 
   <Page>
+
+    <i:Interaction.Behaviors>
+      <b:FileOpenPickerBehavior/>
+    </i:Interaction.Behaviors>
+
     <StackPanel>
 
       <MenuBar>

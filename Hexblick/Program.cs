@@ -24,6 +24,11 @@ services.AddTransient<EditorControlViewModel>();
 services.AddSingleton<IStringLoader, ResourceStringLoader>();
 services.AddSingleton<IDialogService, DialogService>();
 
+services.AddMessagePipe(static options =>
+{
+    options.EnableAutoRegistration = true;
+});
+
 using var host = appBuilder.Build();
 
 await host.RunAsync().ConfigureAwait(false);
