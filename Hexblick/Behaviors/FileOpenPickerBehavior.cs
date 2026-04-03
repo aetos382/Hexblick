@@ -11,7 +11,6 @@ using MessagePipe;
 using Hexblick.Interactions;
 using Hexblick.Windowing;
 
-
 namespace Hexblick.Behaviors;
 
 internal sealed class FileOpenPickerBehavior :
@@ -49,7 +48,7 @@ internal sealed class FileOpenPickerBehavior :
         /// <inheritdoc />
         public async ValueTask<int> InvokeAsync(
             FileOpenPickerRequestMessage request,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             return 1;
         }
