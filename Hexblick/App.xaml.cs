@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 
 using Hexblick.UI;
+using Hexblick.Windowing;
 
 namespace Hexblick;
 
@@ -40,7 +41,8 @@ public sealed partial class App :
     /// <param name="args">Details about the launch request and process.</param>
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
-        var window = this._serviceProvider.GetRequiredService<MainWindow>();
+        var windowFactory = this._serviceProvider.GetRequiredService<IWindowManager>();
+        var window = windowFactory.CreateWindow<MainWindow>();
         window.Activate();
     }
 

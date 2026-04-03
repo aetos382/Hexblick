@@ -23,9 +23,9 @@ using Hexblick.Services;
 namespace Hexblick.UI;
 
 internal sealed partial class MainWindow :
-    IXamlRootProvider,
-    IDisposable
+    IXamlRootProvider
 {
+    private readonly InteractionMessenger _messenger;
     XamlRoot? IXamlRootProvider.XamlRoot => this.Content.XamlRoot;
 
     private MainWindowViewModel ViewModel { get; }
@@ -47,16 +47,21 @@ internal sealed partial class MainWindow :
     private readonly CompositeDisposable _disposables = [];
 
     public MainWindow(
+        IServiceProvider serviceProvider,
         MainWindowViewModel viewModel,
-        IStringLoader stringLoader)
+        IStringLoader stringLoader,
+        InteractionMessenger messenger)
+        : base(serviceProvider)
     {
         ArgumentNullException.ThrowIfNull(viewModel);
         ArgumentNullException.ThrowIfNull(stringLoader);
+        ArgumentNullException.ThrowIfNull(messenger);
 
         this.InitializeComponent();
 
         this.ViewModel = viewModel;
         this._dialogService = new DialogService(stringLoader, this);
+        this._messenger = messenger;
 
         this._activeDocumentSubscription.AddTo(this._disposables);
 
@@ -83,8 +88,7 @@ internal sealed partial class MainWindow :
 
     private async ValueTask OnFileOpenAsync(CancellationToken cancellationToken)
     {
-        var handler = Application.Current.Services.GetRequiredService<IAsyncRequestHandler<FileOpenPickerRequestMessage, int>>();
-        var x = await handler.InvokeAsync(new(), cancellationToken);
+        var r = await this._messenger.RequestFileOpenAsync(cancellationToken);
 
         var filePicker = new FileOpenPicker(this.AppWindow.Id)
         {
@@ -222,8 +226,14 @@ internal sealed partial class MainWindow :
     }
 
     /// <inheritdoc />
-    public void Dispose()
+    /// <inheritdoc />
+    protected override void Dispose(bool disposing)
     {
-        this._disposables.Dispose();
+        if (disposing)
+        {
+            this._disposables.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 }

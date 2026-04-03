@@ -1,7 +1,9 @@
 ﻿using Hexblick;
+using Hexblick.Interactions;
 using Hexblick.Localization;
 using Hexblick.Services;
 using Hexblick.UI;
+using Hexblick.Windowing;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -15,19 +17,23 @@ var appBuilder = Host.CreateApplicationBuilder(args);
 var services = appBuilder.Services;
 
 services.UseWinApp<App>();
-services.AddSingleton<IEditorControlViewModelFactory, EditorControlViewModelFactory>();
-
-services.AddTransient<MainWindow>();
-services.AddTransient<MainWindowViewModel>();
-services.AddTransient<EditorControlViewModel>();
-
 services.AddSingleton<IStringLoader, ResourceStringLoader>();
-services.AddSingleton<IDialogService, DialogService>();
+services.AddSingleton<IWindowManager, ScopedWindowManager>();
 
 services.AddMessagePipe(static options =>
 {
     options.EnableAutoRegistration = true;
 });
+
+services.AddScoped<IEditorControlViewModelFactory, EditorControlViewModelFactory>();
+
+services.AddScoped<ServiceScopeMarker>();
+services.AddScoped<MainWindow>();
+services.AddScoped<InteractionMessenger>();
+services.AddScoped<MainWindowViewModel>();
+services.AddScoped<EditorControlViewModel>();
+
+services.AddSingleton<IDialogService, DialogService>();
 
 using var host = appBuilder.Build();
 
