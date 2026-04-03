@@ -2,4 +2,7 @@ SetWindowSubclass
 RemoveWindowSubclass
 DefSubclassProc
 
+SHGetFileInfo
+DestroyIcon
+
 WM_NCDESTROY

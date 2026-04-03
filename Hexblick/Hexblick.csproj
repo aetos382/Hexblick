@@ -67,6 +67,7 @@
     <PackageReference Include="ObservableCollections.R3" />
     <PackageReference Include="R3" />
     <PackageReference Include="R3Extensions.WinUI3" />
+    <PackageReference Include="System.Drawing.Common" />
     <PackageReference Include="ZLinq" />
   </ItemGroup>
 

@@ -72,6 +72,9 @@
         <TabView.TabItemTemplate>
           <DataTemplate x:DataType="hui:EditorControlViewModel">
             <TabViewItem IsClosable="true">
+              <TabViewItem.IconSource>
+                <ImageIconSource ImageSource="{x:Bind Icon.Value}"/>
+              </TabViewItem.IconSource>
               <TabViewItem.HeaderTemplate>
                 <DataTemplate x:DataType="hui:EditorControlViewModel">
                   <StackPanel Orientation="Horizontal">

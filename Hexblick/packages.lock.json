@@ -190,6 +190,15 @@
           "R3": "1.3.0"
         }
       },
+      "System.Drawing.Common": {
+        "type": "Direct",
+        "requested": "[10.0.5, )",
+        "resolved": "10.0.5",
+        "contentHash": "FYgPPbii/9Prh7RuY1gaxSyik7Ysw594K0uCHggDxHDgl7mfk8c4UlwluKjQoMquVGLce7Jld4DjjsnuYK3m7g==",
+        "dependencies": {
+          "Microsoft.Win32.SystemEvents": "10.0.5"
+        }
+      },
       "ZLinq": {
         "type": "Direct",
         "requested": "[1.5.5, )",
@@ -483,6 +492,11 @@
         "resolved": "1.0.3179.45",
         "contentHash": "3pokSH5CnN0G6rGhGFo1y87inxYhNxBQ2Vdf0wlvBj99KHxQJormjDACmqRnFeUsmuNFIhWwfAL1ztq7wD5qRA=="
       },
+      "Microsoft.Win32.SystemEvents": {
+        "type": "Transitive",
+        "resolved": "10.0.5",
+        "contentHash": "a7rC0Qb5JGiA4f4ooqQjsx17LgYkb9feOcMNGyBXGqYmqC4ZoLbrV98zn7Kr5Z39BIU10Bti80Jwm/QAw+45VA=="
+      },
       "Microsoft.Windows.SDK.BuildTools.MSIX": {
         "type": "Transitive",
         "resolved": "1.7.20250829.1",
@@ -640,6 +654,11 @@
         "resolved": "1.0.3179.45",
         "contentHash": "3pokSH5CnN0G6rGhGFo1y87inxYhNxBQ2Vdf0wlvBj99KHxQJormjDACmqRnFeUsmuNFIhWwfAL1ztq7wD5qRA=="
       },
+      "Microsoft.Win32.SystemEvents": {
+        "type": "Transitive",
+        "resolved": "10.0.5",
+        "contentHash": "a7rC0Qb5JGiA4f4ooqQjsx17LgYkb9feOcMNGyBXGqYmqC4ZoLbrV98zn7Kr5Z39BIU10Bti80Jwm/QAw+45VA=="
+      },
       "Microsoft.WindowsAppSDK.Foundation": {
         "type": "Transitive",
         "resolved": "1.8.260222000",
@@ -670,6 +689,11 @@
         "resolved": "1.0.3179.45",
         "contentHash": "3pokSH5CnN0G6rGhGFo1y87inxYhNxBQ2Vdf0wlvBj99KHxQJormjDACmqRnFeUsmuNFIhWwfAL1ztq7wD5qRA=="
       },
+      "Microsoft.Win32.SystemEvents": {
+        "type": "Transitive",
+        "resolved": "10.0.5",
+        "contentHash": "a7rC0Qb5JGiA4f4ooqQjsx17LgYkb9feOcMNGyBXGqYmqC4ZoLbrV98zn7Kr5Z39BIU10Bti80Jwm/QAw+45VA=="
+      },
       "Microsoft.WindowsAppSDK.Foundation": {
         "type": "Transitive",
         "resolved": "1.8.260222000",
@@ -699,6 +723,11 @@
         "type": "Transitive",
         "resolved": "1.0.3179.45",
         "contentHash": "3pokSH5CnN0G6rGhGFo1y87inxYhNxBQ2Vdf0wlvBj99KHxQJormjDACmqRnFeUsmuNFIhWwfAL1ztq7wD5qRA=="
+      },
+      "Microsoft.Win32.SystemEvents": {
+        "type": "Transitive",
+        "resolved": "10.0.5",
+        "contentHash": "a7rC0Qb5JGiA4f4ooqQjsx17LgYkb9feOcMNGyBXGqYmqC4ZoLbrV98zn7Kr5Z39BIU10Bti80Jwm/QAw+45VA=="
       },
       "Microsoft.WindowsAppSDK.Foundation": {
         "type": "Transitive",

@@ -1,14 +1,17 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-using Hexblick.Interactions;
+﻿using Hexblick.Interactions;
 using Hexblick.Localization;
 using Hexblick.Models;
+using Hexblick.Utilities;
 
 using ObservableCollections;
 
 using R3;
+
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+using Windows.Storage;
 
 namespace Hexblick.UI;
 
@@ -98,6 +101,7 @@ internal sealed partial class MainWindowViewModel :
             var editorViewModel = this._editorControlViewModelFactory.Create(model);
 
             editorViewModel.Title.Value = file.Name;
+            editorViewModel.Icon.Value = await FileIconExtractor.GetFileIconAsync(file.FullName);
             this._editorViewModels.Add(editorViewModel);
         }
     }
