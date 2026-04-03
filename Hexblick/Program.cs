@@ -28,12 +28,13 @@ services.AddMessagePipe(static options =>
 services.AddScoped<IEditorControlViewModelFactory, EditorControlViewModelFactory>();
 
 services.AddScoped<ServiceScopeMarker>();
-services.AddScoped<MainWindow>();
 services.AddScoped<InteractionMessenger>();
 services.AddScoped<MainWindowViewModel>();
 services.AddScoped<EditorControlViewModel>();
 
 services.AddSingleton<IDialogService, DialogService>();
+
+services.AddScoped<IFileOpenPickerRequestHandler, FileOpenPickerRequestHandler>();
 
 using var host = appBuilder.Build();
 

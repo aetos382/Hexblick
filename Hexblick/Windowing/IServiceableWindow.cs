@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Hexblick.Windowing;
 
-internal interface IServceableWindow
+internal interface IServiceableWindow
 {
     void SetServiceScope(IServiceScope scope);
 

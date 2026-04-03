@@ -1,24 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-
-using MessagePipe;
 
 namespace Hexblick.Interactions;
 
 internal sealed class InteractionMessenger
 {
-    private readonly IAsyncRequestHandler<FileOpenPickerRequestMessage, int> _fileOpenPickRequestHandler;
+    private readonly IFileOpenPickerRequestHandler _fileOpenPickRequestHandler;
 
     public InteractionMessenger(
-        IAsyncRequestHandler<FileOpenPickerRequestMessage, int> fileOpenPickRequestHandler)
+        IFileOpenPickerRequestHandler fileOpenPickRequestHandler)
     {
         ArgumentNullException.ThrowIfNull(fileOpenPickRequestHandler);
 
         this._fileOpenPickRequestHandler = fileOpenPickRequestHandler;
     }
 
-    public async ValueTask<int> RequestFileOpenAsync(
+    public async ValueTask<IReadOnlyCollection<FileInfo>> RequestFileOpenAsync(
         CancellationToken cancellation = default)
     {
         var request = new FileOpenPickerRequestMessage();

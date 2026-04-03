@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Hexblick.Interactions;
 using Hexblick.Localization;
 using Hexblick.Models;
 
@@ -16,12 +15,13 @@ namespace Hexblick.UI;
 internal sealed partial class MainWindowViewModel :
     IDisposable
 {
+    private readonly InteractionMessenger _messenger;
     private readonly IEditorControlViewModelFactory _editorControlViewModelFactory;
     private readonly IStringLoader _stringLoader;
 
     public ReactiveCommand NewDocumentCommand { get; }
 
-    public ReactiveCommand<IReadOnlyList<FileInfo>> OpenFilesCommand { get; }
+    public ReactiveCommand OpenFilesCommand { get; }
 
     public ReactiveCommand<EditorControlViewModel> SaveFileCommand { get; }
 
@@ -38,11 +38,14 @@ internal sealed partial class MainWindowViewModel :
     private readonly CompositeDisposable _disposable = [];
 
     public MainWindowViewModel(
+        InteractionMessenger messenger,
         IEditorControlViewModelFactory tabItemViewModelFactory,
         IStringLoader stringLoader)
     {
+        ArgumentNullException.ThrowIfNull(messenger);
         ArgumentNullException.ThrowIfNull(tabItemViewModelFactory);
 
+        this._messenger = messenger;
         this._editorControlViewModelFactory = tabItemViewModelFactory;
         this._stringLoader = stringLoader;
 
@@ -51,7 +54,7 @@ internal sealed partial class MainWindowViewModel :
         this.NewDocumentCommand = new ReactiveCommand(_ => this.OnNewDocument())
             .AddTo(this._disposable);
 
-        this.OpenFilesCommand = new ReactiveCommand<IReadOnlyList<FileInfo>>(this.OpenFilesAsync)
+        this.OpenFilesCommand = new ReactiveCommand((_, cancellationToken) => this.OpenFilesAsync(cancellationToken))
             .AddTo(this._disposable);
 
         this.SaveFileCommand = new ReactiveCommand<EditorControlViewModel>(this.OnSaveFileAsync)
@@ -79,11 +82,9 @@ internal sealed partial class MainWindowViewModel :
                     this._stringLoader.GetString("NewFileTitle"))));
     }
 
-    public async ValueTask OpenFilesAsync(
-        IReadOnlyList<FileInfo> files,
-        CancellationToken cancellationToken)
+    public async ValueTask OpenFilesAsync(CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(files);
+        var files = await this._messenger.RequestFileOpenAsync(cancellationToken);
 
         var modelFactory = new ModelFactory();
 

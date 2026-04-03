@@ -14,7 +14,7 @@ namespace Hexblick.Windowing;
 
 internal abstract class BaseWindow :
     Window,
-    IServceableWindow
+    IServiceableWindow
 {
     private readonly CompositeDisposable _disposables = [];
 
@@ -37,7 +37,7 @@ internal abstract class BaseWindow :
 
     private readonly SingleAssignmentDisposable _scopeHolder = new();
 
-    void IServceableWindow.SetServiceScope(IServiceScope scope)
+    void IServiceableWindow.SetServiceScope(IServiceScope scope)
     {
         ArgumentNullException.ThrowIfNull(scope);
 

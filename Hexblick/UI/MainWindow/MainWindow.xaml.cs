@@ -1,11 +1,9 @@
 ﻿using System;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.Windows.Storage.Pickers;
 
 using Windows.Foundation.Collections;
 
@@ -13,7 +11,6 @@ using R3;
 
 using ZLinq;
 
-using Hexblick.Interactions;
 using Hexblick.Localization;
 using Hexblick.Services;
 
@@ -22,7 +19,6 @@ namespace Hexblick.UI;
 internal sealed partial class MainWindow :
     IXamlRootProvider
 {
-    private readonly InteractionMessenger _messenger;
     XamlRoot? IXamlRootProvider.XamlRoot => this.Content.XamlRoot;
 
     private MainWindowViewModel ViewModel { get; }
@@ -45,18 +41,15 @@ internal sealed partial class MainWindow :
 
     public MainWindow(
         MainWindowViewModel viewModel,
-        IStringLoader stringLoader,
-        InteractionMessenger messenger)
+        IStringLoader stringLoader)
     {
         ArgumentNullException.ThrowIfNull(viewModel);
         ArgumentNullException.ThrowIfNull(stringLoader);
-        ArgumentNullException.ThrowIfNull(messenger);
 
         this.InitializeComponent();
 
         this.ViewModel = viewModel;
         this._dialogService = new DialogService(stringLoader, this);
-        this._messenger = messenger;
 
         this._activeDocumentSubscription.AddTo(this._disposables);
 
@@ -85,26 +78,7 @@ internal sealed partial class MainWindow :
 
     private async ValueTask OnFileOpenAsync(CancellationToken cancellationToken)
     {
-        var r = await this._messenger.RequestFileOpenAsync(cancellationToken);
-
-        var filePicker = new FileOpenPicker(this.AppWindow.Id)
-        {
-            SuggestedStartLocation = PickerLocationId.DocumentsLibrary,
-            ViewMode = PickerViewMode.List
-        };
-
-        var result = await filePicker.PickMultipleFilesAsync();
-        if (result is [])
-        {
-            return;
-        }
-
-        var files = result
-            .AsValueEnumerable()
-            .Select(static x => new FileInfo(x.Path))
-            .ToArray();
-
-        await this.ViewModel.OpenFilesAsync(files, cancellationToken);
+        await this.ViewModel.OpenFilesAsync(cancellationToken);
     }
 
     private void OnActiveDocumentChanged(EditorControlViewModel? viewModel)

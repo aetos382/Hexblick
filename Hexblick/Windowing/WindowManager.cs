@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
@@ -10,9 +10,13 @@ namespace Hexblick.Windowing;
 
 internal interface IWindowManager
 {
-    TWindow CreateWindow<TWindow>() where TWindow : Window;
+    TWindow CreateWindow<TWindow>() where TWindow : Window, IServiceableWindow;
 
     IEnumerable<Window> Windows { get; }
+
+    bool TryGetServiceScope(
+        Window window,
+        [MaybeNullWhen(false)] out IServiceScope scope);
 
     bool TryGetWindowForElement(
         UIElement element,
@@ -24,7 +28,7 @@ internal sealed class ScopedWindowManager :
 {
     private readonly IServiceProvider _serviceProvider;
 
-    private readonly ConcurrentBag<WeakReference<Window>> _windows = new();
+    private readonly ConditionalWeakTable<Window, IServiceScope> _windows = new();
 
     public ScopedWindowManager(
         IServiceProvider serviceProvider)
@@ -35,18 +39,15 @@ internal sealed class ScopedWindowManager :
     }
 
     /// <inheritdoc />
-    public TWindow CreateWindow<TWindow>() where TWindow : Window
+    public TWindow CreateWindow<TWindow>() where TWindow : Window, IServiceableWindow
     {
         var sp = this._serviceProvider;
         var scope = sp.CreateScope();
 
-        var window = ActivatorUtilities.CreateInstance<TWindow>(scope.ServiceProvider, scope);
-        if (window is IServceableWindow sw)
-        {
-            sw.SetServiceScope(scope);
-        }
+        var window = ActivatorUtilities.CreateInstance<TWindow>(scope.ServiceProvider);
+        window.SetServiceScope(scope);
 
-        this._windows.Add(new WeakReference<Window>(window));
+        this._windows.TryAdd(window, scope);
         return window;
     }
 
@@ -55,14 +56,20 @@ internal sealed class ScopedWindowManager :
     {
         get
         {
-            foreach (var r in this._windows)
+            var windows = this._windows;
+
+            foreach (var (w, _) in windows)
             {
-                if (r.TryGetTarget(out var w))
-                {
-                    yield return w;
-                }
+                yield return w;
             }
         }
+    }
+
+    public bool TryGetServiceScope(
+        Window window,
+        [MaybeNullWhen(false)] out IServiceScope scope)
+    {
+        return this._windows.TryGetValue(window, out scope);
     }
 
     /// <inheritdoc />

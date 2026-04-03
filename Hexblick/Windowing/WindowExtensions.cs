@@ -16,12 +16,12 @@ internal static class WindowExtensions
         {
             get
             {
-                if (window is not BaseWindow b)
+                if (window is not IServiceableWindow sw)
                 {
                     throw new NotSupportedException();
                 }
 
-                return b.WindowServices;
+                return sw.WindowServices;
             }
         }
     }
