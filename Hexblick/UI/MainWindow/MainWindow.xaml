@@ -18,7 +18,7 @@
   <Page>
 
     <i:Interaction.Behaviors>
-      <hb:FileOpenPickerBehavior/>
+      <hb:MultipleFileOpenPickerBehavior/>
     </i:Interaction.Behaviors>
 
     <StackPanel>

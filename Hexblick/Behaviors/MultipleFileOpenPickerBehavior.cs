@@ -8,7 +8,7 @@ using Hexblick.Windowing;
 
 namespace Hexblick.Behaviors;
 
-internal sealed class FileOpenPickerBehavior :
+internal sealed class MultipleFileOpenPickerBehavior :
     BehaviorBase<FrameworkElement>
 {
     /// <inheritdoc />
@@ -18,7 +18,7 @@ internal sealed class FileOpenPickerBehavior :
 
         if (windowManager.TryGetWindowForElement(this.AssociatedObject, out var window))
         {
-            var handler = window.WindowServices.GetRequiredService<IFileOpenPickerRequestHandler>();
+            var handler = window.WindowServices.GetRequiredService<IMultipleFileOpenPickerRequestHandler>();
             handler.SetWindowId(window.AppWindow.Id);
         }
     }

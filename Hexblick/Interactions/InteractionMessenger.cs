@@ -8,21 +8,21 @@ namespace Hexblick.Interactions;
 
 internal sealed class InteractionMessenger
 {
-    private readonly IFileOpenPickerRequestHandler _fileOpenPickRequestHandler;
+    private readonly IMultipleFileOpenPickerRequestHandler _fileOpenPickRequestHandler;
 
     public InteractionMessenger(
-        IFileOpenPickerRequestHandler fileOpenPickRequestHandler)
+        IMultipleFileOpenPickerRequestHandler fileOpenPickRequestHandler)
     {
         ArgumentNullException.ThrowIfNull(fileOpenPickRequestHandler);
 
         this._fileOpenPickRequestHandler = fileOpenPickRequestHandler;
     }
 
-    public async ValueTask<IReadOnlyCollection<FileInfo>> RequestFileOpenAsync(
+    public async ValueTask<IReadOnlyCollection<FileInfo>> RequestMultipleFileOpenAsync(
+        MultipleFileOpenPickerRequestMessage message,
         CancellationToken cancellation = default)
     {
-        var request = new FileOpenPickerRequestMessage();
-        var result = await this._fileOpenPickRequestHandler.InvokeAsync(request, cancellation);
+        var result = await this._fileOpenPickRequestHandler.InvokeAsync(message, cancellation);
         return result;
     }
 }

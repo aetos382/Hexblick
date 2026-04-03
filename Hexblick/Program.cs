@@ -34,7 +34,7 @@ services.AddScoped<EditorControlViewModel>();
 
 services.AddSingleton<IDialogService, DialogService>();
 
-services.AddScoped<IFileOpenPickerRequestHandler, FileOpenPickerRequestHandler>();
+services.AddScoped<IMultipleFileOpenPickerRequestHandler, MultipleFileOpenPickerRequestHandler>();
 
 using var host = appBuilder.Build();
 

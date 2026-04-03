@@ -84,7 +84,8 @@ internal sealed partial class MainWindowViewModel :
 
     public async ValueTask OpenFilesAsync(CancellationToken cancellationToken)
     {
-        var files = await this._messenger.RequestFileOpenAsync(cancellationToken);
+        var filePickRequest = new MultipleFileOpenPickerRequestMessage();
+        var files = await this._messenger.RequestMultipleFileOpenAsync(filePickRequest, cancellationToken);
 
         var modelFactory = new ModelFactory();
 
