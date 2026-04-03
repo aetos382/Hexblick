@@ -4,10 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
-
-using ZLinq;
 
 namespace Hexblick.Windowing;
 
@@ -15,55 +12,56 @@ internal interface IWindowManager
 {
     TWindow CreateWindow<TWindow>() where TWindow : Window;
 
-    IReadOnlyCollection<Window> Windows { get; }
+    IEnumerable<Window> Windows { get; }
 
-    bool TryGetWindowForElement(UIElement element, [MaybeNullWhen(false)] out Window window);
+    bool TryGetWindowForElement(
+        UIElement element,
+        [MaybeNullWhen(false)] out Window window);
 }
 
 internal sealed class ScopedWindowManager :
-    IWindowManager,
-    IDisposable
+    IWindowManager
 {
-    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IServiceProvider _serviceProvider;
 
-    private sealed record WindowAssociatedData(
-        Window Window,
-        IServiceScope ServiceScope);
-
-    private readonly ConcurrentDictionary<AppWindow, WindowAssociatedData> _data = new();
+    private readonly ConcurrentBag<WeakReference<Window>> _windows = new();
 
     public ScopedWindowManager(
-        IServiceScopeFactory scopeFactory)
+        IServiceProvider serviceProvider)
     {
-        ArgumentNullException.ThrowIfNull(scopeFactory);
+        ArgumentNullException.ThrowIfNull(serviceProvider);
 
-        this._scopeFactory = scopeFactory;
+        this._serviceProvider = serviceProvider;
     }
 
     /// <inheritdoc />
     public TWindow CreateWindow<TWindow>() where TWindow : Window
     {
-        var scope = this._scopeFactory.CreateScope();
-        var window = scope.ServiceProvider.GetRequiredService<TWindow>();
+        var sp = this._serviceProvider;
+        var scope = sp.CreateScope();
 
-        var appWindow = window.AppWindow;
+        var window = ActivatorUtilities.CreateInstance<TWindow>(scope.ServiceProvider, scope);
+        if (window is IServceableWindow sw)
+        {
+            sw.SetServiceScope(scope);
+        }
 
-        this._data.TryAdd(appWindow, new(window, scope));
-
-        appWindow.Destroying += this.OnAppWindowDestroying;
-
+        this._windows.Add(new WeakReference<Window>(window));
         return window;
     }
 
     /// <inheritdoc />
-    public IReadOnlyCollection<Window> Windows
+    public IEnumerable<Window> Windows
     {
         get
         {
-            return this._data
-                .AsValueEnumerable()
-                .Select(static x => x.Value.Window)
-                .ToArray();
+            foreach (var r in this._windows)
+            {
+                if (r.TryGetTarget(out var w))
+                {
+                    yield return w;
+                }
+            }
         }
     }
 
@@ -80,7 +78,7 @@ internal sealed class ScopedWindowManager :
             return false;
         }
 
-        foreach (var (_, (w, _)) in this._data)
+        foreach (var w in this.Windows)
         {
             if (w.Content.XamlRoot == xamlRoot)
             {
@@ -91,27 +89,5 @@ internal sealed class ScopedWindowManager :
 
         window = null;
         return false;
-    }
-
-    private void OnAppWindowDestroying(AppWindow sender, object args)
-    {
-        sender.Destroying -= this.OnAppWindowDestroying;
-
-        if (this._data.Remove(sender, out var data))
-        {
-            data.ServiceScope.Dispose();
-        }
-    }
-
-    /// <inheritdoc />
-    public void Dispose()
-    {
-        foreach (var key in this._data.Keys.AsValueEnumerable().ToArray())
-        {
-            if (this._data.Remove(key, out var data))
-            {
-                data.ServiceScope.Dispose();
-            }
-        }
     }
 }

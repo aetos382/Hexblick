@@ -3,14 +3,11 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.Storage.Pickers;
 
 using Windows.Foundation.Collections;
-
-using MessagePipe;
 
 using R3;
 
@@ -47,11 +44,9 @@ internal sealed partial class MainWindow :
     private readonly CompositeDisposable _disposables = [];
 
     public MainWindow(
-        IServiceProvider serviceProvider,
         MainWindowViewModel viewModel,
         IStringLoader stringLoader,
         InteractionMessenger messenger)
-        : base(serviceProvider)
     {
         ArgumentNullException.ThrowIfNull(viewModel);
         ArgumentNullException.ThrowIfNull(stringLoader);
@@ -84,6 +79,8 @@ internal sealed partial class MainWindow :
             .AddTo(this._disposables);
 
         this.Closed += this.OnClosed;
+
+        this.TrackLifetime(this._disposables);
     }
 
     private async ValueTask OnFileOpenAsync(CancellationToken cancellationToken)
@@ -223,17 +220,5 @@ internal sealed partial class MainWindow :
     private void OnExit()
     {
         this.Close();
-    }
-
-    /// <inheritdoc />
-    /// <inheritdoc />
-    protected override void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            this._disposables.Dispose();
-        }
-
-        base.Dispose(disposing);
     }
 }

@@ -2,10 +2,11 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI.Xaml;
+
 using Windows.Win32;
 using Windows.Win32.Foundation;
-
-using Microsoft.UI.Xaml;
 
 using R3;
 
@@ -13,47 +14,58 @@ namespace Hexblick.Windowing;
 
 internal abstract class BaseWindow :
     Window,
-    IDisposable
+    IServceableWindow
 {
-    private GCHandle<BaseWindow> _gcHandle;
     private readonly CompositeDisposable _disposables = [];
 
-    protected BaseWindow(
-        IServiceProvider serviceProvider)
+    protected BaseWindow()
     {
-        ArgumentNullException.ThrowIfNull(serviceProvider);
-
-        this.WindowServices = serviceProvider;
-
-        var gcHandle = this._gcHandle = new GCHandle<BaseWindow>(this);
+        var gcHandle = new GCHandle<BaseWindow>(this);
 
         unsafe
         {
             var result = PInvoke.SetWindowSubclass(
-                new(this.NaiveHandle),
+                (HWND)this.NaiveHandle,
                 &WindowProc,
                 0,
                 (nuint)gcHandle.ToIntPtr());
         }
 
         this._disposables.Add(gcHandle);
+        this._disposables.Add(this._scopeHolder);
     }
 
-    public IServiceProvider WindowServices { get; }
+    private readonly SingleAssignmentDisposable _scopeHolder = new();
 
-    /// <inheritdoc />
-    public void Dispose()
+    void IServceableWindow.SetServiceScope(IServiceScope scope)
     {
-        this.Dispose(true);
-        GC.SuppressFinalize(this);
+        ArgumentNullException.ThrowIfNull(scope);
+
+        this._scopeHolder.Disposable = scope;
+        this.WindowServices = scope.ServiceProvider;
     }
 
-    protected virtual void Dispose(bool disposing)
+    public T TrackLifetime<T>(T item) where T : IDisposable
     {
-        if (disposing)
+        ArgumentNullException.ThrowIfNull(item);
+
+        this._disposables.Add(item);
+        return item;
+    }
+
+    public IServiceProvider WindowServices
+    {
+        get
         {
-            this._disposables.Dispose();
+            if (field is not { } sp)
+            {
+                throw new InvalidOperationException();
+            }
+
+            return sp;
         }
+
+        private set;
     }
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
@@ -72,6 +84,9 @@ internal abstract class BaseWindow :
             case PInvoke.WM_NCDESTROY:
                 gcHandle.Target.OnNcDestroy();
                 break;
+
+            default:
+                break;
         }
 
         return PInvoke.DefSubclassProc(windowHandle, message, wParam, lParam);
@@ -80,6 +95,6 @@ internal abstract class BaseWindow :
     private unsafe void OnNcDestroy()
     {
         var result = PInvoke.RemoveWindowSubclass((HWND)this.NaiveHandle, &WindowProc, 0);
-        this._gcHandle.Dispose();
+        this._disposables.Dispose();
     }
 }
