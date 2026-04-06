@@ -37,15 +37,14 @@ internal static class WindowExtensions
 
         private bool TryGetContext([MaybeNullWhen(false)] out WindowContext context)
         {
-            // https://github.com/microsoft/CsWin32/issues/1674
-            var prop = PInvoke.GetProp((HWND)window.NaiveHandle, WindowProps.ServiceContext).DangerousGetHandle();
+            var prop = PInvoke.GetProp((HWND)window.NaiveHandle, WindowProps.ServiceContext);
             if (prop == 0)
             {
                 context = null;
                 return false;
             }
 
-            context = GCHandle<WindowContext>.FromIntPtr(prop).Target;
+            context = GCHandle<WindowContext>.FromIntPtr((nint)prop).Target;
             return true;
         }
 

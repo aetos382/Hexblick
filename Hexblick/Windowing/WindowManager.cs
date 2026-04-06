@@ -5,7 +5,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 
@@ -52,6 +51,7 @@ internal sealed class ScopedWindowManager :
         var gcHandle = GCHandle.Alloc(windowContext);
 
         PInvoke.SetProp((HWND)window.NaiveHandle, WindowProps.ServiceContext, (nuint)GCHandle.ToIntPtr(gcHandle));
+
         this._windows.Add(window.AppWindow, window);
 
         window.AppWindow.Destroying += this.OnAppWindowDestroying;
@@ -103,16 +103,13 @@ internal sealed class ScopedWindowManager :
     {
         sender.Destroying -= this.OnAppWindowDestroying;
 
-        var windowHandle = Win32Interop.GetWindowFromWindowId(sender.Id);
-        if (windowHandle != 0)
+        if (this._windows.Remove(sender, out var window))
         {
-            var prop = PInvoke.RemoveProp((HWND)windowHandle, WindowProps.ServiceContext);
+            var prop = PInvoke.RemoveProp((HWND)window.NaiveHandle, WindowProps.ServiceContext);
 
-            var gcHandle = GCHandle<WindowContext>.FromIntPtr(prop.DangerousGetHandle());
+            var gcHandle = GCHandle<WindowContext>.FromIntPtr((nint)prop);
             gcHandle.Target.Dispose();
             gcHandle.Dispose();
         }
-
-        this._windows.Remove(sender);
     }
 }

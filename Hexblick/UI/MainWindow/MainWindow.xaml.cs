@@ -12,20 +12,14 @@ using R3;
 
 using ZLinq;
 
-using Hexblick.Localization;
-using Hexblick.Services;
 using Hexblick.Interactions;
+using Hexblick.Localization;
 
 namespace Hexblick.UI;
 
-internal sealed partial class MainWindow :
-    IXamlRootProvider
+internal sealed partial class MainWindow
 {
-    XamlRoot? IXamlRootProvider.XamlRoot => this.Content.XamlRoot;
-
     private MainWindowViewModel ViewModel { get; }
-
-    private readonly DialogService _dialogService;
 
     private ReactiveCommand<TabViewTabCloseRequestedEventArgs> TabViewTabCloseCommand { get; }
 
@@ -51,7 +45,6 @@ internal sealed partial class MainWindow :
         this.InitializeComponent();
 
         this.ViewModel = viewModel;
-        this._dialogService = new DialogService(stringLoader, this);
 
         this._activeDocumentSubscription.AddTo(this._disposables);
 
@@ -74,7 +67,7 @@ internal sealed partial class MainWindow :
             .AddTo(this._disposables);
 
         this.Closed += this.OnClosed;
-        this.AppWindow.Destroying += OnAppWindowDestroying;
+        this.AppWindow.Destroying += this.OnAppWindowDestroying;
     }
 
     private void OnAppWindowDestroying(AppWindow sender, object args)
@@ -131,21 +124,6 @@ internal sealed partial class MainWindow :
         }
 
         await item.CloseAsync();
-
-        if (item.IsDirty.Value)
-        {
-            var result = await this._dialogService.ShowSaveConfirmationDialogAsync([item.Title.Value]);
-            if (result is SaveConfirmationResult.Save)
-            {
-                // TODO: save
-            }
-            else if (result is SaveConfirmationResult.Cancel)
-            {
-                return;
-            }
-        }
-
-        this.ViewModel.CloseEditorCommand.Execute(item);
     }
 
     private void SetTitle(string? activeDocumentTitle, bool isDirty)
@@ -168,38 +146,11 @@ internal sealed partial class MainWindow :
 
     private async void OnClosed(object sender, WindowEventArgs args)
     {
-        if (this._closing)
+        // if (this._closing)
         {
             this.Closed -= this.OnClosed;
             return;
         }
-
-        var dirtyDocuments = this.ViewModel.EditorViewModels
-            .AsValueEnumerable()
-            .Where(static x => x.IsDirty.Value)
-            .Select(static x => x.Title.Value)
-            .ToArray();
-
-        if (dirtyDocuments.Length == 0)
-        {
-            return;
-        }
-
-        args.Handled = true;
-
-        var result = await this._dialogService.ShowSaveConfirmationDialogAsync(dirtyDocuments);
-        if (result is SaveConfirmationResult.Save)
-        {
-            // TODO: save
-        }
-
-        if (result is SaveConfirmationResult.Cancel)
-        {
-            return;
-        }
-
-        this._closing = true;
-        this.Close();
     }
 
     private void OnExit()

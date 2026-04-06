@@ -1,7 +1,6 @@
 ﻿using Hexblick;
 using Hexblick.Interactions;
 using Hexblick.Localization;
-using Hexblick.Services;
 using Hexblick.UI;
 using Hexblick.Windowing;
 
@@ -31,8 +30,6 @@ services.AddScoped<IEditorControlViewModelFactory, EditorControlViewModelFactory
 services.AddScoped<ServiceScopeMarker>();
 services.AddScoped<InteractionMessenger>();
 services.AddScoped<EditorControlViewModel>();
-
-services.AddSingleton<IDialogService, DialogService>();
 
 services.AddScoped<IMultipleFileOpenPickerRequestHandler, MultipleFileOpenPickerRequestHandler>();
 services.AddScoped<IConfirmSaveRequesetHandler, ConfirmSaveRequestHandler>();
