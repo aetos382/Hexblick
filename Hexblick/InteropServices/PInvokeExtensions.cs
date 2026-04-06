@@ -4,7 +4,7 @@ using Windows.Win32.Foundation;
 
 namespace Windows.Win32;
 
-internal static unsafe partial class PInvoke
+internal static partial class PInvoke
 {
     // CsWin32 を使うと prop の型に SafeFileHandle とかを当てるのが気に入らないから自前宣言
     [LibraryImport("user32.dll", EntryPoint = "GetPropW", StringMarshalling = StringMarshalling.Utf16)]

@@ -16,8 +16,8 @@ namespace Hexblick.UI;
 internal sealed partial class MainWindowViewModel :
     IDisposable
 {
+    private readonly IDocumentManager _documentManager;
     private readonly InteractionMessenger _messenger;
-    private readonly IEditorControlViewModelFactory _editorControlViewModelFactory;
     private readonly IStringLoader _stringLoader;
 
     public ReactiveCommand NewDocumentCommand { get; }
@@ -39,15 +39,15 @@ internal sealed partial class MainWindowViewModel :
     private readonly CompositeDisposable _disposable = [];
 
     public MainWindowViewModel(
+        IDocumentManager documentManager,
         InteractionMessenger messenger,
-        IEditorControlViewModelFactory tabItemViewModelFactory,
         IStringLoader stringLoader)
     {
+        ArgumentNullException.ThrowIfNull(documentManager);
         ArgumentNullException.ThrowIfNull(messenger);
-        ArgumentNullException.ThrowIfNull(tabItemViewModelFactory);
 
+        this._documentManager = documentManager;
         this._messenger = messenger;
-        this._editorControlViewModelFactory = tabItemViewModelFactory;
         this._stringLoader = stringLoader;
 
         this._activeDocumentIsDirtySubscription.AddTo(this._disposable);
@@ -77,7 +77,7 @@ internal sealed partial class MainWindowViewModel :
 
     private void OnNewDocument()
     {
-        var viewModel = this._editorControlViewModelFactory.Create(
+        var viewModel = this._documentManager.CreateDocument(
             new NewFileModel(
                 this._stringLoader.GetString("NewFileTitle")));
 
@@ -101,10 +101,11 @@ internal sealed partial class MainWindowViewModel :
 
             var model = await modelFactory.OpenFileAsync(file, cancellationToken);
 
-            var editorViewModel = this._editorControlViewModelFactory.Create(model);
+            var editorViewModel = this._documentManager.CreateDocument(model);
 
             editorViewModel.Title.Value = file.Name;
             editorViewModel.Icon.Value = await FileIconExtractor.GetFileIconAsync(file.FullName);
+
             this._editorViewModels.Add(editorViewModel);
         }
     }

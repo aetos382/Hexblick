@@ -10,9 +10,6 @@ using Windows.Foundation.Collections;
 
 using R3;
 
-using ZLinq;
-
-using Hexblick.Interactions;
 using Hexblick.Localization;
 
 namespace Hexblick.UI;

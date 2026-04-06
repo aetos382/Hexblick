@@ -26,10 +26,10 @@ services.AddMessagePipe(static options =>
 
 services.AddScoped<MainWindow>();
 services.AddScoped<MainWindowViewModel>();
-services.AddScoped<IEditorControlViewModelFactory, EditorControlViewModelFactory>();
 services.AddScoped<ServiceScopeMarker>();
 services.AddScoped<InteractionMessenger>();
 services.AddScoped<EditorControlViewModel>();
+services.AddScoped<IDocumentManager, DocumentManager>();
 
 services.AddScoped<IMultipleFileOpenPickerRequestHandler, MultipleFileOpenPickerRequestHandler>();
 services.AddScoped<IConfirmSaveRequesetHandler, ConfirmSaveRequestHandler>();
