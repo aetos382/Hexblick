@@ -1,4 +1,4 @@
-<hw:BaseWindow
+<Window
   x:Class="Hexblick.UI.MainWindow"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -7,7 +7,6 @@
   xmlns:i="using:Microsoft.Xaml.Interactivity"
   xmlns:hui="using:Hexblick.UI"
   xmlns:hb="using:Hexblick.Behaviors"
-  xmlns:hw="using:Hexblick.Windowing"
   mc:Ignorable="d"
   Title="Hexblick">
 
@@ -95,4 +94,4 @@
     </StackPanel>
   </Page>
 
-</hw:BaseWindow>
+</Window>

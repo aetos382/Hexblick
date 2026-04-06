@@ -25,11 +25,11 @@ services.AddMessagePipe(static options =>
     options.EnableAutoRegistration = true;
 });
 
+services.AddScoped<MainWindow>();
+services.AddScoped<MainWindowViewModel>();
 services.AddScoped<IEditorControlViewModelFactory, EditorControlViewModelFactory>();
-
 services.AddScoped<ServiceScopeMarker>();
 services.AddScoped<InteractionMessenger>();
-services.AddScoped<MainWindowViewModel>();
 services.AddScoped<EditorControlViewModel>();
 
 services.AddSingleton<IDialogService, DialogService>();

@@ -1,17 +1,15 @@
-﻿using Hexblick.Interactions;
-using Hexblick.Localization;
-using Hexblick.Models;
-using Hexblick.Utilities;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 using ObservableCollections;
 
 using R3;
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-using Windows.Storage;
+using Hexblick.Interactions;
+using Hexblick.Localization;
+using Hexblick.Models;
+using Hexblick.Utilities;
 
 namespace Hexblick.UI;
 

@@ -2,21 +2,23 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+
+using Windows.Win32;
+using Windows.Win32.Foundation;
 
 namespace Hexblick.Windowing;
 
 internal interface IWindowManager
 {
-    TWindow CreateWindow<TWindow>() where TWindow : Window, IServiceableWindow;
+    TWindow CreateWindow<TWindow>() where TWindow : Window;
 
     IEnumerable<Window> Windows { get; }
-
-    bool TryGetServiceScope(
-        Window window,
-        [MaybeNullWhen(false)] out IServiceScope scope);
 
     bool TryGetWindowForElement(
         UIElement element,
@@ -28,7 +30,7 @@ internal sealed class ScopedWindowManager :
 {
     private readonly IServiceProvider _serviceProvider;
 
-    private readonly ConditionalWeakTable<Window, IServiceScope> _windows = new();
+    private readonly ConditionalWeakTable<AppWindow, Window> _windows = new();
 
     public ScopedWindowManager(
         IServiceProvider serviceProvider)
@@ -39,15 +41,21 @@ internal sealed class ScopedWindowManager :
     }
 
     /// <inheritdoc />
-    public TWindow CreateWindow<TWindow>() where TWindow : Window, IServiceableWindow
+    public TWindow CreateWindow<TWindow>() where TWindow : Window
     {
         var sp = this._serviceProvider;
         var scope = sp.CreateScope();
 
-        var window = ActivatorUtilities.CreateInstance<TWindow>(scope.ServiceProvider);
-        window.SetServiceScope(scope);
+        var window = scope.ServiceProvider.GetRequiredService<TWindow>();
 
-        this._windows.TryAdd(window, scope);
+        var windowContext = new WindowContext(window, scope);
+        var gcHandle = GCHandle.Alloc(windowContext);
+
+        PInvoke.SetProp((HWND)window.NaiveHandle, WindowProps.ServiceContext, (nuint)GCHandle.ToIntPtr(gcHandle));
+        this._windows.Add(window.AppWindow, window);
+
+        window.AppWindow.Destroying += this.OnAppWindowDestroying;
+
         return window;
     }
 
@@ -58,18 +66,11 @@ internal sealed class ScopedWindowManager :
         {
             var windows = this._windows;
 
-            foreach (var (w, _) in windows)
+            foreach (var (_, window) in windows)
             {
-                yield return w;
+                yield return window;
             }
         }
-    }
-
-    public bool TryGetServiceScope(
-        Window window,
-        [MaybeNullWhen(false)] out IServiceScope scope)
-    {
-        return this._windows.TryGetValue(window, out scope);
     }
 
     /// <inheritdoc />
@@ -96,5 +97,22 @@ internal sealed class ScopedWindowManager :
 
         window = null;
         return false;
+    }
+
+    private void OnAppWindowDestroying(AppWindow sender, object args)
+    {
+        sender.Destroying -= this.OnAppWindowDestroying;
+
+        var windowHandle = Win32Interop.GetWindowFromWindowId(sender.Id);
+        if (windowHandle != 0)
+        {
+            var prop = PInvoke.RemoveProp((HWND)windowHandle, WindowProps.ServiceContext);
+
+            var gcHandle = GCHandle<WindowContext>.FromIntPtr(prop.DangerousGetHandle());
+            gcHandle.Target.Dispose();
+            gcHandle.Dispose();
+        }
+
+        this._windows.Remove(sender);
     }
 }

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Windowing;
 
 using Windows.Foundation.Collections;
 
@@ -72,8 +73,14 @@ internal sealed partial class MainWindow :
             .AddTo(this._disposables);
 
         this.Closed += this.OnClosed;
+        this.AppWindow.Destroying += OnAppWindowDestroying;
+    }
 
-        this.TrackLifetime(this._disposables);
+    private void OnAppWindowDestroying(AppWindow sender, object args)
+    {
+        sender.Destroying -= this.OnAppWindowDestroying;
+
+        this._disposables.Dispose();
     }
 
     private async ValueTask OnFileOpenAsync(CancellationToken cancellationToken)
@@ -160,6 +167,7 @@ internal sealed partial class MainWindow :
     {
         if (this._closing)
         {
+            this.Closed -= this.OnClosed;
             return;
         }
 
