@@ -51,12 +51,6 @@ internal sealed partial class EditorControlViewModel :
     {
     }
 
-    /// <inheritdoc />
-    public void Dispose()
-    {
-        this._disposable.Dispose();
-    }
-
     internal async ValueTask CloseAsync()
     {
         if (this.IsDirty.Value)
@@ -74,5 +68,11 @@ internal sealed partial class EditorControlViewModel :
         }
 
         this._closedEvent.OnNext(Unit.Default);
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        this._disposable.Dispose();
     }
 }
