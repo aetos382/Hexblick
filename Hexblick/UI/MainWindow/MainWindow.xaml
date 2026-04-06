@@ -18,6 +18,7 @@
 
     <i:Interaction.Behaviors>
       <hb:MultipleFileOpenPickerBehavior/>
+      <hb:ConfirmSaveBehavior/>
     </i:Interaction.Behaviors>
 
     <StackPanel>

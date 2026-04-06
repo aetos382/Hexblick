@@ -77,10 +77,15 @@ internal sealed partial class MainWindowViewModel :
 
     private void OnNewDocument()
     {
-        this._editorViewModels.Add(
-            this._editorControlViewModelFactory.Create(
-                new NewFileModel(
-                    this._stringLoader.GetString("NewFileTitle"))));
+        var viewModel = this._editorControlViewModelFactory.Create(
+            new NewFileModel(
+                this._stringLoader.GetString("NewFileTitle")));
+
+        var subscription = viewModel.ClosedEvent.Subscribe(_ => { });
+
+        this._disposable.Add(subscription);
+
+        this._editorViewModels.Add(viewModel);
     }
 
     public async ValueTask OpenFilesAsync(CancellationToken cancellationToken)

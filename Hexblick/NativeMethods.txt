@@ -1,3 +1,9 @@
-SetProp
-GetProp
-RemoveProp
+; SafeHandle とか使うのが気に入らないので Win32Cs に頼らない
+; https://github.com/microsoft/CsWin32/issues/1674
+; SetProp
+; GetProp
+; RemoveProp
+
+BOOL
+HANDLE
+PCWSTR

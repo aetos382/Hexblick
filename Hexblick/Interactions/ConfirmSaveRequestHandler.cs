@@ -1,39 +1,63 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-
-using Microsoft.UI.Xaml.Controls;
 
 using Hexblick.Localization;
 using Hexblick.UI;
-using Hexblick.Interactions;
 
-namespace Hexblick.Services;
+using MessagePipe;
 
-internal interface IDialogService
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+
+namespace Hexblick.Interactions;
+
+internal sealed class ConfirmSaveMessage
 {
-    Task<SaveConfirmationResult> ShowSaveConfirmationDialogAsync(IReadOnlyList<string> titles);
+    private readonly string[] _titles;
+
+    public IReadOnlyCollection<string> Titles => this._titles;
+
+    public ConfirmSaveMessage(
+        IReadOnlyCollection<string> titles)
+    {
+        ArgumentNullException.ThrowIfNull(titles);
+
+        this._titles = titles.ToArray();
+    }
 }
 
-internal sealed class DialogService :
-    IDialogService
+internal interface IConfirmSaveRequesetHandler :
+    IAsyncRequestHandler<ConfirmSaveMessage, SaveConfirmationResult>,
+    IRequiresXamlRoot;
+
+internal sealed class ConfirmSaveRequestHandler :
+    IConfirmSaveRequesetHandler
 {
     private readonly IStringLoader _stringLoader;
-    private readonly IXamlRootProvider _xamlRootProvider;
 
-    public DialogService(
-        IStringLoader stringLoader,
-        IXamlRootProvider xamlRootProvider)
+    public ConfirmSaveRequestHandler(
+        IStringLoader stringLoader)
     {
         ArgumentNullException.ThrowIfNull(stringLoader);
-        ArgumentNullException.ThrowIfNull(xamlRootProvider);
 
         this._stringLoader = stringLoader;
-        this._xamlRootProvider = xamlRootProvider;
     }
 
-    /// <inheritdoc />
-    public async Task<SaveConfirmationResult> ShowSaveConfirmationDialogAsync(IReadOnlyList<string> titles)
+    private XamlRoot? _xamlRoot;
+
+    void IRequiresXamlRoot.SetXamlRoot(XamlRoot xamlRoot)
+    {
+        ArgumentNullException.ThrowIfNull(xamlRoot);
+
+        this._xamlRoot = xamlRoot;
+    }
+
+    public async ValueTask<SaveConfirmationResult> InvokeAsync(
+        ConfirmSaveMessage request,
+        CancellationToken cancellationToken)
     {
         var stringLoader = this._stringLoader;
 
@@ -48,9 +72,9 @@ internal sealed class DialogService :
             Title = "Hexblick",
             Content = new SaveConfirmationDialog
             {
-                Items = titles
+                Items = request.Titles.ToArray()
             },
-            XamlRoot = this._xamlRootProvider.XamlRoot
+            XamlRoot = this._xamlRoot
         };
 
         var result = await dialog.ShowAsync();

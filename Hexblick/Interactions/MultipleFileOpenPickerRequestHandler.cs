@@ -27,9 +27,9 @@ internal sealed class MultipleFileOpenPickerRequestMessage
 }
 
 internal interface IMultipleFileOpenPickerRequestHandler :
-    IAsyncRequestHandler<MultipleFileOpenPickerRequestMessage, IReadOnlyCollection<FileInfo>>
+    IAsyncRequestHandler<MultipleFileOpenPickerRequestMessage, IReadOnlyCollection<FileInfo>>,
+    IRequiresWindowId
 {
-    void SetWindowId(WindowId windowId);
 }
 
 internal sealed class MultipleFileOpenPickerRequestHandler :
@@ -37,7 +37,7 @@ internal sealed class MultipleFileOpenPickerRequestHandler :
 {
     private WindowId? _windowId;
 
-    void IMultipleFileOpenPickerRequestHandler.SetWindowId(WindowId windowId)
+    void IRequiresWindowId.SetWindowId(WindowId windowId)
     {
         this._windowId = windowId;
     }

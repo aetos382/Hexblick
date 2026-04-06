@@ -14,6 +14,7 @@ using ZLinq;
 
 using Hexblick.Localization;
 using Hexblick.Services;
+using Hexblick.Interactions;
 
 namespace Hexblick.UI;
 
@@ -128,6 +129,8 @@ internal sealed partial class MainWindow :
         {
             return;
         }
+
+        await item.CloseAsync();
 
         if (item.IsDirty.Value)
         {
