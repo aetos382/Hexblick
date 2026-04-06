@@ -1,4 +1,10 @@
 <Project>
+  <PropertyGroup>
+    <AdditionalFileItemNames>
+      $(AdditionalFileItemNames);
+      PRIResource
+    </AdditionalFileItemNames>
+  </PropertyGroup>
   <ItemGroup>
     <CompilerVisibleProperty Include="RootNamespace"/>
   </ItemGroup>

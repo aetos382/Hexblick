@@ -10,5 +10,4 @@
     <Platform Solution="*|x86" Project="x86" />
     <Deploy />
   </Project>
-  <Project Path="ResourceGenerator/ResourceGenerator.csproj" Id="8f07c925-0504-4219-8667-274797ada1f6" />
 </Solution>
