@@ -8,7 +8,7 @@ using Microsoft.UI.Xaml.Markup;
 
 using ZLinq;
 
-namespace Hexblick;
+namespace Hexblick.XamlInfrastructure;
 
 [RequiresDynamicCode("This class using reflection.")]
 internal static class XamlMetadataProviderFactory

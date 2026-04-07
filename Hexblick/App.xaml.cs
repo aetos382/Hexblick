@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Markup;
 
 using Hexblick.Presentations;
 using Hexblick.Windowing;
+using Hexblick.XamlInfrastructure;
 
 namespace Hexblick;
 
@@ -49,7 +50,8 @@ public sealed partial class App :
         this._serviceProvider = serviceProvider;
 
         // 名前 "_AppProvider" を静的に参照してはいけない。
-        this._internalProvider = XamlMetadataProviderFactory.CreateProvider(this, "_AppProvider");
+        var internalProvider = XamlMetadataProviderFactory.CreateProvider(this, "_AppProvider");
+        this._internalProvider = new ServiceProviderAwareXamlMetadataProvider(internalProvider, serviceProvider);
 
         this.InitializeComponent();
 

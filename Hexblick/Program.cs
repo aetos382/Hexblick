@@ -34,6 +34,8 @@ services.AddScoped<IDocumentManager, DocumentManager>();
 services.AddScoped<IMultipleFileOpenPickerRequestHandler, MultipleFileOpenPickerRequestHandler>();
 services.AddScoped<IConfirmSaveRequesetHandler, ConfirmSaveRequestHandler>();
 
+services.AddScoped<EditorControl>();
+
 using var host = appBuilder.Build();
 
 await host.RunAsync().ConfigureAwait(false);
