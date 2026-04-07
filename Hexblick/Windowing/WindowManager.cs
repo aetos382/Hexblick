@@ -50,7 +50,7 @@ internal sealed class ScopedWindowManager :
         var windowContext = new WindowContext(window, scope);
         var gcHandle = GCHandle.Alloc(windowContext);
 
-        PInvoke.SetProp((HWND)window.NaiveHandle, WindowProps.ServiceContext, (nuint)GCHandle.ToIntPtr(gcHandle));
+        PInvoke.SetProp((HWND)window.NaiveHandle, WindowProps.ServiceContext, (nuint)gcHandle.ToIntPtr());
 
         this._windows.Add(window.AppWindow, window);
 
