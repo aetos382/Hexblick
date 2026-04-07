@@ -143,10 +143,18 @@ internal sealed partial class MainWindow
 
     private async void OnClosed(object sender, WindowEventArgs args)
     {
-        // if (this._closing)
+        if (this._closing)
         {
             this.Closed -= this.OnClosed;
             return;
+        }
+
+        args.Handled = true;
+
+        if (await this.ViewModel.CloseAsync())
+        {
+            this._closing = true;
+            this.Close();
         }
     }
 

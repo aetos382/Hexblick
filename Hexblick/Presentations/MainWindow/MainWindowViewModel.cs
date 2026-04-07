@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,6 +13,8 @@ using Hexblick.Interactions;
 using Hexblick.Localization;
 using Hexblick.Models;
 using Hexblick.Utilities;
+
+using ZLinq;
 
 namespace Hexblick.Presentations;
 
@@ -144,6 +147,31 @@ internal sealed partial class MainWindowViewModel :
 
         this._activeDocumentIsDirtySubscription.Disposable = viewModel.IsDirty
             .Subscribe(isDirty => this.SaveFileCommand.ChangeCanExecute(!viewModel.IsNewDocument && isDirty));
+    }
+
+    public async ValueTask<bool> CloseAsync()
+    {
+        var dirtyTitles = this._editorViewModels
+            .AsValueEnumerable()
+            .Where(static x => x.IsDirty.Value)
+            .Select(static x => x.Title.Value)
+            .ToArray();
+
+        var result = await this._messenger.ConfirmSaveAsync(dirtyTitles);
+        switch (result)
+        {
+            case SaveConfirmationResult.Save:
+                // TODO: save
+                return true;
+
+            case SaveConfirmationResult.Discard:
+                return true;
+
+            case SaveConfirmationResult.Cancel:
+                return false;
+        }
+
+        throw new UnreachableException();
     }
 
     /// <inheritdoc />
