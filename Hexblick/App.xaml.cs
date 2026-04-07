@@ -1,10 +1,11 @@
 ﻿using System;
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.UI.Xaml;
-
 using Hexblick.Presentations;
 using Hexblick.Windowing;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Markup;
 
 namespace Hexblick;
 

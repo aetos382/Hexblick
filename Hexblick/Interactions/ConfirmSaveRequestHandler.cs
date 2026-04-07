@@ -4,13 +4,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Hexblick.Localization;
-using Hexblick.Presentations;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 using MessagePipe;
 
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Hexblick.Localization;
+using Hexblick.Presentations;
 
 namespace Hexblick.Interactions;
 
@@ -37,13 +37,17 @@ internal sealed class ConfirmSaveRequestHandler :
     IConfirmSaveRequesetHandler
 {
     private readonly IStringLoader _stringLoader;
+    private readonly ServiceScopeMarker _scopeMarker;
 
     public ConfirmSaveRequestHandler(
-        IStringLoader stringLoader)
+        IStringLoader stringLoader,
+        ServiceScopeMarker scopeMarker)
     {
         ArgumentNullException.ThrowIfNull(stringLoader);
+        ArgumentNullException.ThrowIfNull(scopeMarker);
 
         this._stringLoader = stringLoader;
+        this._scopeMarker = scopeMarker;
     }
 
     private XamlRoot? _xamlRoot;

@@ -67,9 +67,6 @@ internal sealed partial class MainWindowViewModel :
         this.ActiveDocument.Subscribe(this.OnActiveDocumentChanged)
             .AddTo(this._disposable);
 
-        this.CloseEditorCommand = new ReactiveCommand<EditorControlViewModel>(this.OnCloseDocument)
-            .AddTo(this._disposable);
-
         this.EditorViewModels = this._editorViewModels
             .ToNotifyCollectionChangedSlim()
             .AddTo(this._disposable);
@@ -81,9 +78,17 @@ internal sealed partial class MainWindowViewModel :
             new NewFileModel(
                 this._stringLoader.GetString("NewFileTitle")));
 
-        var subscription = viewModel.ClosedEvent.Subscribe(_ => { });
+        var subscription = viewModel.ClosedEvent.Subscribe(
+            viewModel,
+            (_, vm) =>
+            {
+                if (this._editorViewModels.Remove(vm))
+                {
+                    vm.Dispose();
+                }
+            });
 
-        this._disposable.Add(subscription);
+        viewModel.RegisterDisposable(subscription);
 
         this._editorViewModels.Add(viewModel);
     }
@@ -127,15 +132,6 @@ internal sealed partial class MainWindowViewModel :
 
         this._activeDocumentIsDirtySubscription.Disposable = viewModel.IsDirty
             .Subscribe(isDirty => this.SaveFileCommand.ChangeCanExecute(!viewModel.IsNewDocument && isDirty));
-    }
-
-    private void OnCloseDocument(
-        EditorControlViewModel item)
-    {
-        if (this.EditorViewModels.Remove(item))
-        {
-            item.Dispose();
-        }
     }
 
     /// <inheritdoc />

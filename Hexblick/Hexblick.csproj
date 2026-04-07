@@ -68,6 +68,9 @@
     <PackageReference Include="System.Drawing.Common" />
     <PackageReference Include="ZLinq" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DependencyInjection\" />
+  </ItemGroup>
 
   <!--
     Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution

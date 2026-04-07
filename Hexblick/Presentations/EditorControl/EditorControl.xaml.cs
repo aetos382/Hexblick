@@ -5,7 +5,8 @@ using Microsoft.UI.Xaml;
 namespace Hexblick.Presentations;
 
 internal sealed partial class EditorControl :
-    IDisposable
+    IDisposable,
+    IServiceProvider
 {
     public EditorControl()
     {
@@ -37,5 +38,11 @@ internal sealed partial class EditorControl :
     /// <inheritdoc />
     public void Dispose()
     {
+    }
+
+    /// <inheritdoc />
+    public object? GetService(Type serviceType)
+    {
+        return ((IServiceProvider)this.ViewModel)?.GetService(serviceType);
     }
 }

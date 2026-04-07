@@ -2,8 +2,6 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
-using R3;
-
 using Hexblick.Models;
 
 namespace Hexblick.Presentations;
@@ -37,8 +35,6 @@ internal sealed class DocumentManager :
     {
         var scope = this._serviceScopeFactory.CreateScope();
         var vm = this._viewModelFactory(scope.ServiceProvider, model);
-
-        var viewModelClosedSubscription = vm.ClosedEvent.Subscribe(_ => scope.Dispose());
 
         return vm;
     }
