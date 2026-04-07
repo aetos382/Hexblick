@@ -2,11 +2,9 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Markup;
 
 using Hexblick.Presentations;
 using Hexblick.Windowing;
-using Hexblick.XamlInfrastructure;
 
 namespace Hexblick;
 
@@ -17,26 +15,9 @@ namespace Hexblick;
 /// Provides application-specific behavior to supplement the default Application class.
 /// </summary>
 public sealed partial class App :
-    IServiceProvider,
-    IXamlMetadataProvider
+    IServiceProvider
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly IXamlMetadataProvider _internalProvider;
-
-    IXamlType IXamlMetadataProvider.GetXamlType(string fullName)
-    {
-        return this._internalProvider.GetXamlType(fullName);
-    }
-
-    IXamlType IXamlMetadataProvider.GetXamlType(Type type)
-    {
-        return this._internalProvider.GetXamlType(type);
-    }
-
-    XmlnsDefinition[] IXamlMetadataProvider.GetXmlnsDefinitions()
-    {
-        return this._internalProvider.GetXmlnsDefinitions();
-    }
 
     /// <summary>
     /// Initializes the singleton application object.  This is the first line of authored code
@@ -48,10 +29,6 @@ public sealed partial class App :
         ArgumentNullException.ThrowIfNull(serviceProvider);
 
         this._serviceProvider = serviceProvider;
-
-        // 名前 "_AppProvider" を静的に参照してはいけない。
-        var internalProvider = XamlMetadataProviderFactory.CreateProvider(this, "_AppProvider");
-        this._internalProvider = new ServiceProviderAwareXamlMetadataProvider(internalProvider, serviceProvider);
 
         this.InitializeComponent();
 

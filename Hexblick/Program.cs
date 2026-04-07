@@ -29,7 +29,6 @@ services.AddScoped<MainWindowViewModel>();
 services.AddScoped<ServiceScopeMarker>();
 services.AddScoped<InteractionMessenger>();
 services.AddScoped<EditorControlViewModel>();
-services.AddScoped<IDocumentManager, DocumentManager>();
 
 services.AddScoped<IMultipleFileOpenPickerRequestHandler, MultipleFileOpenPickerRequestHandler>();
 services.AddScoped<IConfirmSaveRequesetHandler, ConfirmSaveRequestHandler>();

@@ -17,6 +17,7 @@ namespace Hexblick.Interactions;
 internal sealed class ConfirmSaveMessage
 {
     private readonly string[] _titles;
+    private readonly TaskCompletionSource<SaveConfirmationResult> _result = new();
 
     public IReadOnlyCollection<string> Titles => this._titles;
 
@@ -26,6 +27,16 @@ internal sealed class ConfirmSaveMessage
         ArgumentNullException.ThrowIfNull(titles);
 
         this._titles = titles.ToArray();
+    }
+
+    public void SetResult(SaveConfirmationResult result)
+    {
+        this._result.SetResult(result);
+    }
+
+    public Task<SaveConfirmationResult> GetResultAsync(CancellationToken cancellationToken)
+    {
+        return this._result.Task.WaitAsync(cancellationToken);
     }
 }
 
@@ -81,13 +92,17 @@ internal sealed class ConfirmSaveRequestHandler :
             XamlRoot = this._xamlRoot
         };
 
-        var result = await dialog.ShowAsync();
+        var dialogResult = await dialog.ShowAsync();
 
-        return result switch
+        var confirmationResult = dialogResult switch
         {
             ContentDialogResult.None => SaveConfirmationResult.Cancel,
             ContentDialogResult.Primary => SaveConfirmationResult.Save,
             ContentDialogResult.Secondary => SaveConfirmationResult.Discard
         };
+
+        request.SetResult(confirmationResult);
+
+        return confirmationResult;
     }
 }

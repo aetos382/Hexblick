@@ -2,6 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using ObservableCollections;
 
 using R3;
@@ -16,7 +18,6 @@ namespace Hexblick.Presentations;
 internal sealed partial class MainWindowViewModel :
     IDisposable
 {
-    private readonly IDocumentManager _documentManager;
     private readonly InteractionMessenger _messenger;
     private readonly IStringLoader _stringLoader;
 
@@ -28,25 +29,25 @@ internal sealed partial class MainWindowViewModel :
 
     public BindableReactiveProperty<EditorControlViewModel?> ActiveDocument { get; }
 
-    public ReactiveCommand<EditorControlViewModel> CloseEditorCommand { get; }
-
     private readonly ObservableList<EditorControlViewModel> _editorViewModels = [];
 
     public NotifyCollectionChangedSynchronizedViewList<EditorControlViewModel> EditorViewModels { get; }
 
     private readonly SerialDisposable _activeDocumentIsDirtySubscription = new();
 
+    private readonly Func<Model, EditorControlViewModel> _viewModelFactory;
+
     private readonly CompositeDisposable _disposable = [];
 
     public MainWindowViewModel(
-        IDocumentManager documentManager,
         InteractionMessenger messenger,
-        IStringLoader stringLoader)
+        IStringLoader stringLoader,
+        IServiceProvider serviceProvider)
     {
-        ArgumentNullException.ThrowIfNull(documentManager);
         ArgumentNullException.ThrowIfNull(messenger);
+        ArgumentNullException.ThrowIfNull(stringLoader);
+        ArgumentNullException.ThrowIfNull(serviceProvider);
 
-        this._documentManager = documentManager;
         this._messenger = messenger;
         this._stringLoader = stringLoader;
 
@@ -70,27 +71,38 @@ internal sealed partial class MainWindowViewModel :
         this.EditorViewModels = this._editorViewModels
             .ToNotifyCollectionChangedSlim()
             .AddTo(this._disposable);
+
+        var factory = ActivatorUtilities.CreateFactory<EditorControlViewModel>([typeof(Model)]);
+
+        this._viewModelFactory = model =>
+        {
+            var viewModel = factory(serviceProvider, [model]);
+
+            var subscription = viewModel.ClosedEvent.Subscribe(
+                (this, viewModel),
+                static (_, args) =>
+                {
+                    var (self, vm) = ((MainWindowViewModel, EditorControlViewModel))args;
+
+                    if (self._editorViewModels.Remove(vm))
+                    {
+                        vm.Dispose();
+                    }
+                });
+
+            viewModel.RegisterDisposable(subscription);
+
+            this._editorViewModels.Add(viewModel);
+
+            return viewModel;
+        };
     }
 
     private void OnNewDocument()
     {
-        var viewModel = this._documentManager.CreateDocument(
+        var viewModel = this._viewModelFactory(
             new NewFileModel(
                 this._stringLoader.GetString("NewFileTitle")));
-
-        var subscription = viewModel.ClosedEvent.Subscribe(
-            viewModel,
-            (_, vm) =>
-            {
-                if (this._editorViewModels.Remove(vm))
-                {
-                    vm.Dispose();
-                }
-            });
-
-        viewModel.RegisterDisposable(subscription);
-
-        this._editorViewModels.Add(viewModel);
     }
 
     public async ValueTask OpenFilesAsync(CancellationToken cancellationToken)
@@ -106,7 +118,7 @@ internal sealed partial class MainWindowViewModel :
 
             var model = await modelFactory.OpenFileAsync(file, cancellationToken);
 
-            var editorViewModel = this._documentManager.CreateDocument(model);
+            var editorViewModel = this._viewModelFactory(model);
 
             editorViewModel.Title.Value = file.Name;
             editorViewModel.Icon.Value = await FileIconExtractor.GetFileIconAsync(file.FullName);
