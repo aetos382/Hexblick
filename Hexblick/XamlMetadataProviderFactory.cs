@@ -13,15 +13,21 @@ namespace Hexblick;
 [RequiresDynamicCode("This class using reflection.")]
 internal static class XamlMetadataProviderFactory
 {
-    public static IXamlMetadataProvider CreateProvider<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.NonPublicProperties)] TApplication>(TApplication app)
+    public static IXamlMetadataProvider CreateProvider<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.NonPublicProperties)] TApplication>(
+        TApplication app,
+        string appProviderPropertyName)
         where TApplication : Application
     {
         var thisType = typeof(TApplication);
 
-        // 名前 "_AppProvider" を静的に参照してはいけない。
         var appProviderProperty = thisType.GetProperty(
-            "_AppProvider",
+            appProviderPropertyName,
             BindingFlags.Instance | BindingFlags.NonPublic);
+
+        if (appProviderProperty is null)
+        {
+            throw new InvalidOperationException();
+        }
 
         var appProviderMethods = appProviderProperty.PropertyType
             .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)

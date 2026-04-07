@@ -47,7 +47,9 @@ public sealed partial class App :
         ArgumentNullException.ThrowIfNull(serviceProvider);
 
         this._serviceProvider = serviceProvider;
-        this._internalProvider = XamlMetadataProviderFactory.CreateProvider(this);
+
+        // 名前 "_AppProvider" を静的に参照してはいけない。
+        this._internalProvider = XamlMetadataProviderFactory.CreateProvider(this, "_AppProvider");
 
         this.InitializeComponent();
 
