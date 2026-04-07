@@ -1,13 +1,13 @@
-﻿using Hexblick;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+using WinRT;
+
+using Hexblick;
 using Hexblick.Interactions;
 using Hexblick.Localization;
 using Hexblick.Presentations;
 using Hexblick.Windowing;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
-using WinRT;
 
 ComWrappersSupport.InitializeComWrappers();
 
