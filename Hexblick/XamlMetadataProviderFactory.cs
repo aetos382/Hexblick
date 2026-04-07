@@ -40,30 +40,33 @@ internal static class XamlMetadataProviderFactory
         var typeNameParameter = Expression.Parameter(typeof(string), "typeName");
         var typeParameter = Expression.Parameter(typeof(Type), "type");
 
-        var getXamlTypeByTypeName = Expression.Lambda<Func<TApplication, string, IXamlType>>(
-            Expression.Call(
-                appProviderPropertyExpression,
-                appProviderMethods.Single(static x =>
-                    x.Name == nameof(IXamlMetadataProvider.GetXamlType) &&
-                    x.GetParameters()[0].ParameterType == typeof(string)),
-                typeNameParameter),
-            thisParameter, typeNameParameter);
+        var getXamlTypeByTypeName =
+            Expression.Lambda<Func<TApplication, string, IXamlType>>(
+                Expression.Call(
+                    appProviderPropertyExpression,
+                    appProviderMethods.Single(static x =>
+                        x.Name == nameof(IXamlMetadataProvider.GetXamlType) &&
+                        x.GetParameters()[0].ParameterType == typeof(string)),
+                    typeNameParameter),
+                thisParameter, typeNameParameter);
 
-        var getXamlTypeByType = Expression.Lambda<Func<TApplication, Type, IXamlType>>(
-            Expression.Call(
-                appProviderPropertyExpression,
-                appProviderMethods.Single(static x =>
-                    x.Name == nameof(IXamlMetadataProvider.GetXamlType) &&
-                    x.GetParameters()[0].ParameterType == typeof(Type)),
-                typeParameter),
-            thisParameter, typeParameter);
+        var getXamlTypeByType =
+            Expression.Lambda<Func<TApplication, Type, IXamlType>>(
+                Expression.Call(
+                    appProviderPropertyExpression,
+                    appProviderMethods.Single(static x =>
+                        x.Name == nameof(IXamlMetadataProvider.GetXamlType) &&
+                        x.GetParameters()[0].ParameterType == typeof(Type)),
+                    typeParameter),
+                thisParameter, typeParameter);
 
-        var getXmlnsDefinitions = Expression.Lambda<Func<TApplication, XmlnsDefinition[]>>(
-            Expression.Call(
-                appProviderPropertyExpression,
-                appProviderMethods.Single(static x =>
-                    x.Name == nameof(IXamlMetadataProvider.GetXmlnsDefinitions))),
-            thisParameter);
+        var getXmlnsDefinitions =
+            Expression.Lambda<Func<TApplication, XmlnsDefinition[]>>(
+                Expression.Call(
+                    appProviderPropertyExpression,
+                    appProviderMethods.Single(static x =>
+                        x.Name == nameof(IXamlMetadataProvider.GetXmlnsDefinitions))),
+                thisParameter);
 
         return new DelegateClass<TApplication>(
             app,
