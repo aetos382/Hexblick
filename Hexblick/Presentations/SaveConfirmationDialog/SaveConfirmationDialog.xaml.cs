@@ -1,11 +1,8 @@
-﻿// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using Microsoft.UI.Xaml;
 
-namespace Hexblick.UI;
+namespace Hexblick.Presentations;
 
 public sealed partial class SaveConfirmationDialog
 {

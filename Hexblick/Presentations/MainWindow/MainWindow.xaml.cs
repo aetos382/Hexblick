@@ -12,7 +12,7 @@ using R3;
 
 using Hexblick.Localization;
 
-namespace Hexblick.UI;
+namespace Hexblick.Presentations;
 
 internal sealed partial class MainWindow
 {

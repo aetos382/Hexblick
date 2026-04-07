@@ -6,7 +6,7 @@ using R3;
 
 using Hexblick.Models;
 
-namespace Hexblick.UI;
+namespace Hexblick.Presentations;
 
 internal interface IDocumentManager
 {

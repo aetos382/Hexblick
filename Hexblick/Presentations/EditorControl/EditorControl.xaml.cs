@@ -2,7 +2,7 @@
 
 using Microsoft.UI.Xaml;
 
-namespace Hexblick.UI;
+namespace Hexblick.Presentations;
 
 internal sealed partial class EditorControl :
     IDisposable

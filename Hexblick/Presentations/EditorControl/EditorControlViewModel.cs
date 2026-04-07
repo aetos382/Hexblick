@@ -8,7 +8,7 @@ using R3;
 using Hexblick.Interactions;
 using Hexblick.Models;
 
-namespace Hexblick.UI;
+namespace Hexblick.Presentations;
 
 internal sealed partial class EditorControlViewModel :
     IDisposable

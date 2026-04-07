@@ -1,6 +1,6 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 
-namespace Hexblick.UI;
+namespace Hexblick.Presentations;
 
 internal abstract class EditorControlViewModelState
 {

@@ -11,7 +11,7 @@ using Hexblick.Localization;
 using Hexblick.Models;
 using Hexblick.Utilities;
 
-namespace Hexblick.UI;
+namespace Hexblick.Presentations;
 
 internal sealed partial class MainWindowViewModel :
     IDisposable
