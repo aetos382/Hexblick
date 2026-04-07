@@ -22,11 +22,11 @@ internal class ServiceProviderAwareXamlMetadataProvider :
         this._serviceProvider = serviceProvider;
     }
 
-    private readonly Dictionary<string, IXamlType> _typeCacheByName = new(StringComparer.Ordinal);
-    private readonly Dictionary<Type, IXamlType> _typeCacheByType = new();
+    private readonly Dictionary<string, IXamlType?> _typeCacheByName = new(StringComparer.Ordinal);
+    private readonly Dictionary<Type, IXamlType?> _typeCacheByType = new();
 
     /// <inheritdoc />
-    IXamlType IXamlMetadataProvider.GetXamlType(Type type)
+    IXamlType? IXamlMetadataProvider.GetXamlType(Type type)
     {
         if (!this._typeCacheByType.TryGetValue(type, out var xamlType))
         {
@@ -37,7 +37,7 @@ internal class ServiceProviderAwareXamlMetadataProvider :
     }
 
     /// <inheritdoc />
-    IXamlType IXamlMetadataProvider.GetXamlType(string fullName)
+    IXamlType? IXamlMetadataProvider.GetXamlType(string fullName)
     {
         if (!this._typeCacheByName.TryGetValue(fullName, out var xamlType))
         {
@@ -53,7 +53,7 @@ internal class ServiceProviderAwareXamlMetadataProvider :
         return this._coreProvider.GetXmlnsDefinitions();
     }
 
-    private IXamlType GetXamlTypeCore(Type type)
+    private IXamlType? GetXamlTypeCore(Type type)
     {
         var coreType = this._coreProvider.GetXamlType(type);
         if (coreType is null)
@@ -64,7 +64,7 @@ internal class ServiceProviderAwareXamlMetadataProvider :
         return new ServiceProviderAwareXamlType(coreType, this._serviceProvider);
     }
 
-    private IXamlType GetXamlTypeCore(string fullName)
+    private IXamlType? GetXamlTypeCore(string fullName)
     {
         var coreType = this._coreProvider.GetXamlType(fullName);
         if (coreType is null)
