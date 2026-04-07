@@ -29,7 +29,8 @@ internal static class XamlMetadataProviderFactory
             throw new InvalidOperationException();
         }
 
-        var appProviderMethods = appProviderProperty.PropertyType
+        var appProviderMethods = appProviderProperty
+            .PropertyType
             .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)
             .AsValueEnumerable();
 
