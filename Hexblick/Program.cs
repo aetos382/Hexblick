@@ -1,7 +1,7 @@
 ﻿using Hexblick;
 using Hexblick.Interactions;
 using Hexblick.Localization;
-using Hexblick.UI;
+using Hexblick.Presentations;
 using Hexblick.Windowing;
 
 using Microsoft.Extensions.DependencyInjection;

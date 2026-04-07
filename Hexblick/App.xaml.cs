@@ -3,7 +3,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 
-using Hexblick.UI;
+using Hexblick.Presentations;
 using Hexblick.Windowing;
 
 namespace Hexblick;
