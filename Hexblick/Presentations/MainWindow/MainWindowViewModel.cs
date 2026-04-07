@@ -9,12 +9,12 @@ using ObservableCollections;
 
 using R3;
 
+using ZLinq;
+
 using Hexblick.Interactions;
 using Hexblick.Localization;
 using Hexblick.Models;
 using Hexblick.Utilities;
-
-using ZLinq;
 
 namespace Hexblick.Presentations;
 
