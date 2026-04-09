@@ -11,8 +11,7 @@ using Hexblick.Models;
 namespace Hexblick.Presentations;
 
 internal sealed partial class EditorControlViewModel :
-    IDisposable,
-    ICascadingDisposable
+    IDisposable
 {
     private readonly Model _model;
 
