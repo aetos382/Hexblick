@@ -24,7 +24,6 @@ internal sealed partial class MainWindowViewModel :
     public InteractionMessenger InteractionMessenger { get; }
 
     private readonly IStringLoader _stringLoader;
-    private readonly IServiceProvider _serviceProvider;
 
     public ReactiveCommand NewDocumentCommand { get; }
 
@@ -56,7 +55,6 @@ internal sealed partial class MainWindowViewModel :
         this.InteractionMessenger = messenger;
 
         this._stringLoader = stringLoader;
-        this._serviceProvider = serviceProvider;
 
         this._activeDocumentIsDirtySubscription.AddTo(this._disposable);
 
