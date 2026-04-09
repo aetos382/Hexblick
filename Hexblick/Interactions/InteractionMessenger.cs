@@ -10,13 +10,13 @@ internal sealed class InteractionMessenger
 {
     public InteractionMessenger(
         IMultipleFileOpenPickerRequestHandler fileOpenPickRequestHandler,
-        IConfirmSaveRequestHandler confirmSaveRequesetHandler)
+        IConfirmSaveRequestHandler confirmSaveRequestHandler)
     {
         ArgumentNullException.ThrowIfNull(fileOpenPickRequestHandler);
-        ArgumentNullException.ThrowIfNull(confirmSaveRequesetHandler);
+        ArgumentNullException.ThrowIfNull(confirmSaveRequestHandler);
 
         this.MultipleFileOpenPickerRequestHandler = fileOpenPickRequestHandler;
-        this.ConfirmSaveRequesetHandler = confirmSaveRequesetHandler;
+        this.ConfirmSaveRequestHandler = confirmSaveRequestHandler;
     }
 
     public async ValueTask<IReadOnlyCollection<FileInfo>> RequestMultipleFileOpenAsync(
@@ -32,11 +32,11 @@ internal sealed class InteractionMessenger
         CancellationToken cancellationToken = default)
     {
         var message = new ConfirmSaveMessage(titles);
-        var result = await this.ConfirmSaveRequesetHandler.InvokeAsync(message, cancellationToken);
+        var result = await this.ConfirmSaveRequestHandler.InvokeAsync(message, cancellationToken);
         return result;
     }
 
     public IMultipleFileOpenPickerRequestHandler MultipleFileOpenPickerRequestHandler { get; }
 
-    public IConfirmSaveRequestHandler ConfirmSaveRequesetHandler { get; }
+    public IConfirmSaveRequestHandler ConfirmSaveRequestHandler { get; }
 }

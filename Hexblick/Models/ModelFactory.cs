@@ -10,6 +10,6 @@ internal sealed class ModelFactory
         FileInfo file,
         CancellationToken cancellationToken)
     {
-        return new ExisingFileModel(file);
+        return new ExistingFileModel(file);
     }
 }

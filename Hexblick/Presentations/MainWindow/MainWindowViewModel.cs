@@ -131,8 +131,6 @@ internal sealed partial class MainWindowViewModel :
 
             editorViewModel.Title.Value = file.Name;
             editorViewModel.Icon.Value = await FileIconExtractor.GetFileIconAsync(file.FullName);
-
-            this._editorViewModels.Add(editorViewModel);
         }
     }
 
