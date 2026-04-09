@@ -1,12 +1,8 @@
-﻿using System;
-
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 
 namespace Hexblick.Presentations;
 
-internal sealed partial class EditorControl :
-    IDisposable,
-    IServiceProvider
+internal sealed partial class EditorControl
 {
     public EditorControl()
     {
@@ -15,17 +11,8 @@ internal sealed partial class EditorControl :
 
     public EditorControlViewModel ViewModel
     {
-        get
-        {
-            return (EditorControlViewModel)this.GetValue(ViewModelProperty);
-        }
-
-        set
-        {
-            ArgumentNullException.ThrowIfNull(value);
-
-            this.SetValue(ViewModelProperty, value);
-        }
+        get => (EditorControlViewModel)this.GetValue(ViewModelProperty);
+        set => this.SetValue(ViewModelProperty, value);
     }
 
     public static readonly DependencyProperty ViewModelProperty =
@@ -34,15 +21,4 @@ internal sealed partial class EditorControl :
             typeof(EditorControlViewModel),
             typeof(EditorControl),
             new PropertyMetadata(null));
-
-    /// <inheritdoc />
-    public void Dispose()
-    {
-    }
-
-    /// <inheritdoc />
-    public object? GetService(Type serviceType)
-    {
-        return ((IServiceProvider)this.ViewModel)?.GetService(serviceType);
-    }
 }

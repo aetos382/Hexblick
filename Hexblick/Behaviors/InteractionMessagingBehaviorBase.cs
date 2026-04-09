@@ -67,6 +67,11 @@ internal abstract class InteractionMessagingBehaviorBase<T, THandler> :
             return;
         }
 
+        if (b.AssociatedObject is null)
+        {
+            return;
+        }
+
         SetOwner(b.AssociatedObject, handler);
     }
 }

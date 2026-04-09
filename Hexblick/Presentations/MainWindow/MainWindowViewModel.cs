@@ -24,6 +24,7 @@ internal sealed partial class MainWindowViewModel :
     public InteractionMessenger InteractionMessenger { get; }
 
     private readonly IStringLoader _stringLoader;
+    private readonly IServiceProvider _serviceProvider;
 
     public ReactiveCommand NewDocumentCommand { get; }
 
@@ -55,6 +56,7 @@ internal sealed partial class MainWindowViewModel :
         this.InteractionMessenger = messenger;
 
         this._stringLoader = stringLoader;
+        this._serviceProvider = serviceProvider;
 
         this._activeDocumentIsDirtySubscription.AddTo(this._disposable);
 
@@ -81,7 +83,8 @@ internal sealed partial class MainWindowViewModel :
 
         this._viewModelFactory = model =>
         {
-            var viewModel = factory(serviceProvider, [model]);
+            var scope = serviceProvider.CreateScope();
+            var viewModel = factory(scope.ServiceProvider, [model]);
 
             var subscription = viewModel.ClosedEvent.Subscribe(
                 (this, viewModel),
@@ -95,6 +98,7 @@ internal sealed partial class MainWindowViewModel :
                     }
                 });
 
+            viewModel.RegisterDisposable(scope);
             viewModel.RegisterDisposable(subscription);
 
             this._editorViewModels.Add(viewModel);

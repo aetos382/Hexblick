@@ -2,14 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
-
-using Windows.Win32;
-using Windows.Win32.Foundation;
 
 namespace Hexblick.Windowing;
 
@@ -42,19 +38,9 @@ internal sealed class ScopedWindowManager :
     /// <inheritdoc />
     public TWindow CreateWindow<TWindow>() where TWindow : Window
     {
-        var sp = this._serviceProvider;
-        var scope = sp.CreateScope();
-
-        var window = scope.ServiceProvider.GetRequiredService<TWindow>();
-
-        var windowContext = new WindowContext(window, scope);
-        var gcHandle = GCHandle.Alloc(windowContext);
-
-        PInvoke.SetProp((HWND)window.NaiveHandle, WindowProps.ServiceContext, (nuint)gcHandle.ToIntPtr());
+        var window = this._serviceProvider.GetRequiredService<TWindow>();
 
         this._windows.Add(window.AppWindow, window);
-
-        window.AppWindow.Destroying += this.OnAppWindowDestroying;
 
         return window;
     }
@@ -97,19 +83,5 @@ internal sealed class ScopedWindowManager :
 
         window = null;
         return false;
-    }
-
-    private void OnAppWindowDestroying(AppWindow sender, object args)
-    {
-        sender.Destroying -= this.OnAppWindowDestroying;
-
-        if (this._windows.Remove(sender, out var window))
-        {
-            var prop = PInvoke.RemoveProp((HWND)window.NaiveHandle, WindowProps.ServiceContext);
-
-            var gcHandle = GCHandle<WindowContext>.FromIntPtr((nint)prop);
-            gcHandle.Target.Dispose();
-            gcHandle.Dispose();
-        }
     }
 }

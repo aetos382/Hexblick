@@ -11,12 +11,10 @@ using Hexblick.Models;
 namespace Hexblick.Presentations;
 
 internal sealed partial class EditorControlViewModel :
-    IServiceProvider,
     IDisposable,
     ICascadingDisposable
 {
     private readonly Model _model;
-    private readonly IServiceProvider _serviceProvider;
 
     public BindableReactiveProperty<ImageSource> Icon { get; }
 
@@ -44,7 +42,6 @@ internal sealed partial class EditorControlViewModel :
         ArgumentNullException.ThrowIfNull(serviceProvider);
 
         this._model = model;
-        this._serviceProvider = serviceProvider;
         this.IsNewDocument = !model.IsPersisted;
 
         this.Icon = new BindableReactiveProperty<ImageSource>().AddTo(this._disposable);
@@ -91,6 +88,4 @@ internal sealed partial class EditorControlViewModel :
 
         this._disposable.Add(disposable);
     }
-
-    object? IServiceProvider.GetService(Type serviceType) => this._serviceProvider.GetService(serviceType);
 }
