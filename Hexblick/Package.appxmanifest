@@ -10,14 +10,14 @@
 
   <Identity
     Name="e9908aa2-38f9-49e2-b4a3-c9a43f25b5ab"
-    Publisher="CN=aetos"
+    Publisher="CN=Erne Works"
     Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="e9908aa2-38f9-49e2-b4a3-c9a43f25b5ab" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>Hexblick</DisplayName>
-    <PublisherDisplayName>aetos</PublisherDisplayName>
+    <PublisherDisplayName>Erne Works</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 

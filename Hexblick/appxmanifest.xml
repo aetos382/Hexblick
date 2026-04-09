@@ -13,12 +13,12 @@
 
   <Identity
     Name="hexblick"
-    Publisher="CN=aetos"
+    Publisher="CN=Erne Works"
     Version="1.0.0.0" />
 
   <Properties>
     <DisplayName>hexblick</DisplayName>
-    <PublisherDisplayName>aetos</PublisherDisplayName>
+    <PublisherDisplayName>Erne Works</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
