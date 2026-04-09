@@ -15,6 +15,11 @@
   </Window.SystemBackdrop>
 
   <Page>
+    <i:Interaction.Behaviors>
+      <hb:MultipleFileOpenPickerBehavior MessageHandler="{x:Bind ViewModel.InteractionMessenger.MultipleFileOpenPickerRequestHandler}"/>
+      <hb:ConfirmSaveBehavior MessageHandler="{x:Bind ViewModel.InteractionMessenger.ConfirmSaveRequesetHandler}"/>
+    </i:Interaction.Behaviors>
+
     <StackPanel>
 
       <MenuBar>
@@ -68,8 +73,7 @@
             <TabViewItem IsClosable="true">
 
               <i:Interaction.Behaviors>
-                <hb:MultipleFileOpenPickerBehavior/>
-                <hb:ConfirmSaveBehavior MessageHandler="{x:Bind ConfirmSaveRequestHandler}"/>
+                <hb:ConfirmSaveBehavior MessageHandler="{x:Bind InteractionMessenger.ConfirmSaveRequesetHandler}"/>
               </i:Interaction.Behaviors>
 
               <TabViewItem.IconSource>

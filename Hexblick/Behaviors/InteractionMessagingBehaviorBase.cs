@@ -49,7 +49,10 @@ internal abstract class InteractionMessagingBehaviorBase<T, THandler> :
         }
         else if (handler is IRequiresXamlRoot rxr)
         {
-            rxr.SetXamlRoot(associatedObject.XamlRoot);
+            if (associatedObject.XamlRoot is { } xamlRoot)
+            {
+                rxr.SetXamlRoot(xamlRoot);
+            }
         }
     }
 

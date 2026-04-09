@@ -14,10 +14,10 @@ using Hexblick.Presentations;
 
 namespace Hexblick.Interactions;
 
-internal sealed class ConfirmSaveMessage
+internal sealed class ConfirmSaveMessage :
+    InteractionMessage<SaveConfirmationResult>
 {
     private readonly string[] _titles;
-    private readonly TaskCompletionSource<SaveConfirmationResult> _result = new();
 
     public IReadOnlyCollection<string> Titles => this._titles;
 
@@ -27,16 +27,6 @@ internal sealed class ConfirmSaveMessage
         ArgumentNullException.ThrowIfNull(titles);
 
         this._titles = titles.ToArray();
-    }
-
-    public void SetResult(SaveConfirmationResult result)
-    {
-        this._result.SetResult(result);
-    }
-
-    public Task<SaveConfirmationResult> GetResultAsync(CancellationToken cancellationToken)
-    {
-        return this._result.Task.WaitAsync(cancellationToken);
     }
 }
 
@@ -101,7 +91,7 @@ internal sealed class ConfirmSaveRequestHandler :
             ContentDialogResult.Secondary => SaveConfirmationResult.Discard
         };
 
-        request.SetResult(confirmationResult);
+        request.TrySetResult(confirmationResult);
 
         return confirmationResult;
     }
