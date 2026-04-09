@@ -40,12 +40,12 @@ internal sealed class ConfirmSaveMessage
     }
 }
 
-internal interface IConfirmSaveRequesetHandler :
+internal interface IConfirmSaveRequestHandler :
     IAsyncRequestHandler<ConfirmSaveMessage, SaveConfirmationResult>,
     IRequiresXamlRoot;
 
 internal sealed class ConfirmSaveRequestHandler :
-    IConfirmSaveRequesetHandler
+    IConfirmSaveRequestHandler
 {
     private readonly IStringLoader _stringLoader;
     private readonly ServiceScopeMarker _scopeMarker;

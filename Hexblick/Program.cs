@@ -26,12 +26,12 @@ services.AddMessagePipe(static options =>
 
 services.AddScoped<MainWindow>();
 services.AddScoped<MainWindowViewModel>();
-services.AddScoped<ServiceScopeMarker>();
-services.AddScoped<InteractionMessenger>();
 services.AddScoped<EditorControlViewModel>();
-
+services.AddScoped<InteractionMessenger>();
 services.AddScoped<IMultipleFileOpenPickerRequestHandler, MultipleFileOpenPickerRequestHandler>();
-services.AddScoped<IConfirmSaveRequesetHandler, ConfirmSaveRequestHandler>();
+services.AddScoped<IConfirmSaveRequestHandler, ConfirmSaveRequestHandler>();
+
+services.AddScoped<ServiceScopeMarker>();
 
 using var host = appBuilder.Build();
 

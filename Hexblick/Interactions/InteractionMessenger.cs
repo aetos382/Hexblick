@@ -9,17 +9,17 @@ namespace Hexblick.Interactions;
 internal sealed class InteractionMessenger
 {
     private readonly IMultipleFileOpenPickerRequestHandler _fileOpenPickRequestHandler;
-    private readonly IConfirmSaveRequesetHandler _confirmSaveRequesetHandler;
+    private readonly IConfirmSaveRequestHandler _confirmSaveRequesetHandler;
 
     public InteractionMessenger(
         IMultipleFileOpenPickerRequestHandler fileOpenPickRequestHandler,
-        IConfirmSaveRequesetHandler confirmSaveRequesetHandler)
+        IConfirmSaveRequestHandler confirmSaveRequesetHandler)
     {
         ArgumentNullException.ThrowIfNull(fileOpenPickRequestHandler);
         ArgumentNullException.ThrowIfNull(confirmSaveRequesetHandler);
 
         this._fileOpenPickRequestHandler = fileOpenPickRequestHandler;
-        this._confirmSaveRequesetHandler = confirmSaveRequesetHandler;
+        this.ConfirmSaveRequesetHandler = confirmSaveRequesetHandler;
     }
 
     public async ValueTask<IReadOnlyCollection<FileInfo>> RequestMultipleFileOpenAsync(
@@ -35,7 +35,9 @@ internal sealed class InteractionMessenger
         CancellationToken cancellationToken = default)
     {
         var message = new ConfirmSaveMessage(titles);
-        var result = await this._confirmSaveRequesetHandler.InvokeAsync(message, cancellationToken);
+        var result = await this.ConfirmSaveRequesetHandler.InvokeAsync(message, cancellationToken);
         return result;
     }
+
+    public IConfirmSaveRequestHandler ConfirmSaveRequesetHandler { get; }
 }

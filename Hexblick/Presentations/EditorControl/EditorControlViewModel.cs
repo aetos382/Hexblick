@@ -27,6 +27,8 @@ internal sealed partial class EditorControlViewModel :
 
     public Observable<Unit> ClosedEvent => this._closedEvent;
 
+    public IConfirmSaveRequestHandler ConfirmSaveRequestHandler { get; }
+
     private readonly Subject<Unit> _closedEvent;
 
     public bool IsNewDocument { get; }
@@ -52,6 +54,8 @@ internal sealed partial class EditorControlViewModel :
         this.IsDirty = new BindableReactiveProperty<bool>().AddTo(this._disposable);
 
         this._closedEvent = new Subject<Unit>().AddTo(this._disposable);
+
+        this.ConfirmSaveRequestHandler = messenger.ConfirmSaveRequesetHandler;
     }
 
     public async ValueTask SaveAsync()
