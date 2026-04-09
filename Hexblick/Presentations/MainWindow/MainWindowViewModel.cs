@@ -21,8 +21,10 @@ namespace Hexblick.Presentations;
 internal sealed partial class MainWindowViewModel :
     IDisposable
 {
-    private readonly InteractionMessenger _messenger;
+    public InteractionMessenger InteractionMessenger { get; }
+
     private readonly IStringLoader _stringLoader;
+    private readonly IServiceProvider _serviceProvider;
 
     public ReactiveCommand NewDocumentCommand { get; }
 
@@ -51,8 +53,10 @@ internal sealed partial class MainWindowViewModel :
         ArgumentNullException.ThrowIfNull(stringLoader);
         ArgumentNullException.ThrowIfNull(serviceProvider);
 
-        this._messenger = messenger;
+        this.InteractionMessenger = messenger;
+
         this._stringLoader = stringLoader;
+        this._serviceProvider = serviceProvider;
 
         this._activeDocumentIsDirtySubscription.AddTo(this._disposable);
 
@@ -79,7 +83,8 @@ internal sealed partial class MainWindowViewModel :
 
         this._viewModelFactory = model =>
         {
-            var viewModel = factory(serviceProvider, [model]);
+            var scope = serviceProvider.CreateScope();
+            var viewModel = factory(scope.ServiceProvider, [model]);
 
             var subscription = viewModel.ClosedEvent.Subscribe(
                 (this, viewModel),
@@ -93,6 +98,7 @@ internal sealed partial class MainWindowViewModel :
                     }
                 });
 
+            viewModel.RegisterDisposable(scope);
             viewModel.RegisterDisposable(subscription);
 
             this._editorViewModels.Add(viewModel);
@@ -111,7 +117,7 @@ internal sealed partial class MainWindowViewModel :
     public async ValueTask OpenFilesAsync(CancellationToken cancellationToken)
     {
         var filePickRequest = new MultipleFileOpenPickerRequestMessage();
-        var files = await this._messenger.RequestMultipleFileOpenAsync(filePickRequest, cancellationToken);
+        var files = await this.InteractionMessenger.RequestMultipleFileOpenAsync(filePickRequest, cancellationToken);
 
         var modelFactory = new ModelFactory();
 
@@ -157,7 +163,7 @@ internal sealed partial class MainWindowViewModel :
             .Select(static x => x.Title.Value)
             .ToArray();
 
-        var result = await this._messenger.ConfirmSaveAsync(dirtyTitles);
+        var result = await this.InteractionMessenger.ConfirmSaveAsync(dirtyTitles);
         switch (result)
         {
             case SaveConfirmationResult.Save:

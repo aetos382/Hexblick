@@ -15,10 +15,9 @@
   </Window.SystemBackdrop>
 
   <Page>
-
     <i:Interaction.Behaviors>
-      <hb:MultipleFileOpenPickerBehavior/>
-      <hb:ConfirmSaveBehavior/>
+      <hb:MultipleFileOpenPickerBehavior MessageHandler="{x:Bind ViewModel.InteractionMessenger.MultipleFileOpenPickerRequestHandler}"/>
+      <hb:ConfirmSaveBehavior MessageHandler="{x:Bind ViewModel.InteractionMessenger.ConfirmSaveRequesetHandler}"/>
     </i:Interaction.Behaviors>
 
     <StackPanel>
@@ -72,6 +71,11 @@
         <TabView.TabItemTemplate>
           <DataTemplate x:DataType="hp:EditorControlViewModel">
             <TabViewItem IsClosable="true">
+
+              <i:Interaction.Behaviors>
+                <hb:ConfirmSaveBehavior MessageHandler="{x:Bind InteractionMessenger.ConfirmSaveRequesetHandler}"/>
+              </i:Interaction.Behaviors>
+
               <TabViewItem.IconSource>
                 <ImageIconSource ImageSource="{x:Bind Icon.Value}"/>
               </TabViewItem.IconSource>

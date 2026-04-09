@@ -8,25 +8,22 @@ namespace Hexblick.Interactions;
 
 internal sealed class InteractionMessenger
 {
-    private readonly IMultipleFileOpenPickerRequestHandler _fileOpenPickRequestHandler;
-    private readonly IConfirmSaveRequesetHandler _confirmSaveRequesetHandler;
-
     public InteractionMessenger(
         IMultipleFileOpenPickerRequestHandler fileOpenPickRequestHandler,
-        IConfirmSaveRequesetHandler confirmSaveRequesetHandler)
+        IConfirmSaveRequestHandler confirmSaveRequesetHandler)
     {
         ArgumentNullException.ThrowIfNull(fileOpenPickRequestHandler);
         ArgumentNullException.ThrowIfNull(confirmSaveRequesetHandler);
 
-        this._fileOpenPickRequestHandler = fileOpenPickRequestHandler;
-        this._confirmSaveRequesetHandler = confirmSaveRequesetHandler;
+        this.MultipleFileOpenPickerRequestHandler = fileOpenPickRequestHandler;
+        this.ConfirmSaveRequesetHandler = confirmSaveRequesetHandler;
     }
 
     public async ValueTask<IReadOnlyCollection<FileInfo>> RequestMultipleFileOpenAsync(
         MultipleFileOpenPickerRequestMessage message,
         CancellationToken cancellation = default)
     {
-        var result = await this._fileOpenPickRequestHandler.InvokeAsync(message, cancellation);
+        var result = await this.MultipleFileOpenPickerRequestHandler.InvokeAsync(message, cancellation);
         return result;
     }
 
@@ -35,7 +32,11 @@ internal sealed class InteractionMessenger
         CancellationToken cancellationToken = default)
     {
         var message = new ConfirmSaveMessage(titles);
-        var result = await this._confirmSaveRequesetHandler.InvokeAsync(message, cancellationToken);
+        var result = await this.ConfirmSaveRequesetHandler.InvokeAsync(message, cancellationToken);
         return result;
     }
+
+    public IMultipleFileOpenPickerRequestHandler MultipleFileOpenPickerRequestHandler { get; }
+
+    public IConfirmSaveRequestHandler ConfirmSaveRequesetHandler { get; }
 }

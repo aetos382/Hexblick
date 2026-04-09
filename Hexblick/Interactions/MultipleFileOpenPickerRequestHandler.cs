@@ -13,7 +13,8 @@ using ZLinq;
 
 namespace Hexblick.Interactions;
 
-internal sealed class MultipleFileOpenPickerRequestMessage
+internal sealed class MultipleFileOpenPickerRequestMessage :
+    InteractionMessage<IReadOnlyCollection<FileInfo>>
 {
     private readonly List<string> _fileTypeFilter = new();
 
@@ -70,6 +71,8 @@ internal sealed class MultipleFileOpenPickerRequestHandler :
 
         var result = await fileOpenPicker.PickMultipleFilesAsync();
         var files = result.AsValueEnumerable().Select(static x => new FileInfo(x.Path)).ToArray();
+
+        request.TrySetResult(files);
 
         return files;
     }

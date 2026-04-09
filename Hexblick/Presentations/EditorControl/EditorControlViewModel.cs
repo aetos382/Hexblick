@@ -11,13 +11,10 @@ using Hexblick.Models;
 namespace Hexblick.Presentations;
 
 internal sealed partial class EditorControlViewModel :
-    IServiceProvider,
     IDisposable,
     ICascadingDisposable
 {
     private readonly Model _model;
-    private readonly InteractionMessenger _messenger;
-    private readonly IServiceProvider _serviceProvider;
 
     public BindableReactiveProperty<ImageSource> Icon { get; }
 
@@ -26,6 +23,8 @@ internal sealed partial class EditorControlViewModel :
     public BindableReactiveProperty<bool> IsDirty { get; }
 
     public Observable<Unit> ClosedEvent => this._closedEvent;
+
+    public InteractionMessenger InteractionMessenger { get; }
 
     private readonly Subject<Unit> _closedEvent;
 
@@ -43,8 +42,6 @@ internal sealed partial class EditorControlViewModel :
         ArgumentNullException.ThrowIfNull(serviceProvider);
 
         this._model = model;
-        this._messenger = messenger;
-        this._serviceProvider = serviceProvider;
         this.IsNewDocument = !model.IsPersisted;
 
         this.Icon = new BindableReactiveProperty<ImageSource>().AddTo(this._disposable);
@@ -52,6 +49,8 @@ internal sealed partial class EditorControlViewModel :
         this.IsDirty = new BindableReactiveProperty<bool>().AddTo(this._disposable);
 
         this._closedEvent = new Subject<Unit>().AddTo(this._disposable);
+
+        this.InteractionMessenger = messenger;
     }
 
     public async ValueTask SaveAsync()
@@ -62,7 +61,7 @@ internal sealed partial class EditorControlViewModel :
     {
         if (this.IsDirty.Value)
         {
-            var result = await this._messenger.ConfirmSaveAsync([this.Title.Value]);
+            var result = await this.InteractionMessenger.ConfirmSaveAsync([this.Title.Value]);
             if (result is SaveConfirmationResult.Cancel)
             {
                 return;
@@ -89,6 +88,4 @@ internal sealed partial class EditorControlViewModel :
 
         this._disposable.Add(disposable);
     }
-
-    object? IServiceProvider.GetService(Type serviceType) => this._serviceProvider.GetService(serviceType);
 }
