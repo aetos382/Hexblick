@@ -3,12 +3,12 @@ using System.IO;
 
 namespace Hexblick.Models;
 
-internal sealed partial class ExisingFileModel :
+internal sealed partial class ExistingFileModel :
     Model
 {
     private readonly FileInfo _fileInfo;
 
-    public ExisingFileModel(FileInfo fileInfo)
+    public ExistingFileModel(FileInfo fileInfo)
     {
         ArgumentNullException.ThrowIfNull(fileInfo);
 
