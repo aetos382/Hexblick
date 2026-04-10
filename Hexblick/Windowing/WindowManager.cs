@@ -25,7 +25,17 @@ internal sealed class WindowManager :
 {
     private readonly IServiceProvider _serviceProvider;
 
-    private readonly ConditionalWeakTable<AppWindow, Window> _windows = new();
+    private sealed record WindowContext(
+        Window Window,
+        IServiceScope Scope) : IDisposable
+    {
+        public void Dispose()
+        {
+            this.Scope.Dispose();
+        }
+    }
+
+    private readonly ConditionalWeakTable<AppWindow, WindowContext> _windows = new();
 
     public WindowManager(
         IServiceProvider serviceProvider)
@@ -38,11 +48,24 @@ internal sealed class WindowManager :
     /// <inheritdoc />
     public TWindow CreateWindow<TWindow>() where TWindow : Window
     {
-        var window = this._serviceProvider.GetRequiredService<TWindow>();
+        var scope = this._serviceProvider.CreateScope();
+        var window = scope.ServiceProvider.GetRequiredService<TWindow>();
 
-        this._windows.Add(window.AppWindow, window);
+        this._windows.Add(window.AppWindow, new(window, scope));
+
+        window.AppWindow.Destroying += this.OnAppWindowDestroying;
 
         return window;
+    }
+
+    private void OnAppWindowDestroying(AppWindow sender, object args)
+    {
+        sender.Destroying -= this.OnAppWindowDestroying;
+
+        if (this._windows.Remove(sender, out var context))
+        {
+            context.Dispose();
+        }
     }
 
     /// <inheritdoc />
@@ -52,7 +75,7 @@ internal sealed class WindowManager :
         {
             var windows = this._windows;
 
-            foreach (var (_, window) in windows)
+            foreach (var (_, (window, _)) in windows)
             {
                 yield return window;
             }

@@ -24,8 +24,8 @@ services.AddMessagePipe(static options =>
     options.EnableAutoRegistration = true;
 });
 
-services.AddTransient<MainWindow>();
-services.AddTransient<MainWindowViewModel>();
+services.AddScoped<MainWindow>();
+services.AddScoped<MainWindowViewModel>();
 
 services.AddScoped<InteractionMessenger>();
 services.AddScoped<IMultipleFileOpenPickerRequestHandler, MultipleFileOpenPickerRequestHandler>();
