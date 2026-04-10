@@ -31,8 +31,6 @@ services.AddScoped<InteractionMessenger>();
 services.AddScoped<IMultipleFileOpenPickerRequestHandler, MultipleFileOpenPickerRequestHandler>();
 services.AddScoped<IConfirmSaveRequestHandler, ConfirmSaveRequestHandler>();
 
-services.AddScoped<ServiceScopeMarker>();
-
 using var host = appBuilder.Build();
 
 await host.RunAsync().ConfigureAwait(false);

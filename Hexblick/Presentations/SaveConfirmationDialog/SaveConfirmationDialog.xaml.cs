@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml;
 
 namespace Hexblick.Presentations;
 
-public sealed partial class SaveConfirmationDialog
+internal sealed partial class SaveConfirmationDialog
 {
     public SaveConfirmationDialog()
     {

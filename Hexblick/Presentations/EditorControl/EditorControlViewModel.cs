@@ -25,7 +25,9 @@ internal sealed partial class EditorControlViewModel :
 
     public InteractionMessenger InteractionMessenger { get; }
 
+#pragma warning disable CA2213
     private readonly Subject<Unit> _closedEvent;
+#pragma warning restore CA2213
 
     public bool IsNewDocument { get; }
 

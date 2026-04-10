@@ -38,17 +38,13 @@ internal sealed class ConfirmSaveRequestHandler :
     IConfirmSaveRequestHandler
 {
     private readonly IStringLoader _stringLoader;
-    private readonly ServiceScopeMarker _scopeMarker;
 
     public ConfirmSaveRequestHandler(
-        IStringLoader stringLoader,
-        ServiceScopeMarker scopeMarker)
+        IStringLoader stringLoader)
     {
         ArgumentNullException.ThrowIfNull(stringLoader);
-        ArgumentNullException.ThrowIfNull(scopeMarker);
 
         this._stringLoader = stringLoader;
-        this._scopeMarker = scopeMarker;
     }
 
     private XamlRoot? _xamlRoot;

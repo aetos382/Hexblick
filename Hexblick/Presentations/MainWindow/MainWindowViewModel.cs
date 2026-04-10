@@ -37,7 +37,9 @@ internal sealed partial class MainWindowViewModel :
 
     public NotifyCollectionChangedSynchronizedViewList<EditorControlViewModel> EditorViewModels { get; }
 
+#pragma warning disable CA2213
     private readonly SerialDisposable _activeDocumentIsDirtySubscription = new();
+#pragma warning restore CA2213
 
     private readonly Func<Model, EditorControlViewModel> _viewModelFactory;
 
