@@ -136,9 +136,16 @@ internal sealed partial class MainWindow
             return;
         }
 
+        var task = this.ViewModel.CloseAsync();
+        if (task.IsCompleted)
+        {
+            args.Handled = !task.Result;
+            return;
+        }
+
         args.Handled = true;
 
-        if (await this.ViewModel.CloseAsync())
+        if (await task)
         {
             this._closing = true;
             this.Close();
