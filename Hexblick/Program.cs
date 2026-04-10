@@ -24,12 +24,12 @@ services.AddMessagePipe(static options =>
     options.EnableAutoRegistration = true;
 });
 
-services.AddScoped<MainWindow>();
-services.AddScoped<MainWindowViewModel>();
-
 services.AddScoped<InteractionMessenger>();
 services.AddScoped<IMultipleFileOpenPickerRequestHandler, MultipleFileOpenPickerRequestHandler>();
 services.AddScoped<IConfirmSaveRequestHandler, ConfirmSaveRequestHandler>();
+
+services.AddScoped<MainWindow>();
+services.AddScoped<MainWindowViewModel>();
 
 using var host = appBuilder.Build();
 
