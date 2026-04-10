@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.WinUI.Behaviors;
 
-using Hexblick.Interactions;
-using Hexblick.Windowing;
-
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
+
+using Hexblick.Interactions;
+using Hexblick.Windowing;
 
 namespace Hexblick.Behaviors;
 
