@@ -59,18 +59,6 @@
         IsAddTabButtonVisible="False"
         TabItemsSource="{x:Bind ViewModel.EditorViewModels}">
 
-        <i:Interaction.Behaviors>
-          <i:EventTriggerBehavior EventName="TabItemsChanged">
-            <i:InvokeCommandAction Command="{x:Bind TabViewTabItemsChangedCommand}"/>
-          </i:EventTriggerBehavior>
-          <i:EventTriggerBehavior EventName="SelectionChanged">
-            <i:InvokeCommandAction Command="{x:Bind TabViewSelectionChangedCommand}"/>
-          </i:EventTriggerBehavior>
-          <i:EventTriggerBehavior EventName="TabCloseRequested">
-            <i:InvokeCommandAction Command="{x:Bind TabViewTabCloseCommand}"/>
-          </i:EventTriggerBehavior>
-        </i:Interaction.Behaviors>
-
         <TabView.TabItemTemplate>
           <DataTemplate x:DataType="hp:EditorControlViewModel">
             <TabViewItem IsClosable="true">

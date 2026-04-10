@@ -18,12 +18,6 @@ internal sealed partial class MainWindow
 {
     private MainWindowViewModel ViewModel { get; }
 
-    private ReactiveCommand<TabViewTabCloseRequestedEventArgs> TabViewTabCloseCommand { get; }
-
-    private ReactiveCommand<IVectorChangedEventArgs> TabViewTabItemsChangedCommand { get; }
-
-    private ReactiveCommand<SelectionChangedEventArgs> TabViewSelectionChangedCommand { get; }
-
     private ReactiveCommand OpenFileCommand { get; }
 
     private ReactiveCommand ExitCommand { get; }
@@ -48,20 +42,15 @@ internal sealed partial class MainWindow
         this.OpenFileCommand = new ReactiveCommand((_, cancellationToken) => this.OnFileOpenAsync(cancellationToken))
             .AddTo(this._disposables);
 
-        this.TabViewTabItemsChangedCommand = new ReactiveCommand<IVectorChangedEventArgs>(this.OnTabViewTabItemsChanged)
-            .AddTo(this._disposables);
-
-        this.TabViewSelectionChangedCommand = new ReactiveCommand<SelectionChangedEventArgs>(this.OnTabViewSelectionChanged)
-            .AddTo(this._disposables);
-
-        this.TabViewTabCloseCommand = new ReactiveCommand<TabViewTabCloseRequestedEventArgs>(this.OnTabViewTabCloseRequestedAsync)
-            .AddTo(this._disposables);
-
         this.ExitCommand = new ReactiveCommand(_ => this.OnExit())
             .AddTo(this._disposables);
 
         this.ViewModel.ActiveDocument.Subscribe(this.OnActiveDocumentChanged)
             .AddTo(this._disposables);
+
+        this.TabView.TabItemsChanged += this.OnTabViewTabItemsChanged;
+        this.TabView.SelectionChanged += this.OnTabViewSelectionChanged;
+        this.TabView.TabCloseRequested += this.OnTabViewTabCloseRequestedAsync;
 
         this.Closed += this.OnClosed;
         this.AppWindow.Destroying += this.OnAppWindowDestroying;
@@ -95,13 +84,13 @@ internal sealed partial class MainWindow
                 args => this.SetTitle(args.Title, args.IsDirty));
     }
 
-    private void OnTabViewSelectionChanged(SelectionChangedEventArgs e)
+    private void OnTabViewSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         var tabViewModel = this.TabView.SelectedItem as EditorControlViewModel;
         this.ViewModel.ActiveDocument.Value = tabViewModel;
     }
 
-    private void OnTabViewTabItemsChanged(IVectorChangedEventArgs args)
+    private void OnTabViewTabItemsChanged(TabView sender, IVectorChangedEventArgs args)
     {
         switch (args.CollectionChange)
         {
@@ -111,9 +100,7 @@ internal sealed partial class MainWindow
         }
     }
 
-    private async ValueTask OnTabViewTabCloseRequestedAsync(
-        TabViewTabCloseRequestedEventArgs args,
-        CancellationToken cancellationToken)
+    private async void OnTabViewTabCloseRequestedAsync(TabView tabView, TabViewTabCloseRequestedEventArgs args)
     {
         if (args.Item is not EditorControlViewModel item)
         {
