@@ -47,6 +47,9 @@
             </MenuFlyoutItem.KeyboardAccelerators>
           </MenuFlyoutItem>
         </MenuBarItem>
+        <MenuBarItem x:Uid="MenuWindow" AccessKey="W">
+          <MenuFlyoutItem x:Uid="MenuWindowNew" Command="{x:Bind ViewModel.NewWindowCommand}"/>
+        </MenuBarItem>
       </MenuBar>
 
       <TabView

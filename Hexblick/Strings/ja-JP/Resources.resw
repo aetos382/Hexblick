@@ -144,4 +144,10 @@
   <data name="SaveConfirmationDialog.Caption.Text" xml:space="preserve">
     <value>以下の項目への変更を保存しますか？</value>
   </data>
+  <data name="MenuWindow.Title" xml:space="preserve">
+    <value>ウィンドウ</value>
+  </data>
+  <data name="MenuWindowNew.Text" xml:space="preserve">
+    <value>新しいウィンドウ</value>
+  </data>
 </root>

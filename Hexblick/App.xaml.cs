@@ -41,8 +41,8 @@ public sealed partial class App :
     /// <param name="args">Details about the launch request and process.</param>
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
-        var windowFactory = this._serviceProvider.GetRequiredService<IWindowManager>();
-        var window = windowFactory.CreateWindow<MainWindow>();
+        var windowManager = this._serviceProvider.GetRequiredService<IWindowManager>();
+        var window = windowManager.CreateWindow<MainWindow>();
         window.Activate();
     }
 

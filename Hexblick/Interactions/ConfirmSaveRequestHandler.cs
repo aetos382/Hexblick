@@ -47,19 +47,24 @@ internal sealed class ConfirmSaveRequestHandler :
         this._stringLoader = stringLoader;
     }
 
-    private XamlRoot? _xamlRoot;
+    private Func<XamlRoot>? _xamlRootAccessor;
 
-    void IRequiresXamlRoot.SetXamlRoot(XamlRoot xamlRoot)
+    void IRequiresXamlRoot.SetXamlRootAccessor(Func<XamlRoot> accessor)
     {
-        ArgumentNullException.ThrowIfNull(xamlRoot);
+        ArgumentNullException.ThrowIfNull(accessor);
 
-        this._xamlRoot = xamlRoot;
+        this._xamlRootAccessor = accessor;
     }
 
     public async ValueTask<SaveConfirmationResult> InvokeAsync(
         ConfirmSaveMessage request,
         CancellationToken cancellationToken)
     {
+        if (this._xamlRootAccessor is not { } accessor)
+        {
+            throw new InvalidOperationException();
+        }
+
         var stringLoader = this._stringLoader;
 
         var dialog = new ContentDialog
@@ -75,7 +80,7 @@ internal sealed class ConfirmSaveRequestHandler :
             {
                 Items = request.Titles.ToArray()
             },
-            XamlRoot = this._xamlRoot
+            XamlRoot = accessor()
         };
 
         var dialogResult = await dialog.ShowAsync();

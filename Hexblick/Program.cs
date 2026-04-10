@@ -17,7 +17,7 @@ var services = appBuilder.Services;
 
 services.UseWinApp<App>();
 services.AddSingleton<IStringLoader, ResourceStringLoader>();
-services.AddSingleton<IWindowManager, ScopedWindowManager>();
+services.AddSingleton<IWindowManager, WindowManager>();
 
 services.AddMessagePipe(static options =>
 {

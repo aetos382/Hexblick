@@ -44,14 +44,14 @@ internal abstract class InteractionMessagingBehaviorBase<T, THandler> :
             var windowManager = Application.Current.Services.GetRequiredService<IWindowManager>();
             if (windowManager.TryGetWindowForElement(associatedObject, out var window))
             {
-                rwi.SetWindowId(window.AppWindow.Id);
+                rwi.SetWindowIdAccessor(() => window.AppWindow.Id);
             }
         }
         else if (handler is IRequiresXamlRoot rxr)
         {
             if (associatedObject.XamlRoot is { } xamlRoot)
             {
-                rxr.SetXamlRoot(xamlRoot);
+                rxr.SetXamlRootAccessor(() => xamlRoot);
             }
         }
     }

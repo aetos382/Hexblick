@@ -1,8 +1,10 @@
-﻿using Microsoft.UI;
+﻿using System;
+
+using Microsoft.UI;
 
 namespace Hexblick.Interactions;
 
 internal interface IRequiresWindowId
 {
-    void SetWindowId(WindowId windowId);
+    void SetWindowIdAccessor(Func<WindowId> accessor);
 }

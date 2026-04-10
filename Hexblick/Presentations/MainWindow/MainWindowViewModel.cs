@@ -15,6 +15,7 @@ using Hexblick.Interactions;
 using Hexblick.Localization;
 using Hexblick.Models;
 using Hexblick.Utilities;
+using Hexblick.Windowing;
 
 namespace Hexblick.Presentations;
 
@@ -23,6 +24,7 @@ internal sealed partial class MainWindowViewModel :
 {
     public InteractionMessenger InteractionMessenger { get; }
 
+    private readonly IWindowManager _windowManager;
     private readonly IStringLoader _stringLoader;
 
     public ReactiveCommand NewDocumentCommand { get; }
@@ -37,6 +39,8 @@ internal sealed partial class MainWindowViewModel :
 
     public NotifyCollectionChangedSynchronizedViewList<EditorControlViewModel> EditorViewModels { get; }
 
+    public ReactiveCommand NewWindowCommand { get; }
+
 #pragma warning disable CA2213
     private readonly SerialDisposable _activeDocumentIsDirtySubscription = new();
 #pragma warning restore CA2213
@@ -47,15 +51,18 @@ internal sealed partial class MainWindowViewModel :
 
     public MainWindowViewModel(
         InteractionMessenger messenger,
+        IWindowManager windowManager,
         IStringLoader stringLoader,
         IServiceProvider serviceProvider)
     {
         ArgumentNullException.ThrowIfNull(messenger);
+        ArgumentNullException.ThrowIfNull(windowManager);
         ArgumentNullException.ThrowIfNull(stringLoader);
         ArgumentNullException.ThrowIfNull(serviceProvider);
 
         this.InteractionMessenger = messenger;
 
+        this._windowManager = windowManager;
         this._stringLoader = stringLoader;
 
         this._activeDocumentIsDirtySubscription.AddTo(this._disposable);
@@ -77,6 +84,9 @@ internal sealed partial class MainWindowViewModel :
 
         this.EditorViewModels = this._editorViewModels
             .ToNotifyCollectionChangedSlim()
+            .AddTo(this._disposable);
+
+        this.NewWindowCommand = new ReactiveCommand(_ => this.OpenNewWindow())
             .AddTo(this._disposable);
 
         var factory = ActivatorUtilities.CreateFactory<EditorControlViewModel>([typeof(Model)]);
@@ -105,6 +115,12 @@ internal sealed partial class MainWindowViewModel :
 
             return viewModel;
         };
+    }
+
+    private void OpenNewWindow()
+    {
+        var window = this._windowManager.CreateWindow<MainWindow>();
+        window.Activate();
     }
 
     private void OnNewDocument()
@@ -160,6 +176,11 @@ internal sealed partial class MainWindowViewModel :
             .Where(static x => x.IsDirty.Value)
             .Select(static x => x.Title.Value)
             .ToArray();
+
+        if (dirtyTitles.Length == 0)
+        {
+            return true;
+        }
 
         var result = await this.InteractionMessenger.ConfirmSaveAsync(dirtyTitles);
         switch (result)

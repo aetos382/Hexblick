@@ -20,14 +20,14 @@ internal interface IWindowManager
         [MaybeNullWhen(false)] out Window window);
 }
 
-internal sealed class ScopedWindowManager :
+internal sealed class WindowManager :
     IWindowManager
 {
     private readonly IServiceProvider _serviceProvider;
 
     private readonly ConditionalWeakTable<AppWindow, Window> _windows = new();
 
-    public ScopedWindowManager(
+    public WindowManager(
         IServiceProvider serviceProvider)
     {
         ArgumentNullException.ThrowIfNull(serviceProvider);

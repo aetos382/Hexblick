@@ -36,11 +36,13 @@ internal interface IMultipleFileOpenPickerRequestHandler :
 internal sealed class MultipleFileOpenPickerRequestHandler :
     IMultipleFileOpenPickerRequestHandler
 {
-    private WindowId? _windowId;
+    private Func<WindowId>? _windowIdAccessor;
 
-    void IRequiresWindowId.SetWindowId(WindowId windowId)
+    void IRequiresWindowId.SetWindowIdAccessor(Func<WindowId> accessor)
     {
-        this._windowId = windowId;
+        ArgumentNullException.ThrowIfNull(accessor);
+
+        this._windowIdAccessor = accessor;
     }
 
     /// <inheritdoc />
@@ -48,12 +50,12 @@ internal sealed class MultipleFileOpenPickerRequestHandler :
         MultipleFileOpenPickerRequestMessage request,
         CancellationToken cancellationToken)
     {
-        if (this._windowId is not { } windowId)
+        if (this._windowIdAccessor is not { } accessor)
         {
             throw new InvalidOperationException();
         }
 
-        var fileOpenPicker = new FileOpenPicker(windowId)
+        var fileOpenPicker = new FileOpenPicker(accessor())
         {
             ViewMode = request.ViewMode,
             SuggestedStartLocation = request.SuggestedStartLocation
