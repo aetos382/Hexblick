@@ -100,6 +100,8 @@ internal sealed partial class WindowsAppLifetime :
             try
             {
                 var dispatcherQueue = await this._appStartedTcs.Task.ConfigureAwait(false);
+
+                this.ApplicationStopRequested();
                 dispatcherQueue.EnqueueEventLoopExit();
             }
             catch
