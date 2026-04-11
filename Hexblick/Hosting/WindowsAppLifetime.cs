@@ -28,7 +28,14 @@ internal sealed partial class WindowsAppLifetime :
     private Thread? _appThread;
     private CancellationTokenRegistration _appStoppingRegistration;
 
-    private bool _dispatcherQueueShuttingDown;
+    private enum ShutdownState
+    {
+        None = 0,
+        EventLoopExitRequested = 1,
+        DispatcherQueueShuttingDown = 2,
+    }
+
+    private ShutdownState _shutdownState;
 
     public WindowsAppLifetime(
         IHostApplicationLifetime appLifetime,
@@ -75,16 +82,20 @@ internal sealed partial class WindowsAppLifetime :
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        if (this._appThread is not { IsAlive: true } thread)
+        if (this._appThread is not { } thread)
+        {
+            this.ApplicationNotStarted();
+            return;
+        }
+
+        if (!thread.IsAlive)
         {
             return;
         }
 
-        var shuttingDown = Volatile.Read(ref this._dispatcherQueueShuttingDown);
-        if (!shuttingDown)
+        // メッセージ ループが止まるより先にホストの停止要求が来た
+        if (Interlocked.CompareExchange(ref this._shutdownState, ShutdownState.EventLoopExitRequested, ShutdownState.None) == ShutdownState.None)
         {
-            // メッセージ ループが止まるより先にホストの停止要求が来た
-
 #pragma warning disable CA1031
             try
             {
@@ -112,6 +123,8 @@ internal sealed partial class WindowsAppLifetime :
 
         if (cancellationToken.IsCancellationRequested)
         {
+            self.StartCanceled();
+
             appStartedTcs.TrySetCanceled(cancellationToken);
             return;
         }
@@ -161,6 +174,8 @@ internal sealed partial class WindowsAppLifetime :
         }
         finally
         {
+            self.ApplicationStopped();
+
             appLifetime.StopApplication();
             self._appStoppedTcs.SetResult();
         }
@@ -170,7 +185,7 @@ internal sealed partial class WindowsAppLifetime :
     {
         sender.ShutdownStarting -= this.OnShutdownStarting;
 
-        if (!Interlocked.Exchange(ref this._dispatcherQueueShuttingDown, true))
+        if (Interlocked.Exchange(ref this._shutdownState, ShutdownState.DispatcherQueueShuttingDown) != ShutdownState.DispatcherQueueShuttingDown)
         {
             this.DispatcherQueueShutdownStarted();
         }
@@ -178,8 +193,7 @@ internal sealed partial class WindowsAppLifetime :
 
     private void OnApplicationStopping(object? state)
     {
-        var shuttingDown = Volatile.Read(ref this._dispatcherQueueShuttingDown);
-        if (!shuttingDown)
+        if (Interlocked.CompareExchange(ref this._shutdownState, ShutdownState.EventLoopExitRequested, ShutdownState.None) == ShutdownState.None)
         {
             this.ApplicationStopRequested();
 
@@ -205,4 +219,13 @@ internal sealed partial class WindowsAppLifetime :
 
     [LoggerMessage(LogLevel.Information, EventId = 4, EventName = nameof(ApplicationStopRequested))]
     private partial void ApplicationStopRequested();
+
+    [LoggerMessage(LogLevel.Warning, EventId = 5, EventName = nameof(StartCanceled))]
+    private partial void StartCanceled();
+
+    [LoggerMessage(LogLevel.Information, EventId = 6, EventName = nameof(ApplicationStopped))]
+    private partial void ApplicationStopped();
+
+    [LoggerMessage(LogLevel.Warning, EventId = 7, EventName = nameof(ApplicationNotStarted))]
+    private partial void ApplicationNotStarted();
 }
