@@ -20,6 +20,7 @@ var logging = appBuilder.Logging;
 
 logging.ClearProviders();
 logging.AddEventLog();
+logging.AddEventSourceLogger();
 
 if (Debugger.IsAttached)
 {
