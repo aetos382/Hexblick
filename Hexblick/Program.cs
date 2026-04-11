@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Diagnostics;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
 
 using WinRT;
@@ -12,6 +15,16 @@ using Hexblick.Windowing;
 ComWrappersSupport.InitializeComWrappers();
 
 var appBuilder = Host.CreateApplicationBuilder(args);
+
+var logging = appBuilder.Logging;
+
+logging.ClearProviders();
+logging.AddEventLog();
+
+if (Debugger.IsAttached)
+{
+    logging.AddDebug();
+}
 
 var services = appBuilder.Services;
 
