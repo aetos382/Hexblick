@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 
 using Microsoft.UI.Xaml.Media;
 
+using ObservableCollections;
+
 using R3;
 
 using Hexblick.Interactions;
@@ -20,6 +22,10 @@ internal sealed partial class EditorControlViewModel :
     public BindableReactiveProperty<string> Title { get; }
 
     public BindableReactiveProperty<bool> IsDirty { get; }
+
+    private readonly ObservableList<HexRowViewModel> _rows;
+
+    public INotifyCollectionChangedSynchronizedViewList<HexRowViewModel> Rows { get; }
 
     public Observable<Unit> ClosedEvent => this._closedEvent;
 
@@ -49,8 +55,31 @@ internal sealed partial class EditorControlViewModel :
         this.Title = new BindableReactiveProperty<string>(model.Title).AddTo(this._disposable);
         this.IsDirty = new BindableReactiveProperty<bool>().AddTo(this._disposable);
 
-        this._closedEvent = new Subject<Unit>().AddTo(this._disposable);
+        this._rows =
+        [
+            new()
+            {
+                Offset = "00000000",
+                Hex = "01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F",
+                Text = "................"
+            },
+            new()
+            {
+                Offset = "00000010",
+                Hex = "01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F",
+                Text = "................"
+            },
+            new()
+            {
+                Offset = "00000020",
+                Hex = "01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F",
+                Text = "................"
+            },
+        ];
 
+        this.Rows = this._rows.ToNotifyCollectionChangedSlim().AddTo(this._disposable);
+
+        this._closedEvent = new Subject<Unit>().AddTo(this._disposable);
         this.InteractionMessenger = messenger;
     }
 

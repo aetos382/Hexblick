@@ -4,10 +4,35 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:hp="using:Hexblick.Presentations"
     mc:Ignorable="d">
 
   <StackPanel>
     <TextBox Text="{x:Bind ViewModel.Title.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
     <CheckBox Content="IsDirty" IsChecked="{x:Bind ViewModel.IsDirty.Value, Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <ScrollView x:Name="ScrollView" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+      <Grid>
+        <ItemsRepeater ItemsSource="{x:Bind ViewModel.Rows}">
+          <ItemsRepeater.Layout>
+            <StackLayout Orientation="Vertical" Spacing="0"/>
+          </ItemsRepeater.Layout>
+          <ItemsRepeater.ItemTemplate>
+            <DataTemplate x:DataType="hp:HexRowViewModel">
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="80"/>
+                  <ColumnDefinition Width="380"/>
+                  <ColumnDefinition Width="160"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="{x:Bind Offset}"/>
+                <TextBlock Grid.Column="1" Text="{x:Bind Hex}"/>
+                <TextBlock Grid.Column="2" Text="{x:Bind Text}"/>
+              </Grid>
+            </DataTemplate>
+          </ItemsRepeater.ItemTemplate>
+        </ItemsRepeater>
+        <Canvas Background="Transparent" IsHitTestVisible="False"/>
+      </Grid>
+    </ScrollView>
   </StackPanel>
 </UserControl>
