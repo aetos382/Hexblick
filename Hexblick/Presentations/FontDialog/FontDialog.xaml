@@ -8,7 +8,12 @@
     mc:Ignorable="d">
 
     <Grid>
-    <ComboBox ItemsSource="{x:Bind Fonts}" DisplayMemberPath="FamilyName">
-    </ComboBox>
+      <ComboBox ItemsSource="{x:Bind Fonts}">
+        <ComboBox.ItemTemplate>
+          <DataTemplate x:DataType="local:FontInfo">
+            <TextBlock Text="{x:Bind FamilyName}" FontFamily="{x:Bind FamilyName}" FontSize="20"/>
+          </DataTemplate>
+        </ComboBox.ItemTemplate>
+      </ComboBox>
     </Grid>
 </UserControl>

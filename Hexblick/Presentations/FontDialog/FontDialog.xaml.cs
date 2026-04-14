@@ -17,13 +17,12 @@ using ZLinq;
 
 namespace Hexblick.Presentations;
 
+public sealed record FontInfo(string FamilyName);
+
 public sealed partial class FontDialog :
     UserControl,
     IDisposable
 {
-    public sealed record FontInfo(
-        string FamilyName);
-
     private readonly ObservableList<FontInfo>? _fontFamilies;
 
     private NotifyCollectionChangedSynchronizedViewList<FontInfo> Fonts { get; }
@@ -41,6 +40,11 @@ public sealed partial class FontDialog :
 
         foreach (var font in fontSet.Fonts)
         {
+            if (!font.IsMonospaced || font.IsSymbolFont)
+            {
+                continue;
+            }
+
             var familyName = GetFontFamily(font.FamilyNames, languages);
             if (familyName is not null)
             {
