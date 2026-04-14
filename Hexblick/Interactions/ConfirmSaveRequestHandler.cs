@@ -9,8 +9,8 @@ using Microsoft.UI.Xaml.Controls;
 
 using MessagePipe;
 
-using Hexblick.Localization;
 using Hexblick.Presentations;
+using Hexblick.Strings;
 
 namespace Hexblick.Interactions;
 
@@ -38,6 +38,7 @@ internal sealed class ConfirmSaveRequestHandler :
     IConfirmSaveRequestHandler
 {
     private readonly IStringLoader _stringLoader;
+    private Func<XamlRoot>? _xamlRootAccessor;
 
     public ConfirmSaveRequestHandler(
         IStringLoader stringLoader)
@@ -46,8 +47,6 @@ internal sealed class ConfirmSaveRequestHandler :
 
         this._stringLoader = stringLoader;
     }
-
-    private Func<XamlRoot>? _xamlRootAccessor;
 
     void IRequiresXamlRoot.SetXamlRootAccessor(Func<XamlRoot> accessor)
     {

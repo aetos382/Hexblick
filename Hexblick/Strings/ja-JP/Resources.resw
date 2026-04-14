@@ -150,4 +150,10 @@
   <data name="MenuWindowNew.Text" xml:space="preserve">
     <value>新しいウィンドウ</value>
   </data>
+  <data name="MenuTool.Title" xml:space="preserve">
+    <value>ツール</value>
+  </data>
+  <data name="MenuToolFont.Text" xml:space="preserve">
+    <value>フォント ...</value>
+  </data>
 </root>

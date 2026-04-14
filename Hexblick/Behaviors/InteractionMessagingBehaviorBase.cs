@@ -8,6 +8,9 @@ using Hexblick.Windowing;
 
 namespace Hexblick.Behaviors;
 
+internal abstract class InteractionMessagingBehaviorBase<THandler> :
+    InteractionMessagingBehaviorBase<FrameworkElement, THandler>;
+
 internal abstract class InteractionMessagingBehaviorBase<T, THandler> :
     BehaviorBase<T>
     where T : FrameworkElement

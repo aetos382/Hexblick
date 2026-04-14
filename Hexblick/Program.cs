@@ -8,8 +8,8 @@ using WinRT;
 
 using Hexblick;
 using Hexblick.Interactions;
-using Hexblick.Localization;
 using Hexblick.Presentations;
+using Hexblick.Strings;
 using Hexblick.Windowing;
 
 ComWrappersSupport.InitializeComWrappers();
@@ -38,9 +38,10 @@ services.AddMessagePipe(static options =>
     options.EnableAutoRegistration = true;
 });
 
-services.AddScoped<InteractionMessenger>();
 services.AddScoped<IMultipleFileOpenPickerRequestHandler, MultipleFileOpenPickerRequestHandler>();
 services.AddScoped<IConfirmSaveRequestHandler, ConfirmSaveRequestHandler>();
+services.AddScoped<IChooseFontRequestHandler, ChooseFontRequestHandler>();
+services.AddScoped<InteractionMessenger>();
 
 services.AddScoped<MainWindow>();
 services.AddScoped<MainWindowViewModel>();

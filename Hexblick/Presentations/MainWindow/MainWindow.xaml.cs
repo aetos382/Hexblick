@@ -8,9 +8,9 @@ using Microsoft.UI.Windowing;
 
 using Windows.Foundation.Collections;
 
-using R3;
+using Hexblick.Strings;
 
-using Hexblick.Localization;
+using R3;
 
 namespace Hexblick.Presentations;
 

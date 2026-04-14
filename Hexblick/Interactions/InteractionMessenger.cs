@@ -10,13 +10,16 @@ internal sealed class InteractionMessenger
 {
     public InteractionMessenger(
         IMultipleFileOpenPickerRequestHandler fileOpenPickRequestHandler,
-        IConfirmSaveRequestHandler confirmSaveRequestHandler)
+        IConfirmSaveRequestHandler confirmSaveRequestHandler,
+        IChooseFontRequestHandler chooseFontRequestHandler)
     {
         ArgumentNullException.ThrowIfNull(fileOpenPickRequestHandler);
         ArgumentNullException.ThrowIfNull(confirmSaveRequestHandler);
+        ArgumentNullException.ThrowIfNull(chooseFontRequestHandler);
 
         this.MultipleFileOpenPickerRequestHandler = fileOpenPickRequestHandler;
         this.ConfirmSaveRequestHandler = confirmSaveRequestHandler;
+        this.ChooseFontRequestHandler = chooseFontRequestHandler;
     }
 
     public async ValueTask<IReadOnlyCollection<FileInfo>> RequestMultipleFileOpenAsync(
@@ -36,7 +39,17 @@ internal sealed class InteractionMessenger
         return result;
     }
 
+    public async ValueTask<object> ChooseFontAsync(
+        CancellationToken cancellationToken = default)
+    {
+        var message = new ChooseFontMessage();
+        var result = await this.ChooseFontRequestHandler.InvokeAsync(message, cancellationToken);
+        return result;
+    }
+
     public IMultipleFileOpenPickerRequestHandler MultipleFileOpenPickerRequestHandler { get; }
 
     public IConfirmSaveRequestHandler ConfirmSaveRequestHandler { get; }
+
+    public IChooseFontRequestHandler ChooseFontRequestHandler { get; }
 }

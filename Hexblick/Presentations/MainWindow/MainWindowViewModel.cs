@@ -12,8 +12,8 @@ using R3;
 using ZLinq;
 
 using Hexblick.Interactions;
-using Hexblick.Localization;
 using Hexblick.Models;
+using Hexblick.Strings;
 using Hexblick.Utilities;
 using Hexblick.Windowing;
 
@@ -32,6 +32,8 @@ internal sealed partial class MainWindowViewModel :
     public ReactiveCommand OpenFilesCommand { get; }
 
     public ReactiveCommand<EditorControlViewModel> SaveFileCommand { get; }
+
+    public ReactiveCommand ChooseFontCommand { get; }
 
     public BindableReactiveProperty<EditorControlViewModel?> ActiveDocument { get; }
 
@@ -65,8 +67,6 @@ internal sealed partial class MainWindowViewModel :
         this._windowManager = windowManager;
         this._stringLoader = stringLoader;
 
-        this._activeDocumentIsDirtySubscription.AddTo(this._disposable);
-
         this.NewDocumentCommand = new ReactiveCommand(_ => this.OnNewDocument())
             .AddTo(this._disposable);
 
@@ -76,6 +76,14 @@ internal sealed partial class MainWindowViewModel :
         this.SaveFileCommand = new ReactiveCommand<EditorControlViewModel>(this.OnSaveFileAsync)
             .AddTo(this._disposable);
 
+        this.ChooseFontCommand = new ReactiveCommand((_, c) => this.OnChooseFontAsync(c))
+            .AddTo(this._disposable);
+
+        this.NewWindowCommand = new ReactiveCommand(_ => this.OpenNewWindow())
+            .AddTo(this._disposable);
+
+        this._activeDocumentIsDirtySubscription.AddTo(this._disposable);
+
         this.ActiveDocument = new BindableReactiveProperty<EditorControlViewModel?>()
             .AddTo(this._disposable);
 
@@ -84,9 +92,6 @@ internal sealed partial class MainWindowViewModel :
 
         this.EditorViewModels = this._editorViewModels
             .ToNotifyCollectionChangedSlim()
-            .AddTo(this._disposable);
-
-        this.NewWindowCommand = new ReactiveCommand(_ => this.OpenNewWindow())
             .AddTo(this._disposable);
 
         var factory = ActivatorUtilities.CreateFactory<EditorControlViewModel>([typeof(Model)]);
@@ -115,6 +120,11 @@ internal sealed partial class MainWindowViewModel :
 
             return viewModel;
         };
+    }
+
+    private async ValueTask OnChooseFontAsync(CancellationToken cancellationToken)
+    {
+        await this.InteractionMessenger.ChooseFontAsync(cancellationToken);
     }
 
     private void OpenNewWindow()

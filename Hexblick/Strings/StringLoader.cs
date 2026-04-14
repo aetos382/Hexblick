@@ -1,6 +1,6 @@
 ﻿using Microsoft.Windows.ApplicationModel.Resources;
 
-namespace Hexblick.Localization;
+namespace Hexblick.Strings;
 
 internal interface IStringLoader
 {

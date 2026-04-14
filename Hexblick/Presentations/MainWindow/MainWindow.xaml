@@ -18,6 +18,7 @@
     <i:Interaction.Behaviors>
       <hb:MultipleFileOpenPickerBehavior MessageHandler="{x:Bind ViewModel.InteractionMessenger.MultipleFileOpenPickerRequestHandler}"/>
       <hb:ConfirmSaveBehavior MessageHandler="{x:Bind ViewModel.InteractionMessenger.ConfirmSaveRequestHandler}"/>
+      <hb:ChooseFontBehavior MessageHandler="{x:Bind ViewModel.InteractionMessenger.ChooseFontRequestHandler}"/>
     </i:Interaction.Behaviors>
 
     <StackPanel>
@@ -46,6 +47,9 @@
               <KeyboardAccelerator Key="F4" Modifiers="Menu"/>
             </MenuFlyoutItem.KeyboardAccelerators>
           </MenuFlyoutItem>
+        </MenuBarItem>
+        <MenuBarItem x:Uid="MenuTool" AccessKey="T">
+          <MenuFlyoutItem x:Uid="MenuToolFont" AccessKey="F" Command="{x:Bind ViewModel.ChooseFontCommand}"/>
         </MenuBarItem>
         <MenuBarItem x:Uid="MenuWindow" AccessKey="W">
           <MenuFlyoutItem x:Uid="MenuWindowNew" Command="{x:Bind ViewModel.NewWindowCommand}"/>
