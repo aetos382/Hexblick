@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 using Microsoft.Graphics.Canvas.Text;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.Globalization;
 
 using ObservableCollections;
@@ -18,8 +17,7 @@ namespace Hexblick.Presentations;
 
 public sealed record FontInfo(string FamilyName);
 
-public sealed partial class FontDialog :
-    UserControl,
+internal sealed partial class FontDialog :
     IDisposable
 {
     private readonly ObservableList<FontInfo>? _fontFamilies;
