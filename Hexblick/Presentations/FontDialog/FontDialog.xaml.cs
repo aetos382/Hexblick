@@ -3,8 +3,7 @@ using System.Collections.Generic;
 
 using Microsoft.Graphics.Canvas.Text;
 using Microsoft.UI.Xaml.Controls;
-
-using Windows.System.UserProfile;
+using Microsoft.Windows.Globalization;
 
 using ObservableCollections;
 
@@ -36,7 +35,7 @@ public sealed partial class FontDialog :
         var fontSet = CanvasFontSet.GetSystemFontSet().AddTo(this._disposables);
 
         var fontFamiliesHash = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var languages = GlobalizationPreferences.Languages;
+        var languages = ApplicationLanguages.Languages;
 
         foreach (var font in fontSet.Fonts)
         {
