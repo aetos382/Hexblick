@@ -50,7 +50,6 @@ jobs:
           --no-incremental
           --no-logo
           --arch ${{ matrix.processor_architecture }}
-          --disable-build-servers
 
       - name: Test
         if: matrix.processor_architecture != 'arm64'
@@ -72,6 +71,11 @@ jobs:
           --no-restore
           --no-logo
           --arch ${{ matrix.processor_architecture }}
+
+      - name: Shutdown build server
+        if: always()
+        run: >
+          dotnet build-server shutdown
 
       - name: Pack
         run: >
