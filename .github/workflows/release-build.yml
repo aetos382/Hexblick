@@ -29,6 +29,8 @@ jobs:
           cache: true
           cache-dependency-path: '**/packages.lock.json'
 
+      - uses: microsoft/setup-WinAppCli@cc8ea9a08b3ee3db43d5aa6bddda4a0e87d800f7 # v0.1.0
+
       - name: Build
         run: >
           dotnet build
