@@ -4,8 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to release (e.g., 1.0.0)'
+        type: string
         required: true
+        description: 'Version to release (e.g., 1.0.0)'
 
 permissions:
   contents: read
