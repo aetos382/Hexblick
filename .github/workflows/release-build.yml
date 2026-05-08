@@ -120,12 +120,21 @@ jobs:
         run: >
           dotnet build-server shutdown
 
+      - name: Set package version
+        shell: pwsh
+        run: >
+          $manifestPath = 'Hexblick/Package.appxmanifest'
+          [xml]$manifest = Get-Content -Raw $manifestPath
+          $manifest.Package.Identity.Version = '${{ needs.parse-version.outputs.version }}'
+          $manifest.Save($manifestPath)
+
       - name: Pack
         run: >
           winapp pack artifacts/publish/Hexblick/release_win-${{ matrix.processor_architecture }}
           --manifest Hexblick/Package.appxmanifest
           --output artifacts/msix/${{ env.MSIX_NAME }}
           --executable Hexblick.exe
+
       - name: Upload MSIX
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
