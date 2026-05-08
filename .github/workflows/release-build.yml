@@ -152,6 +152,7 @@ jobs:
         with:
           pattern: msix-*
           path: artifacts/msix
+          skip-decompress: true
           merge-multiple: true
 
       - name: Bundle
