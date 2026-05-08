@@ -13,4 +13,8 @@
     <RestoreLockedMode>true</RestoreLockedMode>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PublishDir>$(ArtifactsPath)\$(ArtifactsPublishOutputName)\$(ArtifactsProjectName)\$(ArtifactsPivots)\</PublishDir>
+  </PropertyGroup>
+
 </Project>
