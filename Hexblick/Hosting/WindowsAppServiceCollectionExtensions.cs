@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
@@ -12,7 +13,7 @@ internal static class WindowsAppServiceCollectionExtensions
 {
     extension(IServiceCollection services)
     {
-        public IServiceCollection UseWinApp<TApplication>()
+        public IServiceCollection UseWinApp<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TApplication>()
             where TApplication : Application
         {
             ArgumentNullException.ThrowIfNull(services);
