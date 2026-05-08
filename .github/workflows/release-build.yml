@@ -39,6 +39,7 @@ jobs:
     permissions:
       actions: read
       checks: write
+      contents: read
 
     strategy:
       matrix:
