@@ -27,6 +27,16 @@
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
     <DisableImplicitLibraryPacksFolder>true</DisableImplicitLibraryPacksFolder>
+
+    <!--
+      $(Platform) が未設定の場合の既定値
+      csproj より先に Microsoft.Common.props が読み込まれる時点で設定されている必要がある
+    -->
+    <DefaultProjectPlatform Condition="'$(DefaultProjectPlatform)' == ''">x64</DefaultProjectPlatform>
+
+    <Platform Condition="'$(Platform)' == '' AND $(RuntimeIdentifier.EndsWith('-x64'))">x64</Platform>
+    <Platform Condition="'$(Platform)' == '' AND $(RuntimeIdentifier.EndsWith('-x86'))">x86</Platform>
+    <Platform Condition="'$(Platform)' == '' AND $(RuntimeIdentifier.EndsWith('-arm64'))">ARM64</Platform>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(CI)' == 'true'">
