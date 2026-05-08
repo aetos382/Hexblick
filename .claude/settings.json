@@ -1,13 +1,13 @@
 {
   "permissions": {
+    "allow": [
+      "Bash(dotnet build *)"
+    ],
     "deny": [
       "Edit(**/packages.lock.json)",
       "Write(**/packages.lock.json)",
       "Edit(artifacts/**)",
       "Write(artifacts/**)"
-    ],
-    "allow": [
-      "Bash(dotnet build *)"
     ]
   },
   "hooks": {
