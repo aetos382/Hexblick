@@ -11,8 +11,6 @@ using Microsoft.UI.Xaml;
 
 namespace Hexblick.Hosting;
 
-#pragma warning disable CA1812
-
 internal sealed partial class WindowsAppLifetime :
     IHostLifetime,
     IDisposable
