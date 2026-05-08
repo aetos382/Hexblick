@@ -1,0 +1,11 @@
+<Project>
+  <Import Project="..\Directory.Build.props" />
+
+  <PropertyGroup>
+    <!--
+      $(Platform) が未設定の場合の既定値
+      csproj より先に Microsoft.Common.props が読み込まれる時点で設定されている必要がある
+    -->
+    <DefaultProjectPlatform Condition="'$(DefaultProjectPlatform)'==''">x64</DefaultProjectPlatform>
+  </PropertyGroup>
+</Project>

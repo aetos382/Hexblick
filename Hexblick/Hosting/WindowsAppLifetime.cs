@@ -167,6 +167,7 @@ internal sealed partial class WindowsAppLifetime :
                 }
             });
         }
+#pragma warning disable CA1031
         catch (Exception ex)
         {
             if (appStartedTcs.TrySetException(ex))
@@ -174,6 +175,7 @@ internal sealed partial class WindowsAppLifetime :
                 self.ApplicationStartFaulted(ex);
             }
         }
+#pragma warning restore CA1031
         finally
         {
             self.ApplicationStopped();
