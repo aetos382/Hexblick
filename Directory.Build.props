@@ -39,11 +39,11 @@
 
     <Platform Condition="'$(Platform)' == '' AND $(RuntimeIdentifier.EndsWith('-x64'))">x64</Platform>
     <Platform Condition="'$(Platform)' == '' AND $(RuntimeIdentifier.EndsWith('-x86'))">x86</Platform>
-    <Platform Condition="'$(Platform)' == '' AND $(RuntimeIdentifier.EndsWith('-arm64'))">ARM64</Platform>
+    <Platform Condition="'$(Platform)' == '' AND $(RuntimeIdentifier.EndsWith('-arm64'))">arm64</Platform>
 
     <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == '' AND '$(Platform)' == 'x64'">win-x64</RuntimeIdentifier>
     <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == '' AND '$(Platform)' == 'x86'">win-x86</RuntimeIdentifier>
-    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == '' AND '$(Platform)' == 'ARM64'">win-arm64</RuntimeIdentifier>
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == '' AND '$(Platform)' == 'arm64'">win-arm64</RuntimeIdentifier>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(CI)' == 'true'">
