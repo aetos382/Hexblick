@@ -118,3 +118,4 @@ jobs:
           archive: false
 
       - uses: microsoft/microsoft-store-apppublisher@b76227f539d68e6465f79bbbc82ed92f61081aa4 # v1.3
+        if: false
