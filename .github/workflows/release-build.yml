@@ -36,6 +36,10 @@ jobs:
     runs-on: windows-2025-vs2026
     needs: parse-version
 
+    permissions:
+      actions: read
+      checks: write
+
     strategy:
       matrix:
         include:
@@ -69,6 +73,7 @@ jobs:
           -bl:artifacts/logs/build-${{ matrix.processor_architecture }}.binlog
 
       - name: Test
+        id: test
         if: matrix.processor_architecture != 'arm64'
         run: >
           dotnet test
@@ -79,6 +84,17 @@ jobs:
           --no-ansi
           --no-progress
           --no-launch-profile
+          --logger "trx;logfilename=test-results.trx"
+          --results-directory artifacts/test-results
+
+      - name: Report test results
+        if: steps.test.conclusion != 'skipped' && !cancelled()
+        uses: dorny/test-reporter@a43b3a5f7366b97d083190328d2c652e1a8b6aa2 # v3.0.0
+        with:
+          name: Test results (${{ matrix.processor_architecture }})
+          path: artifacts/test-results/test-results.trx
+          reporter: dotnet-trx
+          fail-on-error: false
 
       - name: Publish
         run: >
@@ -137,7 +153,7 @@ jobs:
           winapp tool makeappx bundle
           /d artifacts/msix
           /p artifacts/bundle/Hexblick.msixbundle
-          /bv ${{ needs.validate.outputs.version }}
+          /bv ${{ needs.parse-version.outputs.version }}
           /o
 
       - name: Upload bundle
