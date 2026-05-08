@@ -1,4 +1,5 @@
 <Project>
+
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
@@ -27,19 +28,26 @@
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
     <DisableImplicitLibraryPacksFolder>true</DisableImplicitLibraryPacksFolder>
+  </PropertyGroup>
 
-    <!--
-      $(Platform) が未設定の場合の既定値
-      csproj より先に Microsoft.Common.props が読み込まれる時点で設定されている必要がある
-    -->
+  <!--
+    Platform と RuntimeIdentifier の相互マッピング。
+    csproj より先に Microsoft.Common.props が読み込まれる時点で設定されている必要がある。
+  -->
+  <PropertyGroup>
     <DefaultProjectPlatform Condition="'$(DefaultProjectPlatform)' == ''">x64</DefaultProjectPlatform>
 
     <Platform Condition="'$(Platform)' == '' AND $(RuntimeIdentifier.EndsWith('-x64'))">x64</Platform>
     <Platform Condition="'$(Platform)' == '' AND $(RuntimeIdentifier.EndsWith('-x86'))">x86</Platform>
     <Platform Condition="'$(Platform)' == '' AND $(RuntimeIdentifier.EndsWith('-arm64'))">ARM64</Platform>
+
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == '' AND '$(Platform)' == 'x64'">win-x64</RuntimeIdentifier>
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == '' AND '$(Platform)' == 'x86'">win-x86</RuntimeIdentifier>
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == '' AND '$(Platform)' == 'ARM64'">win-arm64</RuntimeIdentifier>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(CI)' == 'true'">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
+
 </Project>
