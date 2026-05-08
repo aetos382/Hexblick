@@ -212,3 +212,4 @@ jobs:
           name: ${{ needs.parse-version.outputs.version }}
           files: artifacts/bundle/${{ env.BUNDLE_NAME }}
           draft: true
+          generate_release_notes: true
