@@ -29,7 +29,13 @@ jobs:
 
     strategy:
       matrix:
-        processor_architecture: ['x86', 'x64', 'arm64']
+        include:
+          - processor_architecture: x86
+            platform: x86
+          - processor_architecture: x64
+            platform: x64
+          - processor_architecture: arm64
+            platform: ARM64
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -50,6 +56,8 @@ jobs:
           --no-incremental
           --no-logo
           --arch ${{ matrix.processor_architecture }}
+          -p:Platform=${{ matrix.platform }}
+          -bl:artifacts/logs/build-${{ matrix.processor_architecture }}.binlog
 
       - name: Test
         if: matrix.processor_architecture != 'arm64'
@@ -71,6 +79,8 @@ jobs:
           --no-restore
           --no-logo
           --arch ${{ matrix.processor_architecture }}
+          -p:Platform=${{ matrix.platform }}
+          -bl:artifacts/logs/publish-${{ matrix.processor_architecture }}.binlog
 
       - name: Shutdown build server
         if: always()
@@ -89,6 +99,15 @@ jobs:
           name: msix-${{ matrix.processor_architecture }}
           path: artifacts/msix/Hexblick-${{ matrix.processor_architecture }}.msix
           if-no-files-found: error
+          archive: false
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: logs-${{ matrix.processor_architecture }}
+          path: artifacts/logs/
+          if-no-files-found: ignore
           archive: false
 
   bundle:
