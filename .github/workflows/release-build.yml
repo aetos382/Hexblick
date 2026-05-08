@@ -4,27 +4,37 @@ on:
   push:
     tags:
       - 'release/[0-9]+.[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
+    inputs:
+      version:
+        type: string
+        required: true
+        description: 'Version (e.g., 1.0.0.0)'
 
 permissions:
   contents: read
 
 jobs:
-  validate:
+  parse-version:
     runs-on: ubuntu-latest
 
     outputs:
       version: ${{ steps.extract.outputs.version }}
 
     steps:
-      - name: Extract version from tag
+      - name: Extract version
         id: extract
         run: |
-          version="${GITHUB_REF_NAME#release/}"
+          if [[ '${{ github.event_name }}' == 'workflow_dispatch' ]]; then
+            version='${{ inputs.version }}'
+          else
+            version="${GITHUB_REF_NAME#release/}"
+          fi
           echo "version=${version}" >> "$GITHUB_OUTPUT"
 
   build:
     runs-on: windows-2025-vs2026
-    needs: validate
+    needs: parse-version
 
     strategy:
       matrix:
@@ -110,7 +120,7 @@ jobs:
 
   bundle:
     runs-on: windows-2025-vs2026
-    needs: [validate, build]
+    needs: [parse-version, build]
 
     steps:
       - uses: microsoft/setup-WinAppCli@cc8ea9a08b3ee3db43d5aa6bddda4a0e87d800f7 # v0.1.0
