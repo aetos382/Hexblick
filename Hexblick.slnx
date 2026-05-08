@@ -4,6 +4,7 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
+  <Project Path="Hexblick.Tests/Hexblick.Tests.csproj" Id="fe63f76e-7176-4d53-b1a1-378d2ea67d29" />
   <Project Path="Hexblick/Hexblick.csproj" Id="53bac3d3-8990-4745-91ef-9c1cd33098ba">
     <Platform Solution="*|ARM64" Project="ARM64" />
     <Platform Solution="*|x64" Project="x64" />

@@ -92,4 +92,8 @@
     <PublishReadyToRun Condition="'$(Configuration)' != 'Debug'">true</PublishReadyToRun>
     <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Hexblick.Tests"/>
+  </ItemGroup>
 </Project>
