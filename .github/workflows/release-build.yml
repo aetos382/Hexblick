@@ -43,8 +43,6 @@ jobs:
 
       - uses: microsoft/setup-WinAppCli@cc8ea9a08b3ee3db43d5aa6bddda4a0e87d800f7 # v0.1.0
 
-      - uses: microsoft/microsoft-store-apppublisher@b76227f539d68e6465f79bbbc82ed92f61081aa4 # v1.3
-
       - name: Build
         run: >
           dotnet build
@@ -95,6 +93,7 @@ jobs:
 
     steps:
       - uses: microsoft/setup-WinAppCli@cc8ea9a08b3ee3db43d5aa6bddda4a0e87d800f7 # v0.1.0
+
       - name: Download MSIX artifacts
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
@@ -117,3 +116,5 @@ jobs:
           path: artifacts/bundle/Hexblick.msixbundle
           if-no-files-found: error
           archive: false
+
+      - uses: microsoft/microsoft-store-apppublisher@b76227f539d68e6465f79bbbc82ed92f61081aa4 # v1.3
