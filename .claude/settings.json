@@ -5,9 +5,11 @@
       "Write(**/packages.lock.json)",
       "Edit(artifacts/**)",
       "Write(artifacts/**)"
+    ],
+    "allow": [
+      "Bash(dotnet build *)"
     ]
   },
-  "language": "Japanese",
   "hooks": {
     "PostToolUse": [
       {
@@ -33,5 +35,6 @@
         ]
       }
     ]
-  }
+  },
+  "language": "Japanese"
 }
