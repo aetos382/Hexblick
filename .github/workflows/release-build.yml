@@ -122,7 +122,7 @@ jobs:
 
       - name: Set package version
         shell: pwsh
-        run: >
+        run: |
           $manifestPath = 'Hexblick/Package.appxmanifest'
           [xml]$manifest = Get-Content -Raw $manifestPath
           $manifest.Package.Identity.Version = '${{ needs.parse-version.outputs.version }}'
