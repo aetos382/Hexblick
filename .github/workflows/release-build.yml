@@ -1,12 +1,9 @@
 name: release-build
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        type: string
-        required: true
-        description: 'Version to release (e.g., 1.0.0.0)'
+  push:
+    tags:
+      - 'release/[0-9]+.[0-9]+.[0-9]+.[0-9]+'
 
 permissions:
   contents: read
@@ -15,13 +12,15 @@ jobs:
   validate:
     runs-on: ubuntu-latest
 
+    outputs:
+      version: ${{ steps.extract.outputs.version }}
+
     steps:
-      - name: Validate version
+      - name: Extract version from tag
+        id: extract
         run: |
-          if [[ ! '${{ inputs.version }}' =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "Invalid version format: '${{ inputs.version }}'. Expected format: 1.0.0.0"
-            exit 1
-          fi
+          version="${GITHUB_REF_NAME#release/}"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
 
   build:
     runs-on: windows-2025-vs2026
@@ -108,7 +107,6 @@ jobs:
           name: logs-${{ matrix.processor_architecture }}
           path: artifacts/logs/
           if-no-files-found: ignore
-          archive: false
 
   bundle:
     runs-on: windows-2025-vs2026
@@ -129,7 +127,7 @@ jobs:
           winapp tool makeappx bundle
           /d artifacts/msix
           /p artifacts/bundle/Hexblick.msixbundle
-          /bv ${{ inputs.version }}
+          /bv ${{ needs.validate.outputs.version }}
           /o
 
       - name: Upload bundle
