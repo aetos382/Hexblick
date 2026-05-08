@@ -123,7 +123,7 @@ jobs:
       - name: Pack
         run: >
           winapp pack artifacts/publish/Hexblick/release_win-${{ matrix.processor_architecture }}
-          --manifest Hexblick/appxmanifest.xml
+          --manifest Hexblick/Package.appxmanifest
           --output artifacts/msix/${{ env.MSIX_NAME }}
           --executable Hexblick.exe
       - name: Upload MSIX
