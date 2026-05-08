@@ -6,9 +6,7 @@ using Microsoft.UI.Xaml;
 
 using Hexblick.Hosting;
 
-#pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection;
-#pragma warning restore IDE0130
 
 internal static class WindowsAppServiceCollectionExtensions
 {

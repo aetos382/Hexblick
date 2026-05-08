@@ -20,12 +20,12 @@ internal interface IWindowManager
         [MaybeNullWhen(false)] out Window window);
 }
 
-internal sealed class WindowManager :
+internal sealed partial class WindowManager :
     IWindowManager
 {
     private readonly IServiceProvider _serviceProvider;
 
-    private sealed record WindowContext(
+    private sealed partial record WindowContext(
         Window Window,
         IServiceScope Scope) : IDisposable
     {
@@ -35,7 +35,7 @@ internal sealed class WindowManager :
         }
     }
 
-    private readonly ConditionalWeakTable<AppWindow, WindowContext> _windows = new();
+    private readonly ConditionalWeakTable<AppWindow, WindowContext> _windows = [];
 
     public WindowManager(
         IServiceProvider serviceProvider)

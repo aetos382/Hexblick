@@ -10,12 +10,9 @@ using R3;
 
 using ZLinq;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace Hexblick.Presentations;
 
-public sealed record FontInfo(string FamilyName);
+internal sealed record FontInfo(string FamilyName);
 
 internal sealed partial class FontDialog :
     IDisposable
@@ -90,7 +87,7 @@ internal sealed partial class FontDialog :
             var prefixMatched = names
                 .AsValueEnumerable()
                 .OrderBy(static x => x.Key, StringComparer.OrdinalIgnoreCase)
-                .FirstOrNull(x => string.Equals(x.Key.Split('-')[0], prefix));
+                .FirstOrNull(x => string.Equals(x.Key.Split('-')[0], prefix, StringComparison.OrdinalIgnoreCase));
 
             if (prefixMatched is not null)
             {

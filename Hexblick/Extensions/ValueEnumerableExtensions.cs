@@ -1,7 +1,5 @@
 ﻿using System;
 
-#pragma warning disable IDE0130
-
 namespace ZLinq;
 
 internal static class ValueEnumerableExtensions

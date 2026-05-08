@@ -14,6 +14,8 @@ using R3;
 
 namespace Hexblick.Presentations;
 
+#pragma warning disable CA1001
+
 internal sealed partial class MainWindow
 {
     private MainWindowViewModel ViewModel { get; }
