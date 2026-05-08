@@ -55,6 +55,8 @@ jobs:
             platform: x64
           - processor_architecture: arm64
             platform: ARM64
+    env:
+      MSIX_NAME: Hexblick-${{ matrix.processor_architecture }}-${{ needs.parse-version.outputs.version }}.msix
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -123,12 +125,12 @@ jobs:
         run: >
           winapp pack artifacts/publish/Hexblick/release_win-${{ matrix.processor_architecture }}
           --manifest Hexblick/appxmanifest.xml
-          --output artifacts/msix/Hexblick-${{ matrix.processor_architecture }}-${{ needs.parse-version.outputs.version }}.msix
+          --output artifacts/msix/${{ env.MSIX_NAME }}
 
       - name: Upload MSIX
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          path: artifacts/msix/Hexblick-${{ matrix.processor_architecture }}-${{ needs.parse-version.outputs.version }}.msix
+          path: artifacts/msix/${{ env.MSIX_NAME }}
           if-no-files-found: error
           archive: false
 
@@ -143,6 +145,9 @@ jobs:
   bundle:
     runs-on: windows-2025-vs2026
     needs: [parse-version, build]
+
+    env:
+      BUNDLE_NAME: Hexblick-${{ needs.parse-version.outputs.version }}.msixbundle
 
     steps:
       - uses: microsoft/setup-WinAppCli@cc8ea9a08b3ee3db43d5aa6bddda4a0e87d800f7 # v0.1.0
@@ -159,7 +164,7 @@ jobs:
         run: >
           winapp tool makeappx bundle
           /d artifacts/msix
-          /p artifacts/bundle/Hexblick-${{ needs.parse-version.outputs.version }}.msixbundle
+          /p artifacts/bundle/${{ env.BUNDLE_NAME }}
           /bv ${{ needs.parse-version.outputs.version }}
           /o
 
@@ -167,7 +172,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: msixbundle
-          path: artifacts/bundle/Hexblick-${{ needs.parse-version.outputs.version }}.msixbundle
+          path: artifacts/bundle/${{ env.BUNDLE_NAME }}
           if-no-files-found: error
           archive: false
 
