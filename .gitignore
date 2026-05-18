@@ -3,10 +3,9 @@
 bin/
 obj/
 
+launchSettings.json
+*.user
+*.local.*
+*.lscache
 *.log
 *.binlog
-
-*.user
-launchSettings.json
-
-*.local.*
