@@ -13,19 +13,7 @@ primary
 lastDtbSucceeded
 
 [properties]
-AssemblyName=Hexblick
-CommandLineArgsForDesignTimeEvaluation=-langversion:latest -define:TRACE;DISABLE_XAML_GENERATED_MAIN -doc:"<PATH>../artifacts/obj/Hexblick/debug_win-arm64/Hexblick.xml"
-CompilerGeneratedFilesOutputPath=
-MaxSupportedLangVersion=14.0
-ProjectAssetsFile=<PATH>../artifacts/obj/Hexblick/project.assets.json
-RootNamespace=Hexblick
-RunAnalyzers=
-RunAnalyzersDuringLiveAnalysis=
-SolutionPath=<PATH>../Hexblick.slnx
-TargetFrameworkIdentifier=.NETCoreApp
-TargetPath=<PATH>../artifacts/bin/Hexblick/debug_win-arm64/Hexblick.dll
-TargetRefPath=<PATH>../artifacts/obj/Hexblick/debug_win-arm64/ref/Hexblick.dll
-TemporaryDependencyNodeTargetIdentifier=net10.0-windows10.0.19041.0
+CommandLineArgsForDesignTimeEvaluation=-langversion:14 -define:TRACE;DISABLE_XAML_GENERATED_MAIN -doc:"<PATH>../artifacts/obj/Hexblick/debug_win-arm64/Hexblick.xml"
 
 [commandLineArguments]
 /noconfig
@@ -54,7 +42,7 @@ TemporaryDependencyNodeTargetIdentifier=net10.0-windows10.0.19041.0
 /utf8output
 /win32manifest:app.manifest
 /deterministic+
-/langversion:latest
+/langversion:14
 /warnaserror+:NU1605,SYSLIB0011
 
 [sourceFiles]
