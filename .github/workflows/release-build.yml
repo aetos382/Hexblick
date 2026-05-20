@@ -161,6 +161,12 @@ jobs:
           path: artifacts/logs/
           if-no-files-found: ignore
 
+      - name: Dependency submission
+        uses: advanced-security/component-detection-dependency-submission-action@9c110eb34dee187cd9eca76a652b9f6a0ed22927 # v0.1.1
+        with:
+          detectorsCategories: NuGet
+          detectorArgs: MSBuildBinaryLog=EnableIfDefaultOff
+
   bundle:
     runs-on: windows-2025-vs2026
     needs: [parse-version, build]
