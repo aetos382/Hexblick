@@ -89,6 +89,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="Hexblick.Tests"/>
+    <InternalsVisibleTo Include="Hexblick.Tests" />
   </ItemGroup>
 </Project>

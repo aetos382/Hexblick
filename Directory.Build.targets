@@ -14,7 +14,9 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PublishDir>$(ArtifactsPath)\$(ArtifactsPublishOutputName)\$(ArtifactsProjectName)\$(ArtifactsPivots)\</PublishDir>
+    <!-- Set by the release workflow -->
+    <Version>0.0.0.0</Version>
+    <PublishDir>$(ArtifactsPath)\$(ArtifactsPublishOutputName)\$(ArtifactsProjectName)\$(Version)\$(ArtifactsPivots)\</PublishDir>
   </PropertyGroup>
 
 </Project>

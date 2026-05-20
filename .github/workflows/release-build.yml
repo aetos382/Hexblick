@@ -36,9 +36,56 @@ jobs:
         id: extract
         run: echo "version=${{ inputs.version }}" >> "$GITHUB_OUTPUT"
 
+  bump-version:
+    runs-on: ubuntu-slim
+    needs: parse-version
+
+    permissions:
+      contents: write
+
+    env:
+      VERSION: ${{ needs.parse-version.outputs.version }}
+
+    outputs:
+      sha: ${{ steps.commit.outputs.sha }}
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set version
+        shell: pwsh
+        run: |
+          $version = '${{ env.VERSION }}'
+
+          $targets = [xml](Get-Content -Raw Directory.Build.targets)
+          $versionNodes = $targets.SelectNodes('/Project/PropertyGroup/Version')
+          $versionNodes[-1].InnerText = $version
+          $targets.Save("$PWD/Directory.Build.targets")
+
+          $manifest = [xml](Get-Content -Raw Hexblick/Package.appxmanifest)
+          $manifest.Package.Identity.Version = $version
+          $manifest.Save("$PWD/Hexblick/Package.appxmanifest")
+
+          $appManifest = [xml](Get-Content -Raw Hexblick/app.manifest)
+          $ns = New-Object System.Xml.XmlNamespaceManager($appManifest.NameTable)
+          $ns.AddNamespace('asm', 'urn:schemas-microsoft-com:asm.v1')
+          $appManifest.SelectSingleNode('/asm:assembly/asm:assemblyIdentity', $ns).version = $version
+          $appManifest.Save("$PWD/Hexblick/app.manifest")
+
+      - name: Commit and push
+        id: commit
+        uses: suzuki-shunsuke/commit-action@06e3b49d4706498d325d29bd85adc82ecf2f5d8f # v1.0.0
+        with:
+          files: |
+            Directory.Build.targets
+            Hexblick/Package.appxmanifest
+            Hexblick/app.manifest
+          commit_message: "chore: bump version to ${{ env.VERSION }}"
+          fail_on_self_push: false
+
   build:
     runs-on: windows-2025-vs2026
-    needs: parse-version
+    needs: [parse-version, bump-version]
 
     permissions:
       actions: read
@@ -54,11 +101,15 @@ jobs:
             platform: x64
           - processor_architecture: arm64
             platform: arm64
+
     env:
+      VERSION: ${{ needs.parse-version.outputs.version }}
       MSIX_NAME: Hexblick-${{ matrix.processor_architecture }}-${{ needs.parse-version.outputs.version }}.msix
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ needs.bump-version.outputs.sha }}
 
       - name: Setup .NET
         uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
@@ -76,7 +127,6 @@ jobs:
           --no-incremental
           --no-logo
           --arch ${{ matrix.processor_architecture }}
-          -p:Version=${{ needs.parse-version.outputs.version }}
           -p:Platform=${{ matrix.platform }}
           -bl:artifacts/logs/build-${{ matrix.processor_architecture }}.binlog
 
@@ -116,16 +166,7 @@ jobs:
 
       - name: Shutdown build server
         if: always()
-        run: >
-          dotnet build-server shutdown
-
-      - name: Set package version
-        shell: pwsh
-        run: |
-          $manifestPath = 'Hexblick/Package.appxmanifest'
-          [xml]$manifest = Get-Content -Raw $manifestPath
-          $manifest.Package.Identity.Version = '${{ needs.parse-version.outputs.version }}'
-          $manifest.Save($manifestPath)
+        run: dotnet build-server shutdown
 
       - name: Pack
         run: >
@@ -154,6 +195,7 @@ jobs:
     needs: [parse-version, build]
 
     env:
+      VERSION: ${{ needs.parse-version.outputs.version }}
       BUNDLE_NAME: Hexblick-${{ needs.parse-version.outputs.version }}.msixbundle
 
     steps:
@@ -172,7 +214,7 @@ jobs:
           winapp tool makeappx bundle
           /d artifacts/msix
           /p artifacts/bundle/${{ env.BUNDLE_NAME }}
-          /bv ${{ needs.parse-version.outputs.version }}
+          /bv ${{ env.VERSION }}
           /o
 
       - name: Upload bundle
@@ -188,10 +230,11 @@ jobs:
 
   github-release:
     runs-on: ubuntu-slim
-    needs: [parse-version, bundle]
+    needs: [parse-version, bump-version, bundle]
     if: inputs.release == true
 
     env:
+      VERSION: ${{ needs.parse-version.outputs.version }}
       BUNDLE_NAME: Hexblick-${{ needs.parse-version.outputs.version }}.msixbundle
 
     permissions:
@@ -207,8 +250,9 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
         with:
-          tag_name: release/${{ needs.parse-version.outputs.version }}
-          name: ${{ needs.parse-version.outputs.version }}
+          tag_name: release/${{ env.VERSION }}
+          name: ${{ env.VERSION }}
+          target_commitish: ${{ needs.bump-version.outputs.sha }}
           files: artifacts/bundle/${{ env.BUNDLE_NAME }}
           draft: true
           generate_release_notes: true
