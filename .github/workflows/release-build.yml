@@ -36,56 +36,9 @@ jobs:
         id: extract
         run: echo "version=${{ inputs.version }}" >> "$GITHUB_OUTPUT"
 
-  bump-version:
-    runs-on: ubuntu-slim
-    needs: parse-version
-
-    permissions:
-      contents: write
-
-    env:
-      VERSION: ${{ needs.parse-version.outputs.version }}
-
-    outputs:
-      sha: ${{ steps.commit.outputs.sha }}
-
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
-      - name: Set version
-        shell: pwsh
-        run: |
-          $version = '${{ env.VERSION }}'
-
-          $targets = [xml](Get-Content -Raw Directory.Build.targets)
-          $versionNodes = $targets.SelectNodes('/Project/PropertyGroup/Version')
-          $versionNodes[-1].InnerText = $version
-          $targets.Save("$PWD/Directory.Build.targets")
-
-          $manifest = [xml](Get-Content -Raw Hexblick/Package.appxmanifest)
-          $manifest.Package.Identity.Version = $version
-          $manifest.Save("$PWD/Hexblick/Package.appxmanifest")
-
-          $appManifest = [xml](Get-Content -Raw Hexblick/app.manifest)
-          $ns = New-Object System.Xml.XmlNamespaceManager($appManifest.NameTable)
-          $ns.AddNamespace('asm', 'urn:schemas-microsoft-com:asm.v1')
-          $appManifest.SelectSingleNode('/asm:assembly/asm:assemblyIdentity', $ns).version = $version
-          $appManifest.Save("$PWD/Hexblick/app.manifest")
-
-      - name: Commit and push
-        id: commit
-        uses: suzuki-shunsuke/commit-action@06e3b49d4706498d325d29bd85adc82ecf2f5d8f # v1.0.0
-        with:
-          files: |
-            Directory.Build.targets
-            Hexblick/Package.appxmanifest
-            Hexblick/app.manifest
-          commit_message: "chore: bump version to ${{ env.VERSION }}"
-          fail_on_self_push: false
-
   build:
     runs-on: windows-2025-vs2026
-    needs: [parse-version, bump-version]
+    needs: parse-version
 
     permissions:
       actions: read
@@ -108,8 +61,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          ref: ${{ needs.bump-version.outputs.sha }}
 
       - name: Setup .NET
         uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
@@ -119,6 +70,26 @@ jobs:
           cache-dependency-path: '**/packages.lock.json'
 
       - uses: microsoft/setup-WinAppCli@cc8ea9a08b3ee3db43d5aa6bddda4a0e87d800f7 # v0.1.0
+
+      - name: Set version
+        shell: pwsh
+        run: |
+          $version = '${{ env.VERSION }}'
+
+          $targets = [xml](Get-Content -Raw Directory.Build.targets)
+          $versionNodes = $targets.SelectNodes('/Project/PropertyGroup/Version')
+          $versionNodes[-1].InnerText = $version
+          $targets.Save("$PWD/Directory.Build.targets")
+
+          $manifest = [xml](Get-Content -Raw Hexblick/Package.appxmanifest)
+          $manifest.Package.Identity.Version = $version
+          $manifest.Save("$PWD/Hexblick/Package.appxmanifest")
+
+          $appManifest = [xml](Get-Content -Raw Hexblick/app.manifest)
+          $ns = New-Object System.Xml.XmlNamespaceManager($appManifest.NameTable)
+          $ns.AddNamespace('asm', 'urn:schemas-microsoft-com:asm.v1')
+          $appManifest.SelectSingleNode('/asm:assembly/asm:assemblyIdentity', $ns).version = $version
+          $appManifest.Save("$PWD/Hexblick/app.manifest")
 
       - name: Build
         run: >
@@ -170,7 +141,7 @@ jobs:
 
       - name: Pack
         run: >
-          winapp pack artifacts/publish/Hexblick/release_win-${{ matrix.processor_architecture }}
+          winapp pack artifacts/publish/Hexblick/${{ env.VERSION }}/release_win-${{ matrix.processor_architecture }}
           --manifest Hexblick/Package.appxmanifest
           --output artifacts/msix/${{ env.MSIX_NAME }}
           --executable Hexblick.exe
@@ -230,7 +201,7 @@ jobs:
 
   github-release:
     runs-on: ubuntu-slim
-    needs: [parse-version, bump-version, bundle]
+    needs: [parse-version, bundle]
     if: inputs.release == true
 
     env:
@@ -252,7 +223,6 @@ jobs:
         with:
           tag_name: release/${{ env.VERSION }}
           name: ${{ env.VERSION }}
-          target_commitish: ${{ needs.bump-version.outputs.sha }}
           files: artifacts/bundle/${{ env.BUNDLE_NAME }}
           draft: true
           generate_release_notes: true
