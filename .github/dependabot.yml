@@ -11,6 +11,20 @@ updates:
       interval: "weekly"
     cooldown:
       default-days: 7
+    groups:
+      microsoft:
+        patterns:
+          - "Microsoft.*"
+          - "System.*"
+      community-toolkit:
+        patterns:
+          - "CommunityToolkit.*"
+      cysharp:
+        patterns:
+          - "MessagePipe*"
+          - "ObservableCollections"
+          - "R3"
+          - "ZLinq"
 
   - package-ecosystem: "dotnet-sdk"
     directory: "/"
