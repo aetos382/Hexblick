@@ -12,18 +12,9 @@ on:
         required: false
         default: false
         description: 'Create GitHub Release'
-      enable-debug-logs:
-        type: boolean
-        required: false
-        default: false
-        description: 'Enable debug logs'
 
 permissions:
   contents: read
-
-env:
-  ACTIONS_STEP_DEBUG: ${{ inputs.enable-debug-logs }}
-  ACTIONS_RUNNER_DEBUG: ${{ inputs.enable-debug-logs }}
 
 jobs:
   parse-version:
