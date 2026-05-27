@@ -37,3 +37,12 @@ updates:
       interval: "weekly"
     cooldown:
       default-days: 7
+    groups:
+      github:
+        patterns:
+          - "actions/*"
+          - "github/*"
+          - "advanced-security/*"
+      microsoft:
+        patterns:
+          - "microsoft/*"
